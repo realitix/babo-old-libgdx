@@ -46,17 +46,17 @@ public class Map {
 	
 	public BulletInstance generateInstance() {
 	    // Chargement des textures du sol
-	    MapAssetLoader loader = new MapAssetLoader(this);
-	    ObjectMap<String, Material> materials = loader.loadGroundMaterials();
+	    ObjectMap<String, Material> materials = TextureLoader.getGroundMaterialsFromMap(this);
 	    
 	    // Création du mesh cellule
 		MeshBuilder meshBuilder = new MeshBuilder();
 		meshBuilder.begin(Usage.Position | Usage.Normal, GL20.GL_TRIANGLES);
+		float s = BaboViolentGame.SIZE_MAP_CELL;
 		meshBuilder.rect(
 		    new Vector3(0, 0, 0),
-		    new Vector3(sizeCell, 0, 0),
-		    new Vector3(sizeCell, 0, sizeCell),
-		    new Vector3(0, 0, sizeCell),
+		    new Vector3(s, 0, 0),
+		    new Vector3(s, 0, s),
+		    new Vector3(0, 0, s),
 		    new Vector3(0, 1, 0)
 		);
         Mesh cellMesh = meshBuilder.end();

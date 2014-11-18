@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class BaboViolentGame extends Game {
+    static public String PATH_TEXTURE_GROUND = "data/texture/ground/";
+    static public final float SIZE_MAP_CELL = 30;
 	public SpriteBatch batch;
 	public BitmapFont font;
 	
