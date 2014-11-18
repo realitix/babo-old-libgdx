@@ -3,14 +3,14 @@ package com.baboviolent.game.map;
 import com.badlogic.gdx.math.Vector3;
 
 public class Cell {
-	private int number;
+	private Vector3 position;
 	private String type;
 	
-	public int getNumber() {
-		return number;
+	public Vector3 getPosition() {
+		return position;
 	}
-	public Cell setNumber(int number) {
-		this.number = number;
+	public Cell setPosition(Vector3 position) {
+		this.position = position;
 		return this;
 	}
 	public String getType() {

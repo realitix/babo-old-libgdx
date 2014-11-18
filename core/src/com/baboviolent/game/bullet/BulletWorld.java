@@ -27,17 +27,14 @@ import com.badlogic.gdx.utils.PerformanceCounter;
 
 public class BulletWorld extends BulletEntity implements Disposable {
 	
-	private final ObjectMap<String, BulletConstructor> constructors = new ObjectMap<String, BulletConstructor>();
-	protected final Array<BulletEntity> entities = new Array<BulletEntity>();
-	private final Array<Model> models = new Array<Model>();	
-
+	private final ObjectMap<String, BulletInstance.Constructor> constructors = new ObjectMap<String, BulletInstance.Constructor>();
+	protected final Array<BulletInstance> instances = new Array<BulletInstance>();
 	public final btCollisionConfiguration collisionConfiguration;
 	public final btCollisionDispatcher dispatcher;
 	public final btBroadphaseInterface broadphase;
 	public final btConstraintSolver solver;
 	public final btDiscreteDynamicsWorld world;
 	public final Vector3 gravity;
-
 	public int maxSubSteps = 5;
 	public float fixedTimeStep = 1f / 60f;
 
@@ -55,9 +52,8 @@ public class BulletWorld extends BulletEntity implements Disposable {
 		this(new Vector3(0, -10, 0));
 	}
 	
-	public void addConstructor (final String name, final BulletConstructor constructor) {
+	public void addConstructor (final String name, final BulletInstance.Constructor constructor) {
 		constructors.put(name, constructor);
-		if (constructor.model != null && !models.contains(constructor.model, true)) models.add(constructor.model);
 	}
 
 	public BulletConstructor getConstructor (final String name) {
@@ -65,59 +61,40 @@ public class BulletWorld extends BulletEntity implements Disposable {
 	}
 
 	public BulletEntity add (final String type, float x, float y, float z) {
-		final BulletEntity entity = constructors.get(type).construct(x, y, z);
-		add(entity);
-		return entity;
+		final BulletInstance instance = constructors.get(type).construct().setToTranslation(x, y, z);
+		add(instance);
+		return instance;
+	}
+	
+	public void add (final BulletInstance instance) {
+		instances.add(instance);
+		world.addRigidBody(instance.body);
 	}
 
-	public BulletEntity add (final String type, final Matrix4 transform) {
-		final BulletEntity entity = constructors.get(type).construct(transform);
-		add(entity);
-		return entity;
-	}
-
-	public void render (final ModelBatch batch, final Environment lights) {
-		render(batch, lights, entities);
-	}
-
-	public void render (final ModelBatch batch, final Environment lights, final BulletEntity entity) {
-		batch.render(entity.modelInstance, lights);
-	}
-
-	public void add (final BulletEntity entity) {
-		entities.add(entity);
-		world.addRigidBody((btRigidBody)entity.body);
-		entity.body.setUserValue(entities.size - 1);
+	public void render (final ModelBatch modelBatch, final Environment environment) {
+		modelBatch.render(instances, environment);
 	}
 
 	public void update () {
 		world.stepSimulation(Gdx.graphics.getDeltaTime(), maxSubSteps, fixedTimeStep);
 	}
 
-	public void render (ModelBatch batch, Environment lights, Iterable<BulletEntity> entities) {
-		for (final BulletEntity e : entities) {
-			batch.render(e.modelInstance, lights);
-		}
-	}
-
 	@Override
 	public void dispose () {
-		for (int i = 0; i < entities.size; i++) {
-			btCollisionObject body = entities.get(i).body;
+		for (int i = 0; i < instances.size; i++) {
+			btRigidBody body = instances.get(i).body;
 			if (body != null) {
-					world.removeRigidBody((btRigidBody)body);
+					world.removeRigidBody(body);
 			}
 		}
 
-		for (int i = 0; i < entities.size; i++)
-			entities.get(i).dispose();
-		entities.clear();
+		for (int i = 0; i < instances.size; i++)
+			instances.get(i).dispose();
+		instances.clear();
 
-		for (BulletConstructor constructor : constructors.values())
+		for (BulletInstance.Constructor constructor : constructors.values())
 			constructor.dispose();
 		constructors.clear();
-
-		models.clear();
 
 		world.dispose();
 		if (solver != null) solver.dispose();

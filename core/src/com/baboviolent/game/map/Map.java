@@ -34,8 +34,6 @@ public class Map {
 	private String author;
 	private int version;
 	private Array<Cell> cells = new Array<Cell>();
-	private int width; // Nombre de cellules en largeur
-	private int height; // Nombre de cellules en hauteur
 	private float sizeCell = 20; // Taille du coté d'une cellule
 	
 	public static Map load(String mapname) {
@@ -46,12 +44,39 @@ public class Map {
 		return map;
 	}
 	
-	public BulletEntity generateEntity() {
-		Model model = new Model();
+	public BulletInstance generateInstance() {
+	    // Chargement des textures du sol
+	    MapAssetLoader loader = new MapAssetLoader(this);
+	    ObjectMap<String, Material> materials = loader.loadGroundMaterials();
+	    
+	    // Création du mesh cellule
+		MeshBuilder meshBuilder = new MeshBuilder();
+		meshBuilder.begin(Usage.Position | Usage.Normal, GL20.GL_TRIANGLES);
+		meshBuilder.rect(
+		    new Vector3(0, 0, 0),
+		    new Vector3(sizeCell, 0, 0),
+		    new Vector3(sizeCell, 0, sizeCell),
+		    new Vector3(0, 0, sizeCell),
+		    new Vector3(0, 1, 0)
+		);
+        Mesh cellMesh = meshBuilder.end();
 		
+		// Création du model avec un modelbuilder et ajout de toutes les cellules
+		ModelBuilder modelBuilder = new ModelBuilder();
+        modelBuilder.begin();
+        
+        for(int i = 0; i < cells.length; i++) {
+            Node node = modelBuilder.node();
+            node.id = "cell"+cells[i].getNumber();
+            node.translation = cells[i].getPosition().cpy();
+            modelBuilder.part(
+            	cellMesh.parts.get(0), 
+            	materials.get(cells[i].getType());
+        }
+        
+        Model mapModel = modelBuilder.end();
 		
-		BulletEntity instance = new BulletEntity();
-		return instance;
+		return BulletInstance.createMap(mapModel);
 	}
 
 	public String getName() {
@@ -86,4 +111,7 @@ public class Map {
 		return this;
 	}
 	
+	public Array<Cell> getCells() {
+	    return cells;
+	}
 }
