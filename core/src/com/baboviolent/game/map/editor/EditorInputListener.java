@@ -4,6 +4,10 @@ import com.baboviolent.game.screen.MapEditorScreen;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+/**
+ * Cette classe génère un évènement lors du clic sur
+ * un objet ou texture à ajouter
+ */ 
 public class EditorInputListener extends ClickListener {
     private MapEditorScreen editorScreen;
     private String type;

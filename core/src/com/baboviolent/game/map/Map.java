@@ -47,7 +47,6 @@ public class Map {
 	private String author;
 	private int version;
 	private Array<Cell> cells = new Array<Cell>();
-	private float sizeCell = 20; // Taille du coté d'une cellule
 	
 	public static Map load(String mapname) {
 		FileHandle file = Gdx.files.internal("myfile.txt");

@@ -40,9 +40,11 @@ public class MapEditorScreen implements Screen {
 	private ObjectMap<String, Model> models;
 	private Array<ModelInstance> instances;
 	private Menu menu;
-	private String currentType;
-	private Model currentModel;
+	private String currentType; // Type d'objet à créer sélectionné
+	private Model currentModel; // Modèle actuel de l'objet à créer
+	private ModelInstance currentModelInstance; // Permet de suivre le curseur de la souris
 	private ModelBatch modelBatch;
+	private Map map;
 	
 	public MapEditorScreen(final BaboViolentGame g) {
 		game = g;        
@@ -59,13 +61,25 @@ public class MapEditorScreen implements Screen {
 		camera.far = 500;
 		camera.update();
 
-		//Gdx.input.setInputProcessor(camController);
         // Chargement des textures
         models = TextureLoader.getGroundModels();
         
+        // Chargement du menu
         menu = new Menu(this);
+        
+        // Ajout du contrôle
+        Gdx.input.setInputProcessor(new EditorInputAdapter(this));
+        
+        // Création d'une map
+        Map = new Map()
+        	.setVersion(1)
+        	.setAuthor("Test")
+        	.setName("Name");
     }
     
+    /**
+     * Sélectionne le sol
+     */ 
     public void selectGround(String type) {
     	if(type == currentType) {
     		return;
@@ -73,16 +87,57 @@ public class MapEditorScreen implements Screen {
     	
     	currentType = type;
     	currentModel = models.get(type);
+    	currentModelInstance = new ModelInstance(currentModel);
+    	instances.add(currentModelInstance);
+    }
+    
+    /**
+     * Déplace l'instance du sol afin de suivre la souris'
+     */ 
+    public void moveCurrentModelInstance(int screenX, int screenY) {
+        currentModelInstance.transform.setTranslation(
+        	getPositionFromMouse(screenX, screenY);
+        );
+    }
+    
+    /**
+     * Créer une nouvelle instance du model en paramètre et l'ajoute à la map'
+     */ 
+    public void createCell(int screenX, int screenY) {
+    	Vector3 position = getPositionFromMouse(screenX, screenY);
+    	ModelInstance i = new ModelInstance(currentModel);
+    	i.transform.setTranslation(position);
+    	instances.add(i);
+    	
+    	map.addCell(new Cell().setPosition(position).setType(currentType));
     }
 	
+	/**
+	 * Renvoie la position sur la grille en fonction de la souris
+	 */ 
+	private Vector3 getPositionFromMouse(screenX, screenY) {
+		Vector3 position = new Vector3();
+		Ray ray = camera.getPickRay(screenX, screenY);
+        final float distance = -ray.origin.y / ray.direction.y;
+        position.set(ray.direction).scl(distance).add(ray.origin);
+        
+        // Maj position sur grille
+        float s = BaboViolentGame.SIZE_MAP_CELL;
+        position.x = s * (int) (position.x/s);
+        position.z = s * (int) (position.z/s);
+        position.y = 0;
+        return position;
+	}
 	@Override
 	public void render(float delta) {
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 		
 	    modelBatch.begin(camera);
-		if (instances != null) modelBatch.render(instances, environment);
+		modelBatch.render(instances, environment);
 		modelBatch.end();
+		
+		menu.render();
 	}
 
 	@Override

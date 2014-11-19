@@ -25,6 +25,10 @@ public class Menu {
         table.setFillParent(true);
         stage.addActor(table);
         
+        // Menu classique
+        Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+        table.add(new Label("Enregistrer", skin));
+        
         // Chargement des textures
         ObjectMap<String, Texture> textures = TextureLoader.getGroundTextures();
         
@@ -34,5 +38,10 @@ public class Menu {
             image.addListener(new EditorInputListener(editorScreen, e.key));
             table.add(image);
         }
+	}
+	
+	public void render() {
+	    stage.act(Gdx.graphics.getDeltaTime());        
+        stage.draw();
 	}
 }
