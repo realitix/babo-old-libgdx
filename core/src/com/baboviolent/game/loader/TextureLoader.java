@@ -1,5 +1,19 @@
 package com.baboviolent.game.loader;
 
+import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.map.Map;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+
 public class TextureLoader {
     
     /**
@@ -24,7 +38,7 @@ public class TextureLoader {
         
 	    for(int i = 0; i < map.getCells().size; i++) {
 	        String type = map.getCells().get(i).getType();
-	        if( !textures.contains(type) ) {
+	        if( !textures.contains(type, false) ) {
 	            textures.add(type);
 	        }
 	    }
@@ -43,12 +57,13 @@ public class TextureLoader {
      * Charge toutes les textures du sol passées en paramètre
      */ 
     static public ObjectMap<String, Texture> getGroundTextures(Array<String> toLoad) {
+    	AssetManager manager = new AssetManager();
         String p = BaboViolentGame.PATH_TEXTURE_GROUND;
 	    ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 	    
 	    // On charge les textures
 	    for( int i = 0; i < toLoad.size; i++ ) {
-	        manager.load(p+texturesToLoad.get(i)+".png", Texture.class);
+	        manager.load(p+toLoad.get(i)+".png", Texture.class);
 	    }
 	    manager.update();
 	    manager.finishLoading();
@@ -85,7 +100,7 @@ public class TextureLoader {
         ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
         
         for (ObjectMap.Entry<String, Texture> e : textures.entries()) {
-	        TextureAttribute textureAttribute = = new TextureAttribute(TextureAttribute.Diffuse, e.value);
+	        TextureAttribute textureAttribute = new TextureAttribute(TextureAttribute.Diffuse, e.value);
 	        Material material = new Material(textureAttribute);
 	        materials.put(e.key, material);
         }
@@ -110,17 +125,17 @@ public class TextureLoader {
         float s = BaboViolentGame.SIZE_MAP_CELL;
         
         for (ObjectMap.Entry<String, Material> e : materials.entries()) {
-            models.add(mb.createRect(
+            models.put(e.key, mb.createRect(
                 0, 0 ,0,
                 s, 0, 0,
 		        s, 0, s,
 		        0, 0, s,
 		        0, 1, 0,
 		        e.value,
-		        Usage.Position | Usage.Color | Usage.Normal | Usage.TextureCoordinates
+		        Usage.Position | Usage.Normal | Usage.TextureCoordinates
             ));
         }
         
-	    return materials;
+	    return models;
 	}
 }

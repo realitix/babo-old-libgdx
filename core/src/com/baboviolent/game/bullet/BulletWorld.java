@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PerformanceCounter;
 
-public class BulletWorld extends BulletEntity implements Disposable {
+public class BulletWorld implements Disposable {
 	
 	private final ObjectMap<String, BulletInstance.Constructor> constructors = new ObjectMap<String, BulletInstance.Constructor>();
 	protected final Array<BulletInstance> instances = new Array<BulletInstance>();
@@ -56,12 +56,13 @@ public class BulletWorld extends BulletEntity implements Disposable {
 		constructors.put(name, constructor);
 	}
 
-	public BulletConstructor getConstructor (final String name) {
+	public BulletInstance.Constructor getConstructor (final String name) {
 		return constructors.get(name);
 	}
 
-	public BulletEntity add (final String type, float x, float y, float z) {
-		final BulletInstance instance = constructors.get(type).construct().setToTranslation(x, y, z);
+	public BulletInstance add (final String type, float x, float y, float z) {
+		BulletInstance instance = constructors.get(type).construct();
+		instance.transform.setToTranslation(x, y, z);
 		add(instance);
 		return instance;
 	}

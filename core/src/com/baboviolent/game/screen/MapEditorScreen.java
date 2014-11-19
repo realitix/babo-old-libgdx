@@ -1,9 +1,9 @@
 package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
-import com.baboviolent.game.bullet.BulletConstructor;
 import com.baboviolent.game.bullet.BulletWorld;
-import com.baboviolent.game.loader.MapLoader;
+import com.baboviolent.game.loader.TextureLoader;
+import com.baboviolent.game.map.editor.Menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -28,19 +28,21 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public class MapEditorScreen implements Screen {
 	final BaboViolentGame game;
 	public Environment environment;
 	public DirectionalLight light;
-	public ModelBatch modelBatch;
 	public Array<Disposable> disposables = new Array<Disposable>();
 	public PerspectiveCamera camera;
 	
 	private ObjectMap<String, Model> models;
+	private Array<ModelInstance> instances;
 	private Menu menu;
 	private String currentType;
 	private Model currentModel;
+	private ModelBatch modelBatch;
 	
 	public MapEditorScreen(final BaboViolentGame g) {
 		game = g;        
@@ -59,10 +61,9 @@ public class MapEditorScreen implements Screen {
 
 		//Gdx.input.setInputProcessor(camController);
         // Chargement des textures
-        EditorAssetLoader eal = new EditorAssetLoader();
         models = TextureLoader.getGroundModels();
         
-        menu = new Menu(this, models);
+        menu = new Menu(this);
     }
     
     public void selectGround(String type) {
@@ -79,8 +80,8 @@ public class MapEditorScreen implements Screen {
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 		
-	    modelBatch.begin(cam);
-		if (instances != null) render(modelBatch, instances);
+	    modelBatch.begin(camera);
+		if (instances != null) modelBatch.render(instances, environment);
 		modelBatch.end();
 	}
 

@@ -1,10 +1,23 @@
 package com.baboviolent.game.map;
 
-import com.baboviolent.game.bullet.BulletEntity;
+import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.bullet.BulletInstance;
+import com.baboviolent.game.loader.TextureLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.ObjectMap;
 
 /**
  * Map
@@ -59,19 +72,21 @@ public class Map {
 		    new Vector3(0, 0, s),
 		    new Vector3(0, 1, 0)
 		);
-        Mesh cellMesh = meshBuilder.end();
+		MeshPart cellMeshPart = meshBuilder.getMeshPart();
+        meshBuilder.end();
 		
 		// Création du model avec un modelbuilder et ajout de toutes les cellules
 		ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
         
-        for(int i = 0; i < cells.length; i++) {
+        for(int i = 0; i < cells.size; i++) {
             Node node = modelBuilder.node();
-            node.id = "cell"+cells[i].getNumber();
-            node.translation = cells[i].getPosition().cpy();
+            node.id = "cell"+i;
+            node.translation.set(cells.get(i).getPosition());
             modelBuilder.part(
-            	cellMesh.parts.get(0), 
-            	materials.get(cells[i].getType());
+            	cellMeshPart, 
+            	materials.get(cells.get(i).getType())
+            );
         }
         
         Model mapModel = modelBuilder.end();

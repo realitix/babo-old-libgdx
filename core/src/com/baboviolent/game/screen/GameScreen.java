@@ -43,9 +43,6 @@ public class GameScreen implements Screen {
 	public boolean loading;
 	
 	public GameScreen(final BaboViolentGame g) {
-		//TEST
-		MapLoader m = new MapLoader();
-		m.test();
 		
 		Bullet.init();
 		game = g;        

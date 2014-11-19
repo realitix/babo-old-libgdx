@@ -1,5 +1,15 @@
 package com.baboviolent.game.map.editor;
 
+import com.baboviolent.game.loader.TextureLoader;
+import com.baboviolent.game.screen.MapEditorScreen;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+
 public class Menu {
     private Stage stage;
     

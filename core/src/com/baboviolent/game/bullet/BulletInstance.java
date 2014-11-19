@@ -6,14 +6,17 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btBvhTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.linearmath.btMotionState;
 import com.badlogic.gdx.utils.Disposable;
 
 public class BulletInstance extends ModelInstance implements Disposable {
-	public BulletEntity.MotionState motionState;
+	public BulletInstance.MotionState motionState;
 	public btRigidBody body;
 	
 	/**
@@ -28,22 +31,20 @@ public class BulletInstance extends ModelInstance implements Disposable {
 	}
 	
 	public BulletInstance (Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
-		this(model, null, constructionInfo);
+		super(model);
+		init(constructionInfo);
 	}
 	
     public BulletInstance (Model model, String node, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
-		if( node == null) {
-		    super(model);
-		}
-		else {
-		    super(model, node);
-		}
-		
-		motionState = new ITMotionState();
-		motionState.transform = transform;
+		super(model, node);
+		init(constructionInfo);
+	}
+    
+    public void init(btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
+    	motionState = new BulletInstance.MotionState(this.transform);
 		body = new btRigidBody(constructionInfo);
 		body.setMotionState(motionState);
-	}
+    }
 
 	@Override
 	public void dispose () {
