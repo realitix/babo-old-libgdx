@@ -35,16 +35,20 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class MapEditorScreen implements Screen {
-	final BaboViolentGame game;
-	public Environment environment;
-	public DirectionalLight light;
-	public Array<Disposable> disposables = new Array<Disposable>();
-	public PerspectiveCamera camera;
+	public static final String TYPE_ERASER = "type_eraser";
+	public static final String TYPE_GROUND = "type_ground";
 	
+	private final BaboViolentGame game;
+	private Environment environment;
+	private DirectionalLight light;
+	private Array<Disposable> disposables = new Array<Disposable>();
+	private PerspectiveCamera camera;
+	private CameraInputController cameraController;
 	private ObjectMap<String, Model> models;
 	private Array<ModelInstance> instances;
 	private Menu menu;
-	private String currentType; // Type d'objet à créer sélectionné
+	private String currentType;
+	private String currentGroundType; // Type d'objet à créer sélectionné
 	private Model currentModel; // Modèle actuel de l'objet à créer
 	private ModelInstance currentModelInstance; // Permet de suivre le curseur de la souris
 	private ModelBatch modelBatch;
@@ -71,8 +75,17 @@ public class MapEditorScreen implements Screen {
         // Chargement du menu
         menu = new Menu(this);
         
+        // Contrôle de la camera
+        cameraController = new CameraInputController(camera);
+        cameraController.autoUpdate = true;
+        
         // Ajout du contrôle
-        Gdx.input.setInputProcessor(new EditorInputAdapter(this));
+        Gdx.input.setInputProcessor(tp.getStage());
+        Gdx.input.setInputProcessor(new InputMultiplexer(
+        	menu.getStage(),
+        	new EditorInputAdapter(this),
+        	cameraController
+        ));
         
         // Création d'une map
         map = new Map()
@@ -85,14 +98,36 @@ public class MapEditorScreen implements Screen {
      * Sélectionne le sol
      */ 
     public void selectGround(String type) {
-    	if(type == currentType) {
+    	if( type == currentGroundType && currentType == MapEditorScreen.TYPE_GROUND ) {
     		return;
     	}
     	
-    	currentType = type;
+    	currentGroundType = type;
     	currentModel = models.get(type);
     	currentModelInstance = new ModelInstance(currentModel);
     	instances.add(currentModelInstance);
+    	currentType = MapEditorScreen.TYPE_GROUND;
+    }
+    
+    /**
+     * Sélectionne la gomme pour effacer les cellules
+     */ 
+    public void selectEraser() {
+    	currentType = MapEditorScreen.TYPE_ERASER;
+    }
+    
+    /**
+     * Déplacement de la souris
+     */ 
+    public void mouseMove(int screenX, int screenY) {
+        moveCurrentModelInstance(screenX, screenY);
+    }
+    
+    /**
+     * Clic de la souris
+     */ 
+    public void mouseClick(int screenX, int screenY) {
+        createCell(screenX, screenY);
     }
     
     /**
@@ -113,7 +148,7 @@ public class MapEditorScreen implements Screen {
     	i.transform.setTranslation(position);
     	instances.add(i);
     	
-    	map.addCell(new Cell().setPosition(position).setType(currentType));
+    	map.addCell(new Cell().setPosition(position).setType(currentGroundType));
     }
 	
 	/**
@@ -145,6 +180,8 @@ public class MapEditorScreen implements Screen {
 	public void render(float delta) {
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glClearColor(255, 255, 255, 1);
+		
+		cameraController.update();
 		
 	    modelBatch.begin(camera);
 		modelBatch.render(instances, environment);

@@ -37,30 +37,42 @@ public class Menu {
         // On créé les boutons
         final TextField mapNameWidget = new TextField("", skin);
         Label saveWidget = new Label("Enregistrer", skin);
+        Label clearWidget = new Label("Effacer", skin);
+        TextButton exitWidget = new TextButton("Quitter", skin);
+        
+        // Listener
         saveWidget.addListener(
-        		new ClickListener() {
-        			public void clicked (InputEvent event, float x, float y) {
-        				editorScreen.saveMap(mapNameWidget.getText());
-        			}
-        		});
+    		new ClickListener() {
+    			public void clicked (InputEvent event, float x, float y) {
+    				editorScreen.saveMap(mapNameWidget.getText());
+    			}
+    	});
+    	
+    	clearWidget.addListener(
+    		new ClickListener() {
+    			public void clicked (InputEvent event, float x, float y) {
+    				editorScreen.selectEraser();
+    			}
+    	});
+    	
+        exitWidget.addListener(
+    		new ClickListener() {
+    			public void clicked (InputEvent event, float x, float y) {
+    				Gdx.app.exit();
+    			}
+    	});
         
         table.add(mapNameWidget);
         table.add(saveWidget);
+        table.add(exitWidget);
+        table.row();
         
         // Chargement des textures
         ObjectMap<String, Texture> textures = TextureLoader.getGroundTextures();
         
         // Pour chaque texture, on va créer un widget
         for (final ObjectMap.Entry<String, Texture> e : textures.entries()) {
-            /*Image image = new Image(e.value);
             //image.addListener(new EditorInputListener(editorScreen, e.key));
-            image.addListener(new ClickListener() {
-            	public void clicked (InputEvent event, float x, float y) {
-            		editorScreen.selectGround(e.key);
-            	}
-            });
-            table.add(image);*/
-        	
         	Image image = new Image(e.value);
             image.addListener(new ClickListener() {
             	public void clicked (InputEvent event, float x, float y) {
@@ -69,6 +81,10 @@ public class Menu {
             });
             table.add(image);
         }
+	}
+	
+	public Stage getStage() {
+		return stage;
 	}
 	
 	public void render() {

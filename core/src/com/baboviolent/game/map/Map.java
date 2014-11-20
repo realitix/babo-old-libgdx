@@ -47,24 +47,47 @@ public class Map {
 	private String author;
 	private int version;
 	private Array<Cell> cells = new Array<Cell>();
+	private Array<Cell> objects = new Array<MapObject>();
 	
-	public static Map load(String mapname) {
-		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
-		String jsonMap = file.readString();
-		Json json = new Json();
-		Map map = json.fromJson(Map.class, jsonMap);
-		return map;
+	
+	/**
+	 * Créer une instance à partir du nom de la map
+	*/
+	static public BulletInstance loadInstance (String mapname) {
+        return Map.loadInstance(Map.loadModel(mapname));
 	}
 	
-	public static void save(Map map, String mapname) {
-		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
-		Json json = new Json();
-		json.toJson(Map.class, file);
+	/**
+	 * Créer une instance à partir d'une map'
+	*/
+	static public BulletInstance loadInstance (Map map) {
+        return Map.loadInstance(Map.loadModel(map));
 	}
 	
-	public BulletInstance generateInstance() {
+	/**
+	 * Créer une instance à partir d'un modèle'
+	*/
+	static public BulletInstance loadInstance (Model model) {
+        btBvhTriangleMeshShape shape = new btBvhTriangleMeshShape(model.meshParts);
+        btRigidBody.btRigidBodyConstructionInfo constructionInfo = 
+            new btRigidBody.btRigidBodyConstructionInfo(0, null, shape);
+            
+        return new BulletInstance(model, constructionInfo);
+	}
+	
+	/**
+	 * Créer un modèle à partir du nom
+	*/
+	static public Model loadModel (String mapname) {
+        return Map.loadModel(Map.load(mapname));
+	}
+	
+	/**
+	 * Transforme la map en modèle
+	 */ 
+	static public Model loadModel(Map map) {
 	    // Chargement des textures du sol
-	    ObjectMap<String, Material> materials = TextureLoader.getGroundMaterialsFromMap(this);
+	    ObjectMap<String, Material> materials = TextureLoader.getGroundMaterialsFromMap(map);
 	    
 	    // Création du mesh cellule
 		MeshBuilder meshBuilder = new MeshBuilder();
@@ -84,7 +107,8 @@ public class Map {
 		ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
         
-        for(int i = 0; i < cells.size; i++) {
+        Array<Cell> cells = map.getCells();
+        for(int i = 0; i < map.getCells().size; i++) {
             Node node = modelBuilder.node();
             node.id = "cell"+i;
             node.translation.set(cells.get(i).getPosition());
@@ -94,9 +118,29 @@ public class Map {
             );
         }
         
-        Model mapModel = modelBuilder.end();
+        return modelBuilder.end();
 		
-		return BulletInstance.createMap(mapModel);
+		return Map.loadInstance(mapModel);
+	}
+	
+	/**
+	 * Charge la map
+	 **/
+	static public Map load(String mapname) {
+		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
+		String jsonMap = file.readString();
+		Json json = new Json();
+		Map map = json.fromJson(Map.class, jsonMap);
+		return map;
+	}
+	
+	/**
+	 * Sauvegarde la map
+	 **/
+	public static void save(Map map, String mapname) {
+		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
+		Json json = new Json();
+		json.toJson(Map.class, file);
 	}
 
 	public String getName() {
@@ -133,5 +177,14 @@ public class Map {
 	
 	public Array<Cell> getCells() {
 	    return cells;
+	}
+	
+	public Map addObject(MapObject m) {
+		this.objects.add(m);
+		return this;
+	}
+	
+	public Array<MapObject> getObjects() {
+	    return objects;
 	}
 }

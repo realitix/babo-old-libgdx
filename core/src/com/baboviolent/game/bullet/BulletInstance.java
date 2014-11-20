@@ -19,17 +19,6 @@ public class BulletInstance extends ModelInstance implements Disposable {
 	public BulletInstance.MotionState motionState;
 	public btRigidBody body;
 	
-	/**
-	 * Créateur d'un bulletinstance map'
-	*/
-	static public BulletInstance createMap (Model model) {
-        btBvhTriangleMeshShape shape = new btBvhTriangleMeshShape(model.meshParts);
-        btRigidBody.btRigidBodyConstructionInfo constructionInfo = 
-            new btRigidBody.btRigidBodyConstructionInfo(0, null, shape);
-            
-        return new BulletInstance(model, constructionInfo);
-	}
-	
 	public BulletInstance (Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
 		super(model);
 		init(constructionInfo);

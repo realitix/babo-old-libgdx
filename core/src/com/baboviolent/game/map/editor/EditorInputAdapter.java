@@ -17,12 +17,14 @@ public class EditorInputAdapter extends InputAdapter {
     }
     
     public boolean mouseMoved(int screenX, int screenY) {
-        editorScreen.moveCurrentModelInstance(screenX, screenY);
+        editorScreen.mouseMove(screenX, screenY);
+        //editorScreen.moveCurrentModelInstance(screenX, screenY);
         return true;
     }
     
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        editorScreen.createCell(screenX, screenY);
+        editorScreen.mouseClick(screenX, screenY);
+        //editorScreen.createCell(screenX, screenY);
         return true;
     }
 }
