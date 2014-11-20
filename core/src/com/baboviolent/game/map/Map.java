@@ -49,11 +49,17 @@ public class Map {
 	private Array<Cell> cells = new Array<Cell>();
 	
 	public static Map load(String mapname) {
-		FileHandle file = Gdx.files.internal("myfile.txt");
+		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
 		String jsonMap = file.readString();
 		Json json = new Json();
 		Map map = json.fromJson(Map.class, jsonMap);
 		return map;
+	}
+	
+	public static void save(Map map, String mapname) {
+		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
+		Json json = new Json();
+		json.toJson(Map.class, file);
 	}
 	
 	public BulletInstance generateInstance() {

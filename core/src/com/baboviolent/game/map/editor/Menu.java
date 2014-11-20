@@ -27,16 +27,40 @@ public class Menu {
         
         // Menu classique
         Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-        table.add(new Label("Enregistrer", skin));
+        
+        // On créé les boutons
+        final TextField mapNameWidget = new TextField("", skin);
+        Label saveWidget = new Label("Enregistrer", skin).addListener();
+        
+        table.add(mapNameWidget);
+        table.add(
+        	saveWidget.addListener(new ClickListener() {
+	    		public void clicked (InputEvent event, float x, float y) {
+	    			editorScreen.saveMap(mapNameWidget.getText());
+	    		}
+	    }));
         
         // Chargement des textures
         ObjectMap<String, Texture> textures = TextureLoader.getGroundTextures();
         
         // Pour chaque texture, on va créer un widget
-        for (ObjectMap.Entry<String, Texture> e : textures.entries()) {
-            Image image = new Image(e.value);
-            image.addListener(new EditorInputListener(editorScreen, e.key));
-            table.add(image);
+        for (final ObjectMap.Entry<String, Texture> e : textures.entries()) {
+            /*Image image = new Image(e.value);
+            //image.addListener(new EditorInputListener(editorScreen, e.key));
+            image.addListener(new ClickListener() {
+            	public void clicked (InputEvent event, float x, float y) {
+            		editorScreen.selectGround(e.key);
+            	}
+            });
+            table.add(image);*/
+            
+            table.add(new Image(e.value)
+            	.addListener(new ClickListener() {
+            		public void clicked (InputEvent event, float x, float y) {
+            			editorScreen.selectGround(e.key);
+            		}
+            	})
+            );
         }
 	}
 	

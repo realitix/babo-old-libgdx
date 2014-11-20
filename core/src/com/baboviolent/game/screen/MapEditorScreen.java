@@ -128,6 +128,15 @@ public class MapEditorScreen implements Screen {
         position.y = 0;
         return position;
 	}
+	
+	/**
+     * Sauvegarde la map actuelle'
+     */ 
+    public void saveMap(String mapName) {
+    	Map.save(map, mapName);
+    }
+    
+    
 	@Override
 	public void render(float delta) {
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
