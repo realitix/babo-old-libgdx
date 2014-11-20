@@ -58,6 +58,7 @@ nb-configuration.xml
 
 .gradle
 build.gradle
+settings.gradle
 build/
 
 ## OS Specific
