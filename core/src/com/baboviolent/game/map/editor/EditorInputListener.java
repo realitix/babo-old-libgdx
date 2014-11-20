@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  * en fonction des paramètres passés
  */ 
 public class EditorInputListener extends ClickListener {
-    public static int ACTION_SAVE = 1;
+    public final static int ACTION_SAVE = 1;
     private MapEditorScreen editorScreen;
     private String textureType;
     private int action = 0;

@@ -1,5 +1,8 @@
 package com.baboviolent.game.map.editor;
 
+import com.baboviolent.game.screen.MapEditorScreen;
+import com.badlogic.gdx.InputAdapter;
+
 
 /**
  * Cette classe gère les évènements de la souris et du clavier

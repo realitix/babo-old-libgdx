@@ -2,11 +2,17 @@ package com.baboviolent.game.map.editor;
 
 import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.screen.MapEditorScreen;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -30,15 +36,16 @@ public class Menu {
         
         // On créé les boutons
         final TextField mapNameWidget = new TextField("", skin);
-        Label saveWidget = new Label("Enregistrer", skin).addListener();
+        Label saveWidget = new Label("Enregistrer", skin);
+        saveWidget.addListener(
+        		new ClickListener() {
+        			public void clicked (InputEvent event, float x, float y) {
+        				editorScreen.saveMap(mapNameWidget.getText());
+        			}
+        		});
         
         table.add(mapNameWidget);
-        table.add(
-        	saveWidget.addListener(new ClickListener() {
-	    		public void clicked (InputEvent event, float x, float y) {
-	    			editorScreen.saveMap(mapNameWidget.getText());
-	    		}
-	    }));
+        table.add(saveWidget);
         
         // Chargement des textures
         ObjectMap<String, Texture> textures = TextureLoader.getGroundTextures();
@@ -53,14 +60,14 @@ public class Menu {
             	}
             });
             table.add(image);*/
-            
-            table.add(new Image(e.value)
-            	.addListener(new ClickListener() {
-            		public void clicked (InputEvent event, float x, float y) {
-            			editorScreen.selectGround(e.key);
-            		}
-            	})
-            );
+        	
+        	Image image = new Image(e.value);
+            image.addListener(new ClickListener() {
+            	public void clicked (InputEvent event, float x, float y) {
+            		editorScreen.selectGround(e.key);
+            	}
+            });
+            table.add(image);
         }
 	}
 	

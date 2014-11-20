@@ -3,6 +3,9 @@ package com.baboviolent.game.screen;
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.loader.TextureLoader;
+import com.baboviolent.game.map.Cell;
+import com.baboviolent.game.map.Map;
+import com.baboviolent.game.map.editor.EditorInputAdapter;
 import com.baboviolent.game.map.editor.Menu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -25,6 +28,7 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -71,7 +75,7 @@ public class MapEditorScreen implements Screen {
         Gdx.input.setInputProcessor(new EditorInputAdapter(this));
         
         // Création d'une map
-        Map = new Map()
+        map = new Map()
         	.setVersion(1)
         	.setAuthor("Test")
         	.setName("Name");
@@ -96,7 +100,7 @@ public class MapEditorScreen implements Screen {
      */ 
     public void moveCurrentModelInstance(int screenX, int screenY) {
         currentModelInstance.transform.setTranslation(
-        	getPositionFromMouse(screenX, screenY);
+        	getPositionFromMouse(screenX, screenY)
         );
     }
     
@@ -115,7 +119,7 @@ public class MapEditorScreen implements Screen {
 	/**
 	 * Renvoie la position sur la grille en fonction de la souris
 	 */ 
-	private Vector3 getPositionFromMouse(screenX, screenY) {
+	private Vector3 getPositionFromMouse(int screenX, int screenY) {
 		Vector3 position = new Vector3();
 		Ray ray = camera.getPickRay(screenX, screenY);
         final float distance = -ray.origin.y / ray.direction.y;

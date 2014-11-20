@@ -1,9 +1,7 @@
 package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
-import com.baboviolent.game.bullet.BulletConstructor;
 import com.baboviolent.game.bullet.BulletWorld;
-import com.baboviolent.game.loader.MapLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -74,18 +72,18 @@ public class GameScreen implements Screen {
 				10f,
 				new Material(ColorAttribute.createDiffuse(Color.BLUE)) , Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		disposables.add(largeGroundModel);
-		world.addConstructor("largeground", new BulletConstructor(largeGroundModel, 0f));
+		//world.addConstructor("largeground", new BulletConstructor(largeGroundModel, 0f));
 		world.add("largeground", 0, -1f, 0f);
     }
 	
 	private void doneLoading() {
 		//if( !assets.isLoaded("data/test_chaingun.g3dj") || !assets.isLoaded("data/test_chaingun.g3dj") ))
         Model chaingun = assets.get("data/models/test_chaingun.g3dj", Model.class);
-        world.addConstructor("chaingun", new BulletConstructor(chaingun, 0f));
+        //world.addConstructor("chaingun", new BulletConstructor(chaingun, 0f));
         world.add("chaingun", 0, 3f, 0);
         
         Model babo = assets.get("data/models/babo_explode.g3dj", Model.class);
-        world.addConstructor("babo", new BulletConstructor(babo, 0f));
+        //world.addConstructor("babo", new BulletConstructor(babo, 0f));
         world.add("babo", 0, 3f, 0);
         loading = false;
     }
