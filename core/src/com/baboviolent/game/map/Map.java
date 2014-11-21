@@ -15,6 +15,8 @@ import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btBvhTriangleMeshShape;
+import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -47,7 +49,7 @@ public class Map {
 	private String author;
 	private int version;
 	private Array<Cell> cells = new Array<Cell>();
-	private Array<Cell> objects = new Array<MapObject>();
+	private Array<MapObject> objects = new Array<MapObject>();
 	
 	
 	/**
@@ -119,8 +121,6 @@ public class Map {
         }
         
         return modelBuilder.end();
-		
-		return Map.loadInstance(mapModel);
 	}
 	
 	/**

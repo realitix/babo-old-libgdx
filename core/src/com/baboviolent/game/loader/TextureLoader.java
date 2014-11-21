@@ -2,6 +2,7 @@ package com.baboviolent.game.loader;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.map.Map;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
@@ -21,8 +22,12 @@ public class TextureLoader {
      */ 
     static public Array<String> listTextureFolder() {
         Array<String> textures = new Array<String>();
+        
+        String dir;
+        if (Gdx.app.getType() == ApplicationType.Android) dir = BaboViolentGame.PATH_TEXTURE_GROUND;
+        else dir = BaboViolentGame.PATH_TEXTURE_GROUND_DESKTOP;
 	    
-	    FileHandle[] files = Gdx.files.local(BaboViolentGame.PATH_TEXTURE_GROUND).list();
+	    FileHandle[] files = Gdx.files.internal(dir).list();
         for(FileHandle file: files) {
             textures.add(file.nameWithoutExtension());
         }

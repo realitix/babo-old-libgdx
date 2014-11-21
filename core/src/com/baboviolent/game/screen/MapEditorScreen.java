@@ -8,6 +8,7 @@ import com.baboviolent.game.map.Map;
 import com.baboviolent.game.map.editor.EditorInputAdapter;
 import com.baboviolent.game.map.editor.Menu;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -80,7 +81,6 @@ public class MapEditorScreen implements Screen {
         cameraController.autoUpdate = true;
         
         // Ajout du contrôle
-        Gdx.input.setInputProcessor(tp.getStage());
         Gdx.input.setInputProcessor(new InputMultiplexer(
         	menu.getStage(),
         	new EditorInputAdapter(this),
@@ -134,9 +134,11 @@ public class MapEditorScreen implements Screen {
      * Déplace l'instance du sol afin de suivre la souris'
      */ 
     public void moveCurrentModelInstance(int screenX, int screenY) {
-        currentModelInstance.transform.setTranslation(
-        	getPositionFromMouse(screenX, screenY)
-        );
+    	if(currentModelInstance != null) {
+	        currentModelInstance.transform.setTranslation(
+	        	getPositionFromMouse(screenX, screenY)
+	        );
+    	}
     }
     
     /**

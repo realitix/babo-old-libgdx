@@ -1,8 +1,30 @@
 package com.baboviolent.game;
 
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.VertexAttributes;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.model.MeshPart;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMaterial;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMesh;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelMeshPart;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
+import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
+import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
+import com.badlogic.gdx.utils.BufferUtils;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.graphics.g3d.utils.TextureProvider.FileTextureProvider;
+
 public class Utils {
 	
-	public static mergeModelDataToModel(ModelData modelData, Model model) {
+	public static Model mergeModelDataToModel(ModelData modelData, Model model) {
 		
 		/**
 		 * Add Mesh and MeshPart
@@ -63,7 +85,7 @@ public class Utils {
 					} else {
 						texture = textureProvider.load(tex.fileName);
 						textures.put(tex.fileName, texture);
-						disposables.add(texture);
+						model.manageDisposable(texture);
 					}
 	
 					TextureDescriptor descriptor = new TextureDescriptor(texture);
@@ -90,7 +112,7 @@ public class Utils {
 						case ModelTexture.USAGE_NORMAL:
 							result.set(new TextureAttribute(TextureAttribute.Normal, descriptor, offsetU, offsetV, scaleU, scaleV));
 							break;
-						case ModelTexture.USAGE_AMBIENT:
+						/*case ModelTexture.USAGE_AMBIENT:
 							result.set(new TextureAttribute(TextureAttribute.Ambient, descriptor, offsetU, offsetV, scaleU, scaleV));
 							break;
 						case ModelTexture.USAGE_EMISSIVE:
@@ -98,7 +120,7 @@ public class Utils {
 							break;
 						case ModelTexture.USAGE_REFLECTION:
 							result.set(new TextureAttribute(TextureAttribute.Reflection, descriptor, offsetU, offsetV, scaleU, scaleV));
-							break;
+							break;*/
 					}
 				}
 			}
