@@ -70,8 +70,6 @@ public class Menu {
         
         // Chargement des textures
         ObjectMap<String, Texture> textures = TextureLoader.getGroundTextures();
-
-        // Pour chaque texture, on va créer un widget
         for (final ObjectMap.Entry<String, Texture> e : textures.entries()) {
             //image.addListener(new EditorInputListener(editorScreen, e.key));
         	Image image = new Image(e.value);
@@ -81,6 +79,14 @@ public class Menu {
             	}
             });
             table.add(image);
+        }
+        
+        // Chargement des modèles
+        table.row();
+        Array<String> models = listModelFolder();
+        for (int i = 0: i < models.size; i++) {
+            Label l = new Label(models.get(i), skin);
+            table.add(l);
         }
 	}
 	

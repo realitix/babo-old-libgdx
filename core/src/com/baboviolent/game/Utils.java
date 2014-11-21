@@ -61,7 +61,6 @@ public class Utils {
 		/**
 		 * Add Materials
 		*/
-		
 		for (ModelMaterial mtl : modelData.materials) {
 			TextureProvider textureProvider = new FileTextureProvider();
 			Material result = new Material();
@@ -126,6 +125,53 @@ public class Utils {
 			}
 			
 			model.materials.add(result);
+		}
+		
+		/**
+		 * Add Node
+		*/
+		for (ModelNode modelNode : modelData.nodes) {
+			Node node = new Node();
+			node.id = modelNode.id;
+	
+			if (modelNode.translation != null) node.translation.set(modelNode.translation);
+			if (modelNode.rotation != null) node.rotation.set(modelNode.rotation);
+			if (modelNode.scale != null) node.scale.set(modelNode.scale);
+			if (modelNode.parts != null) {
+				for (ModelNodePart modelNodePart : modelNode.parts) {
+					MeshPart meshPart = null;
+					Material meshMaterial = null;
+	
+					if (modelNodePart.meshPartId != null) {
+						for (MeshPart part : model.meshParts) {
+							if (modelNodePart.meshPartId.equals(part.id)) {
+								meshPart = part;
+								break;
+							}
+						}
+					}
+	
+					if (modelNodePart.materialId != null) {
+						for (Material material : model.materials) {
+							if (modelNodePart.materialId.equals(material.id)) {
+								meshMaterial = material;
+								break;
+							}
+						}
+					}
+
+					if (meshPart != null && meshMaterial != null) {
+						NodePart nodePart = new NodePart();
+						nodePart.meshPart = meshPart;
+						nodePart.material = meshMaterial;
+						node.parts.add(nodePart);
+					}
+					else {
+						throw new GdxRuntimeException("Invalid node: " + node.id);
+					}
+				}
+			}
+			model.nodes.add(node);
 		}
 		
 		return model;

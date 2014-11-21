@@ -120,7 +120,15 @@ public class Map {
             );
         }
         
-        return modelBuilder.end();
+        Model model = modelBuilder.end()
+        
+        // Fusion des objets dans le modèle
+        ObjectMap<String, ModelData> modelDatas = ModelLoader.getModelDatasFromMap(map);
+        for (ObjectMap.Entry<String, ModelData> d : modelDatas.entries()) {
+            Utils.mergeModelDataToModel(d.value, model);
+        }
+        
+        return model;
 	}
 	
 	/**
