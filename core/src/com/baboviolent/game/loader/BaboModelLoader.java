@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
-public class ModelLoader {
+public class BaboModelLoader {
     
     /**
      * Renvoie un tableau contenant le nom de tous les modèles
@@ -55,7 +55,7 @@ public class ModelLoader {
      * Charge tous les modèles
      */ 
     static public ObjectMap<String, Model> getModels() {
-       return ModelLoader.getModel(ModelLoader.listModelFolder());
+       return BaboModelLoader.getModel(BaboModelLoader.listModelFolder());
     }
     
     /**
@@ -63,7 +63,7 @@ public class ModelLoader {
      */ 
     static public ObjectMap<String, Model> getModels(Array<String> toLoad) {
         ObjectMap<String, Model> models = new ObjectMap<String, Model>;
-	    ObjectMap<String, ModelData> modelDatas = ModelLoader.getModelDatas(toLoad);
+	    ObjectMap<String, ModelData> modelDatas = BaboModelLoader.getModelDatas(toLoad);
         
         for (ObjectMap.Entry<String, ModelData> d : modelDatas.entries()) {
             models.put(d.key, new Model(d.value));
@@ -76,14 +76,14 @@ public class ModelLoader {
      * Charge tous les modèles
      */ 
     static public ObjectMap<String, ModelData> getModelDatas() {
-	    return ModelLoader.getModelDatas(ModelLoader.listModelFolder());
+	    return BaboModelLoader.getModelDatas(BaboModelLoader.listModelFolder());
     }
     
     /**
      * Charge tous les modèles d'une map'
      */ 
     static public ObjectMap<String, ModelData> getModelDatasFromMap(Map map) {
-	    return ModelLoader.getModelDatas(ModelLoader.listModelMap(map));
+	    return BaboModelLoader.getModelDatas(BaboModelLoader.listModelMap(map));
     }
     
     /**
@@ -91,7 +91,6 @@ public class ModelLoader {
      */ 
     static public ObjectMap<String, ModelData> getModelDatas(Array<String> toLoad) {
     	ModelLoader loader = new G3dModelLoader();
-        model = loader.loadModel(Gdx.files.internal("data/ship.obj"));
         String p = BaboViolentGame.PATH_MODEL;
 	    ObjectMap<String, ModelData> models = new ObjectMap<String, ModelData>();
 	    
@@ -99,7 +98,7 @@ public class ModelLoader {
 	    for( int i = 0; i < toLoad.size; i++ ) {
 	        models.put(
 	            toLoad.get(i),
-	            loader.loadModelData(new FileHandle(toLoad.get(i)+".j3dj"))
+	            loader.loadModelData(new FileHandle(p+toLoad.get(i)+".j3dj"))
 	        );
 	    }
 	    
