@@ -8,6 +8,7 @@ import com.baboviolent.game.map.Map;
 import com.baboviolent.game.map.editor.EditorInputAdapter;
 import com.baboviolent.game.map.editor.Menu;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -65,9 +66,9 @@ public class MapEditorScreen implements Screen {
 		modelBatch = new ModelBatch();
 		instances = new Array<ModelInstance>();
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());;
-		camera.position.set(10f, 100f, 10f);
+		camera.position.set(0f, 100f, 0f);
 		camera.lookAt(0, 0, 0);
-		camera.far = 500;
+		camera.far = 10000;
 		camera.update();
 
         // Chargement des textures
@@ -79,12 +80,16 @@ public class MapEditorScreen implements Screen {
         // Contrôle de la camera
         cameraController = new CameraInputController(camera);
         cameraController.autoUpdate = true;
+        cameraController.rotateButton = Buttons.MIDDLE;
+        cameraController.forwardButton = -10; // On désactive le forward
+        cameraController.scrollFactor = -0.1f;
+        cameraController.translateUnits = 400f;
         
         // Ajout du contrôle
         Gdx.input.setInputProcessor(new InputMultiplexer(
         	menu.getStage(),
-        	new EditorInputAdapter(this),
-        	cameraController
+        	cameraController,
+        	new EditorInputAdapter(this)        	
         ));
         
         // Création d'une map
@@ -127,17 +132,16 @@ public class MapEditorScreen implements Screen {
      * Clic de la souris
      */ 
     public void mouseClick(int screenX, int screenY) {
-        createCell(screenX, screenY);
+    	if(currentType == TYPE_GROUND)
+    		createCell(screenX, screenY);
     }
     
     /**
      * Déplace l'instance du sol afin de suivre la souris'
      */ 
     public void moveCurrentModelInstance(int screenX, int screenY) {
-    	if(currentModelInstance != null) {
-	        currentModelInstance.transform.setTranslation(
-	        	getPositionFromMouse(screenX, screenY)
-	        );
+    	if(currentModelInstance != null) {  		
+	        currentModelInstance.transform.setToTranslation(positionToCell(getPositionFromMouse(screenX, screenY)));
     	}
     }
     
@@ -145,12 +149,23 @@ public class MapEditorScreen implements Screen {
      * Créer une nouvelle instance du model en paramètre et l'ajoute à la map'
      */ 
     public void createCell(int screenX, int screenY) {
-    	Vector3 position = getPositionFromMouse(screenX, screenY);
+    	if( currentModel == null )
+    		return;
+    	
+    	Vector3 position = positionToCell(getPositionFromMouse(screenX, screenY));
     	ModelInstance i = new ModelInstance(currentModel);
     	i.transform.setTranslation(position);
     	instances.add(i);
     	
     	map.addCell(new Cell().setPosition(position).setType(currentGroundType));
+    }
+    
+    private Vector3 positionToCell(Vector3 position) {
+    	if(currentType == TYPE_GROUND) {
+    		position.x -= BaboViolentGame.SIZE_MAP_CELL/2;
+    		position.z -= BaboViolentGame.SIZE_MAP_CELL/2;
+		}
+    	return position;
     }
 	
 	/**
@@ -164,9 +179,10 @@ public class MapEditorScreen implements Screen {
         
         // Maj position sur grille
         float s = BaboViolentGame.SIZE_MAP_CELL;
-        position.x = s * (int) (position.x/s);
-        position.z = s * (int) (position.z/s);
+        position.x = s * Math.round(position.x/s);
+        position.z = s * Math.round(position.z/s);
         position.y = 0;
+        
         return position;
 	}
 	
@@ -182,6 +198,7 @@ public class MapEditorScreen implements Screen {
 	public void render(float delta) {
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		Gdx.gl.glClearColor(255, 255, 255, 1);
+	    //Gdx.gl.glClearColor(0, 0, 0, 1);
 		
 		cameraController.update();
 		

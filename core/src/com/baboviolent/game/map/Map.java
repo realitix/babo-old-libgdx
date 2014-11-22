@@ -1,7 +1,9 @@
 package com.baboviolent.game.map;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletInstance;
+import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.TextureLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -12,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
@@ -120,7 +123,7 @@ public class Map {
             );
         }
         
-        Model model = modelBuilder.end()
+        Model model = modelBuilder.end();
         
         // Fusion des objets dans le modèle
         ObjectMap<String, ModelData> modelDatas = BaboModelLoader.getModelDatasFromMap(map);
@@ -146,9 +149,10 @@ public class Map {
 	 * Sauvegarde la map
 	 **/
 	public static void save(Map map, String mapname) {
-		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
+		//FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
+		FileHandle file = Gdx.files.absolute("/tmp/"+mapname+".json");
 		Json json = new Json();
-		json.toJson(Map.class, file);
+		json.toJson(map, file);
 	}
 
 	public String getName() {

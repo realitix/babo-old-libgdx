@@ -6,10 +6,14 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
@@ -21,16 +25,12 @@ public class TextureLoader {
      * Renvoie un tableau contenant le nom de toutes les textures
      */ 
     static public Array<String> listTextureFolder() {
-        Array<String> textures = new Array<String>();
-        
-        String dir;
-        if (Gdx.app.getType() == ApplicationType.Android) dir = BaboViolentGame.PATH_TEXTURE_GROUND;
-        else dir = BaboViolentGame.PATH_TEXTURE_GROUND_DESKTOP;
-	    
-	    FileHandle[] files = Gdx.files.internal(dir).list();
+        Array<String> textures = new Array<String>();	    
+	    FileHandle[] files = Gdx.files.internal(BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_GROUND)).list();
         for(FileHandle file: files) {
             textures.add(file.nameWithoutExtension());
         }
+        textures.sort();
         
         return textures;
     }
@@ -47,6 +47,7 @@ public class TextureLoader {
 	            textures.add(type);
 	        }
 	    }
+	    textures.sort();
         
         return textures;
     }
@@ -69,15 +70,11 @@ public class TextureLoader {
 	    // On charge les textures
 	    for( int i = 0; i < toLoad.size; i++ ) {
 	        manager.load(p+toLoad.get(i)+".png", Texture.class);
-	    }
-	    manager.update();
-	    manager.finishLoading();
-	    
-	    // On insère les texture dans l'array
-	    for( int i = 0; i < toLoad.size; i++ ) {
-	        textures.put(
-	            toLoad.get(i),
-	            manager.get(p+toLoad.get(i)+".png", Texture.class));
+	        manager.update();
+		    manager.finishLoading();
+		    textures.put(
+		            toLoad.get(i),
+		            manager.get(p+toLoad.get(i)+".png", Texture.class));
 	    }
 	    
 	    return textures;
@@ -132,12 +129,14 @@ public class TextureLoader {
         for (ObjectMap.Entry<String, Material> e : materials.entries()) {
             models.put(e.key, mb.createRect(
                 0, 0 ,0,
-                s, 0, 0,
+                0, 0, s,
 		        s, 0, s,
-		        0, 0, s,
+		        s, 0, 0,
 		        0, 1, 0,
 		        e.value,
+		        //new Material(ColorAttribute.createDiffuse(Color.GREEN)),
 		        Usage.Position | Usage.Normal | Usage.TextureCoordinates
+				//		Usage.Position | Usage.Normal
             ));
         }
         

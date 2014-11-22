@@ -5,14 +5,18 @@ import com.baboviolent.game.map.Map;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
+import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class BaboModelLoader {
@@ -21,13 +25,8 @@ public class BaboModelLoader {
      * Renvoie un tableau contenant le nom de tous les modèles
      */ 
     static public Array<String> listModelFolder() {
-        Array<String> models = new Array<String>();
-        
-        String dir;
-        if (Gdx.app.getType() == ApplicationType.Android) dir = BaboViolentGame.PATH_MODEL;
-        else dir = BaboViolentGame.PATH_MODEL_DESKTOP;
-	    
-	    FileHandle[] files = Gdx.files.internal(dir).list();
+        Array<String> models = new Array<String>();	    
+	    FileHandle[] files = Gdx.files.internal(BaboViolentGame.path(BaboViolentGame.PATH_MODELS)).list();
         for(FileHandle file: files) {
             models.add(file.nameWithoutExtension());
         }
@@ -55,14 +54,14 @@ public class BaboModelLoader {
      * Charge tous les modèles
      */ 
     static public ObjectMap<String, Model> getModels() {
-       return BaboModelLoader.getModel(BaboModelLoader.listModelFolder());
+       return BaboModelLoader.getModels(BaboModelLoader.listModelFolder());
     }
     
     /**
      * Charge les modèles passés en paramètre
      */ 
     static public ObjectMap<String, Model> getModels(Array<String> toLoad) {
-        ObjectMap<String, Model> models = new ObjectMap<String, Model>;
+        ObjectMap<String, Model> models = new ObjectMap<String, Model>();
 	    ObjectMap<String, ModelData> modelDatas = BaboModelLoader.getModelDatas(toLoad);
         
         for (ObjectMap.Entry<String, ModelData> d : modelDatas.entries()) {
@@ -90,15 +89,15 @@ public class BaboModelLoader {
      * Charge tous les modèles passés en paramètre
      */ 
     static public ObjectMap<String, ModelData> getModelDatas(Array<String> toLoad) {
-    	ModelLoader loader = new G3dModelLoader();
-        String p = BaboViolentGame.PATH_MODEL;
+    	ModelLoader loader = new G3dModelLoader(new JsonReader());
+        String p = BaboViolentGame.path(BaboViolentGame.PATH_MODELS);
 	    ObjectMap<String, ModelData> models = new ObjectMap<String, ModelData>();
 	    
 	    // On charge les modèles
 	    for( int i = 0; i < toLoad.size; i++ ) {
 	        models.put(
 	            toLoad.get(i),
-	            loader.loadModelData(new FileHandle(p+toLoad.get(i)+".j3dj"))
+	            loader.loadModelData(Gdx.files.internal(p+toLoad.get(i)+".j3dj"))
 	        );
 	    }
 	    

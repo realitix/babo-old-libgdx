@@ -1,5 +1,6 @@
 package com.baboviolent.game.map.editor;
 
+import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.screen.MapEditorScreen;
 import com.badlogic.gdx.Gdx;
@@ -14,7 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Menu {
@@ -31,6 +34,8 @@ public class Menu {
 		Table table = new Table();
         table.setFillParent(true);
         stage.addActor(table);
+        table.left().top();
+        table.setDebug(true);
         
         // Menu classique
         Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -70,21 +75,17 @@ public class Menu {
         
         // Chargement des textures
         ObjectMap<String, Texture> textures = TextureLoader.getGroundTextures();
-        for (final ObjectMap.Entry<String, Texture> e : textures.entries()) {
-            //image.addListener(new EditorInputListener(editorScreen, e.key));
+        for (ObjectMap.Entry<String, Texture> e : textures.entries()) {
         	Image image = new Image(e.value);
-            image.addListener(new ClickListener() {
-            	public void clicked (InputEvent event, float x, float y) {
-            		editorScreen.selectGround(e.key);
-            	}
-            });
-            table.add(image);
+        	image.setScaling(Scaling.fit);
+            image.addListener(new BaboInputListener(editorScreen, e.key));
+            table.add(image).fill();
         }
         
         // Chargement des modèles
         table.row();
-        Array<String> models = listModelFolder();
-        for (int i = 0: i < models.size; i++) {
+        Array<String> models = BaboModelLoader.listModelFolder();
+        for (int i = 0; i < models.size; i++) {
             Label l = new Label(models.get(i), skin);
             table.add(l);
         }
@@ -98,4 +99,17 @@ public class Menu {
 	    stage.act(Gdx.graphics.getDeltaTime());        
         stage.draw();
 	}
+	
+	public class BaboInputListener extends ClickListener {
+    	private String name;
+    	private final MapEditorScreen editorScreen;
+    	public BaboInputListener(final MapEditorScreen s, String value) {
+    		this.name = value;
+    		this.editorScreen = s;
+    	}
+    	public void clicked (InputEvent event, float x, float y) {
+    		System.out.println("Click sur la texture "+name);
+    		editorScreen.selectGround(name);
+    	}
+    }
 }
