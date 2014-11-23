@@ -120,7 +120,7 @@ public class Map {
             node.translation.set(cells.get(i).getPosition());
             modelBuilder.part(
             	cellMeshPart, 
-            	materials.get(cells.get(i).getType())
+            	materials.get(cells.get(i).getTextureName())
             );
         }
         

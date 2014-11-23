@@ -42,7 +42,7 @@ public class TextureLoader {
         Array<String> textures = new Array<String>();
         
 	    for(int i = 0; i < map.getCells().size; i++) {
-	        String type = map.getCells().get(i).getType();
+	        String type = map.getCells().get(i).getTextureName();
 	        if( !textures.contains(type, false) ) {
 	            textures.add(type);
 	        }

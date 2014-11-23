@@ -42,6 +42,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class MapEditorScreen implements Screen {
 	public static final String TYPE_ERASER = "type_eraser";
 	public static final String TYPE_GROUND = "type_ground";
+	public static final String TYPE_WALL = "type_wall";
 	public static final String TYPE_OBJECT = "type_object";
 	
 	private final BaboViolentGame game;
@@ -55,7 +56,7 @@ public class MapEditorScreen implements Screen {
 	private Menu menu;
 	private String currentType;
 	private String currentObjectType; // Type d'objet à créer sélectionné
-	private String currentGroundType; // Type de sol à créer sélectionné
+	private String currentCellTexture; // Type de sol à créer sélectionné
 	private Model currentModel; // Modèle actuel de l'objet à créer
 	private ModelInstance currentModelInstance; // Permet de suivre le curseur de la souris
 	private ModelBatch modelBatch;
@@ -109,11 +110,11 @@ public class MapEditorScreen implements Screen {
      * Sélectionne le sol
      */ 
     public void selectGround(String type) {
-    	if( type == currentGroundType && currentType == MapEditorScreen.TYPE_GROUND ) {
+    	if( type == currentCellTexture && currentType == MapEditorScreen.TYPE_GROUND ) {
     		return;
     	}
     	
-    	currentGroundType = type;
+    	currentCellTexture = type;
     	currentModel = models.get(type);
     	currentType = MapEditorScreen.TYPE_GROUND;
     	currentModelInstance = new ModelInstance(currentModel);
@@ -199,7 +200,13 @@ public class MapEditorScreen implements Screen {
     	i.userData = TYPE_GROUND;
     	instances.add(i);
     	
-    	map.addCell(new Cell().setPosition(position).setType(currentGroundType));
+    	int type = 0;
+    	if(currentType == TYPE_GROUND) 
+    		type = Cell.TYPE_GROUND;
+    	if(currentType == TYPE_WALL)
+    		type = Cell.TYPE_WALL;
+    	
+    	map.addCell(new Cell().setPosition(position).setTextureName(currentCellTexture).setType(type));
     }
     
     /**
@@ -225,10 +232,7 @@ public class MapEditorScreen implements Screen {
         }
         
         // On supprime la cellule
-        for (int i = 0; i < instances.size; i++) {
-        	if( instances.get(i).userData != TYPE_GROUND )
-        		continue;
-        	
+        for (int i = 0; i < instances.size; i++) {        	
             final ModelInstance instance = instances.get(i);
             instance.transform.getTranslation(position);
             Vector3 positionCenter = position.cpy();
