@@ -22,6 +22,7 @@ import com.badlogic.gdx.physics.bullet.collision.btBvhTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.ObjectMap;
 
 /**
@@ -152,6 +153,7 @@ public class Map {
 		//FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
 		FileHandle file = Gdx.files.absolute("/tmp/"+mapname+".json");
 		Json json = new Json();
+		json.setOutputType(OutputType.json);
 		json.toJson(map, file);
 	}
 
@@ -183,12 +185,36 @@ public class Map {
 	}
 	
 	public Map addCell(Cell cell) {
+		// Test que la cellule n'est pas déjà dedans avant de l'ajouter
+		for(int i = 0; i < cells.size; i++) {
+			if(cells.get(i).equals(cell)) {
+				return this;
+			}
+		}
+		
+		// Si la position est la même, on écrase la cellule du dessous
+		for(int i = 0; i < cells.size; i++) {
+			if(cells.get(i).equalsPosition(cell)) {
+				cells.set(i, cell);
+				return this;
+			}
+		}
+		
 		this.cells.add(cell);
 		return this;
 	}
 	
 	public Array<Cell> getCells() {
 	    return cells;
+	}
+	
+	public Map removeCell(Vector3 position) {
+		for( int i = 0; i < cells.size; i++) {
+			if(cells.get(i).getPosition().equals(position)) {
+				cells.removeIndex(i);
+			}
+		}
+		return this;
 	}
 	
 	public Map addObject(MapObject m) {
@@ -198,5 +224,14 @@ public class Map {
 	
 	public Array<MapObject> getObjects() {
 	    return objects;
+	}
+	
+	public Map removeObject(Vector3 position) {
+		for( int i = 0; i < objects.size; i++) {
+			if(objects.get(i).getPosition().equals(position)) {
+				objects.removeIndex(i);
+			}
+		}
+		return this;
 	}
 }

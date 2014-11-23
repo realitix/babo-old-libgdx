@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -68,18 +69,23 @@ public class Menu {
     			}
     	});
         
+        table.add(clearWidget);
         table.add(mapNameWidget);
         table.add(saveWidget);
         table.add(exitWidget);
         table.row();
         
-        // Chargement des textures
+        // Chargement des textures dans le bon ordre
+        Array<String> ts = TextureLoader.listTextureFolder();
         ObjectMap<String, Texture> textures = TextureLoader.getGroundTextures();
-        for (ObjectMap.Entry<String, Texture> e : textures.entries()) {
-        	Image image = new Image(e.value);
+        for( int i = 0; i < ts.size; i++ ) {
+        	Image image = new Image(textures.get(ts.get(i)));
         	image.setScaling(Scaling.fit);
-            image.addListener(new BaboInputListener(editorScreen, e.key));
+            image.addListener(new BaboInputListener(editorScreen, ts.get(i), MapEditorScreen.TYPE_GROUND));
             table.add(image).fill();
+            
+            if(i%2 != 0)
+            	table.row();
         }
         
         // Chargement des modèles
@@ -87,6 +93,7 @@ public class Menu {
         Array<String> models = BaboModelLoader.listModelFolder();
         for (int i = 0; i < models.size; i++) {
             Label l = new Label(models.get(i), skin);
+            l.addListener(new BaboInputListener(editorScreen, models.get(i), MapEditorScreen.TYPE_OBJECT));
             table.add(l);
         }
 	}
@@ -102,14 +109,20 @@ public class Menu {
 	
 	public class BaboInputListener extends ClickListener {
     	private String name;
+    	private String type;
     	private final MapEditorScreen editorScreen;
-    	public BaboInputListener(final MapEditorScreen s, String value) {
-    		this.name = value;
+    	public BaboInputListener(final MapEditorScreen s, String name, String type) {
+    		this.name = name;
+    		this.type = type;
     		this.editorScreen = s;
     	}
     	public void clicked (InputEvent event, float x, float y) {
-    		System.out.println("Click sur la texture "+name);
-    		editorScreen.selectGround(name);
+    		if(type == MapEditorScreen.TYPE_GROUND) {
+    			editorScreen.selectGround(name);
+    		}
+    		else if(type == MapEditorScreen.TYPE_OBJECT) {
+    			editorScreen.selectObject(name);
+    		}
     	}
     }
 }

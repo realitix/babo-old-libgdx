@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class BaboModelLoader {
+	public static final String MODEL_EXTENSION = ".g3dj";
     
     /**
      * Renvoie un tableau contenant le nom de tous les modèles
@@ -97,7 +98,7 @@ public class BaboModelLoader {
 	    for( int i = 0; i < toLoad.size; i++ ) {
 	        models.put(
 	            toLoad.get(i),
-	            loader.loadModelData(Gdx.files.internal(p+toLoad.get(i)+".j3dj"))
+	            loader.loadModelData(Gdx.files.internal(p+toLoad.get(i)+MODEL_EXTENSION))
 	        );
 	    }
 	    

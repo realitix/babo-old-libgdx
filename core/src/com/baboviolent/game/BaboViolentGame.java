@@ -16,7 +16,7 @@ public class BaboViolentGame extends Game {
     static public String PATH_TEXTURE_GROUND = "data/texture/ground/";
     static public String PATH_MODELS = "data/models/";
     static public String PATH_MAPS = "data/maps/";
-    static public final float SIZE_MAP_CELL = 30;
+    static public final float SIZE_MAP_CELL = 200;
 	public SpriteBatch batch;
 	public BitmapFont font;
 	
