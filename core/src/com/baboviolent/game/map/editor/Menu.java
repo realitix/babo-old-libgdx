@@ -2,6 +2,7 @@ package com.baboviolent.game.map.editor;
 
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.TextureLoader;
+import com.baboviolent.game.map.Map;
 import com.baboviolent.game.screen.MapEditorScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -76,16 +77,23 @@ public class Menu {
         table.row();
         
         // Chargement des textures dans le bon ordre
-        Array<String> ts = TextureLoader.listTextureFolder();
-        ObjectMap<String, Texture> textures = TextureLoader.getGroundTextures();
-        for( int i = 0; i < ts.size; i++ ) {
-        	Image image = new Image(textures.get(ts.get(i)));
+        Array<String> tsGround = TextureLoader.listTextureGroundFolder();
+        ObjectMap<String, Texture> texturesGround = TextureLoader.getGroundTextures();
+        Array<String> tsWall = TextureLoader.listTextureWallFolder();
+        ObjectMap<String, Texture> texturesWall = TextureLoader.getWallTextures();
+        for( int i = 0; i < tsGround.size; i++ ) {
+        	Image image = new Image(texturesGround.get(tsGround.get(i)));
         	image.setScaling(Scaling.fit);
-            image.addListener(new BaboInputListener(editorScreen, ts.get(i), MapEditorScreen.TYPE_GROUND));
+            image.addListener(new BaboInputListener(editorScreen, tsGround.get(i), Map.TYPE_GROUND));
             table.add(image).fill();
             
-            if(i%2 != 0)
+            if(i%2 != 0) {
+            	Image imageWall = new Image(texturesWall.get(tsWall.get(i/2)));
+            	imageWall.setScaling(Scaling.fit);
+                imageWall.addListener(new BaboInputListener(editorScreen, tsWall.get(i/2), Map.TYPE_WALL));
+                table.add(imageWall).fill();
             	table.row();
+            }
         }
         
         // Chargement des modèles
@@ -93,7 +101,7 @@ public class Menu {
         Array<String> models = BaboModelLoader.listModelFolder();
         for (int i = 0; i < models.size; i++) {
             Label l = new Label(models.get(i), skin);
-            l.addListener(new BaboInputListener(editorScreen, models.get(i), MapEditorScreen.TYPE_OBJECT));
+            l.addListener(new BaboInputListener(editorScreen, models.get(i), Map.TYPE_OBJECT));
             table.add(l);
         }
 	}
@@ -117,10 +125,13 @@ public class Menu {
     		this.editorScreen = s;
     	}
     	public void clicked (InputEvent event, float x, float y) {
-    		if(type == MapEditorScreen.TYPE_GROUND) {
+    		if(type == Map.TYPE_GROUND) {
     			editorScreen.selectGround(name);
     		}
-    		else if(type == MapEditorScreen.TYPE_OBJECT) {
+    		else if(type == Map.TYPE_WALL) {
+    			editorScreen.selectWall(name);
+    		}
+    		else if(type == Map.TYPE_OBJECT) {
     			editorScreen.selectObject(name);
     		}
     	}

@@ -39,12 +39,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
-public class MapEditorScreen implements Screen {
-	public static final String TYPE_ERASER = "type_eraser";
-	public static final String TYPE_GROUND = "type_ground";
-	public static final String TYPE_WALL = "type_wall";
-	public static final String TYPE_OBJECT = "type_object";
-	
+public class MapEditorScreen implements Screen {	
 	private final BaboViolentGame game;
 	private Environment environment;
 	private DirectionalLight light;
@@ -79,6 +74,7 @@ public class MapEditorScreen implements Screen {
 
         // Chargement des textures
         models = TextureLoader.getGroundModels();
+        models.putAll(TextureLoader.getWallModels());
         models.putAll(BaboModelLoader.getModels());
         
         // Chargement du menu
@@ -110,13 +106,27 @@ public class MapEditorScreen implements Screen {
      * Sélectionne le sol
      */ 
     public void selectGround(String type) {
-    	if( type == currentCellTexture && currentType == MapEditorScreen.TYPE_GROUND ) {
+    	if( type == currentCellTexture && currentType == Map.TYPE_GROUND ) {
     		return;
     	}
     	
     	currentCellTexture = type;
     	currentModel = models.get(type);
-    	currentType = MapEditorScreen.TYPE_GROUND;
+    	currentType = Map.TYPE_GROUND;
+    	currentModelInstance = new ModelInstance(currentModel);
+    }
+    
+    /**
+     * Sélectionne le mur
+     */ 
+    public void selectWall(String type) {
+    	if( type == currentCellTexture && currentType == Map.TYPE_WALL ) {
+    		return;
+    	}
+    	
+    	currentCellTexture = type;
+    	currentModel = models.get(type);
+    	currentType = Map.TYPE_WALL;
     	currentModelInstance = new ModelInstance(currentModel);
     }
     
@@ -124,13 +134,13 @@ public class MapEditorScreen implements Screen {
      * Sélectionne un objet
      */ 
     public void selectObject(String type) {
-    	if( type == currentObjectType && currentType == MapEditorScreen.TYPE_OBJECT ) {
+    	if( type == currentObjectType && currentType == Map.TYPE_OBJECT ) {
     		return;
     	}
     	
     	currentObjectType = type;
     	currentModel = models.get(type);
-    	currentType = MapEditorScreen.TYPE_OBJECT;
+    	currentType = Map.TYPE_OBJECT;
     	currentModelInstance = new ModelInstance(currentModel);
     }
     
@@ -138,7 +148,7 @@ public class MapEditorScreen implements Screen {
      * Sélectionne la gomme pour effacer les cellules
      */ 
     public void selectEraser() {
-    	currentType = MapEditorScreen.TYPE_ERASER;
+    	currentType = Map.TYPE_ERASER;
     	currentModelInstance = null;
     	currentModel = null;
     }
@@ -154,13 +164,15 @@ public class MapEditorScreen implements Screen {
      * Clic de la souris
      */ 
     public void mouseClick(int screenX, int screenY) {
-    	if(currentType == TYPE_ERASER)
+    	if(currentType == Map.TYPE_ERASER)
     		deleteObject(screenX, screenY);
     	if( currentModel == null )
     		return;
-    	if(currentType == TYPE_GROUND)
+    	if(currentType == Map.TYPE_GROUND)
     		createCell(screenX, screenY);
-    	if(currentType == TYPE_OBJECT)
+    	if(currentType == Map.TYPE_WALL)
+    		createCell(screenX, screenY);
+    	if(currentType == Map.TYPE_OBJECT)
     		createObject(screenX, screenY);
     }
     
@@ -170,7 +182,7 @@ public class MapEditorScreen implements Screen {
     public void moveCurrentModelInstance(int screenX, int screenY) {
     	if(currentModelInstance != null) {
     		Vector3 position = getPositionFromMouse(screenX, screenY);
-    		if(currentType == TYPE_GROUND)
+    		if(currentType == Map.TYPE_GROUND || currentType == Map.TYPE_WALL)
     			position = positionToCell(position);
     		
 	        currentModelInstance.transform.setToTranslation(position);
@@ -184,7 +196,7 @@ public class MapEditorScreen implements Screen {
     	Vector3 position = getPositionFromMouse(screenX, screenY);
     	ModelInstance i = new ModelInstance(currentModel);
     	i.transform.setTranslation(position);
-    	i.userData = TYPE_OBJECT;
+    	i.userData = Map.TYPE_OBJECT;
     	instances.add(i);
     	
     	map.addObject(new MapObject().setPosition(position).setType(currentObjectType));
@@ -197,14 +209,14 @@ public class MapEditorScreen implements Screen {
     	Vector3 position = positionToCell(getPositionFromMouse(screenX, screenY));
     	ModelInstance i = new ModelInstance(currentModel);
     	i.transform.setTranslation(position);
-    	i.userData = TYPE_GROUND;
+    	i.userData = Map.TYPE_WALL;
     	instances.add(i);
     	
-    	int type = 0;
-    	if(currentType == TYPE_GROUND) 
-    		type = Cell.TYPE_GROUND;
-    	if(currentType == TYPE_WALL)
-    		type = Cell.TYPE_WALL;
+    	String type = "";
+    	if(currentType == Map.TYPE_GROUND) 
+    		type = Map.TYPE_GROUND;
+    	if(currentType == Map.TYPE_WALL)
+    		type = Map.TYPE_WALL;
     	
     	map.addCell(new Cell().setPosition(position).setTextureName(currentCellTexture).setType(type));
     }
@@ -218,7 +230,7 @@ public class MapEditorScreen implements Screen {
     	 
         // On supprime l'objet
         for (int i = 0; i < instances.size; i++) {
-        	if( instances.get(i).userData != TYPE_OBJECT )
+        	if( instances.get(i).userData != Map.TYPE_OBJECT )
         		continue;
         	
             final ModelInstance instance = instances.get(i);

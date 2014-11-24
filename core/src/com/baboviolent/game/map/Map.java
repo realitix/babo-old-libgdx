@@ -49,6 +49,11 @@ import com.badlogic.gdx.utils.ObjectMap;
  *
  */
 public class Map {
+	public static final String TYPE_ERASER = "type_eraser";
+	public static final String TYPE_GROUND = "type_ground";
+	public static final String TYPE_WALL = "type_wall";
+	public static final String TYPE_OBJECT = "type_object";
+	
 	private String name;
 	private String author;
 	private int version;

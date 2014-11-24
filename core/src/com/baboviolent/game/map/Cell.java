@@ -2,12 +2,9 @@ package com.baboviolent.game.map;
 
 import com.badlogic.gdx.math.Vector3;
 
-public class Cell {
-	public static final int TYPE_WALL = 1;
-	public static final int TYPE_GROUND = 2;
-	
+public class Cell {	
 	private Vector3 position;
-	private int type;
+	private String type;
 	private String textureName;
 	
 	public Vector3 getPosition() {
@@ -19,11 +16,11 @@ public class Cell {
 		return this;
 	}
 	
-	public int getType() {
+	public String getType() {
 		return type;
 	}
 	
-	public Cell setType(int type) {
+	public Cell setType(String type) {
 		this.type = type;
 		return this;
 	}
