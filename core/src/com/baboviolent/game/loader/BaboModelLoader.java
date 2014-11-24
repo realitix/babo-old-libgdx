@@ -21,7 +21,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 public class BaboModelLoader {
 	public static final String MODEL_EXTENSION = ".g3dj";
-    
+   
     /**
      * Renvoie un tableau contenant le nom de tous les modèles
      */ 
@@ -59,14 +59,21 @@ public class BaboModelLoader {
     }
     
     /**
+     * Charge le modèle en paramètre
+     */ 
+    static public Model getModel(String toLoad) {
+       return getModels(new Array<String>().add(toLoad)).get(toLoad);
+    }
+    
+    /**
      * Charge les modèles passés en paramètre
      */ 
     static public ObjectMap<String, Model> getModels(Array<String> toLoad) {
         ObjectMap<String, Model> models = new ObjectMap<String, Model>();
-	    ObjectMap<String, ModelData> modelDatas = BaboModelLoader.getModelDatas(toLoad);
+        ObjectMap<String, ModelData> modelDatas = getModelDatas(toLoad);
         
-        for (ObjectMap.Entry<String, ModelData> d : modelDatas.entries()) {
-            models.put(d.key, new Model(d.value));
+        for (ObjectMap.Entry<String, ModelData> m : modelDatas.entries()) {
+	        models.put(m.key, new Model(m.value));
         }
         
         return models;
@@ -84,6 +91,13 @@ public class BaboModelLoader {
      */ 
     static public ObjectMap<String, ModelData> getModelDatasFromMap(Map map) {
 	    return BaboModelLoader.getModelDatas(BaboModelLoader.listModelMap(map));
+    }
+    
+    /**
+     * Charge le modèle en paramètre
+     */ 
+    static public ModelData getModelDatas(String toLoad) {
+	    return getModelDatas(new Array<String>().add(toLoad)).get(toLoad);
     }
     
     /**

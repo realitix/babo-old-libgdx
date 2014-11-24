@@ -66,14 +66,12 @@ public class BulletInstance extends ModelInstance implements Disposable {
 	
 	static public class Constructor implements Disposable {
 		public final Model model;
-		public final String node;
 		public final btCollisionShape shape;
 		public final btRigidBody.btRigidBodyConstructionInfo constructionInfo;
 		private static Vector3 localInertia = new Vector3();
 
-		public Constructor (Model model, String node, btCollisionShape shape, float mass) {
+		public Constructor (Model model, btCollisionShape shape, float mass) {
 			this.model = model;
-			this.node = node;
 			this.shape = shape;
 			if (mass > 0f)
 				shape.calculateLocalInertia(mass, localInertia);
@@ -83,7 +81,7 @@ public class BulletInstance extends ModelInstance implements Disposable {
 		}
 
 		public BulletInstance construct () {
-			return new BulletInstance(model, node, constructionInfo);
+			return new BulletInstance(model, constructionInfo);
 		}
 
 		@Override

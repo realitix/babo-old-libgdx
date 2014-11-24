@@ -28,108 +28,76 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
 public class GameScreen implements Screen {
-	final private BaboViolentGame game;
-	private Environment environment;
-	private DirectionalLight light;
-	private BulletWorld world;
-	private ModelBuilder modelBuilder = new ModelBuilder();
-	private ModelBatch modelBatch;
-	private Array<Disposable> disposables = new Array<Disposable>();
-	private ChaseCamera camera;
-	private AssetManager assets;
-	private boolean loading;
-	private BaseMode mode;
-	private DesktopController controller;
+	final BaboViolentGame game;
+	public Environment environment;
+	public DirectionalLight light;
+	public BulletWorld world;
+	public ModelBuilder modelBuilder = new ModelBuilder();
+	public ModelBatch modelBatch;
+	public Array<Disposable> disposables = new Array<Disposable>();
+	public PerspectiveCamera camera;
+	private CameraInputController camController;
+	public AssetManager assets;
+	public boolean loading;
 	
 	public GameScreen(final BaboViolentGame g) {
+		
 		Bullet.init();
-		game = g;
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		game = g;        
         environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1.f));
 		light = new DirectionalLight();
 		light.set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f);
 		environment.add(light);
 		modelBatch = new ModelBatch();
-		
-		// Initialisation du monde
 		world = new BulletWorld();
-		populateWorld();
-		
-		// Initialisation du mode
-		mode = new DeathMatchMode(world);
-		mode.initWorld();
-		
-		// Initialisation de la caméra
-		camera = new ChaseCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());;
-		camera.transform = mode.getPlayer().getInstance().transform;
+		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());;
+		camera.position.set(10f, 100f, 10f);
 		camera.lookAt(0, 0, 0);
 		camera.far = 500;
 		camera.update();
 		
-		// Initialisation du controller
-		controller = new DesktopController(mode.getPlayer());
-		Gdx.input.setInputProcessor(controller);
+		camController = new CameraInputController(camera);
+		camController.autoUpdate = true;
+		Gdx.input.setInputProcessor(camController);
+		
+		assets = new AssetManager();
+        assets.load("data/models/test_chaingun.g3dj", Model.class);
+        assets.load("data/models/babo_explode.g3dj", Model.class);
+        loading = true;
+		
+		final Model largeGroundModel = modelBuilder.createBox(
+				10f,
+				2f,
+				10f,
+				new Material(ColorAttribute.createDiffuse(Color.BLUE)) , Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+		disposables.add(largeGroundModel);
+		world.addConstructor("largeground", new BulletConstructor(largeGroundModel, 0f));
+		world.add("largeground", 0, -1f, 0f);
     }
-    
-    /**
-     * Ajoute les constructeurs dans le monde
-     */ 
-    private void populateWorld() {
-    	// Ajoute tous les modèles
-        ObjectMap<String, Model> models = BaboModelLoader.getModels();
-        for (ObjectMap.Entry<String, Model> m : models.entries()) {
-	        world.addConstructor(m.key, 
-	            new BulletInstance.Constructor(
-	                m.value,
-	                Utils.convexHullShapeFromModel(m.value),
-	                1f)
-	        );
-        }
+	
+	private void doneLoading() {
+		//if( !assets.isLoaded("data/test_chaingun.g3dj") || !assets.isLoaded("data/test_chaingun.g3dj") ))
+        Model chaingun = assets.get("data/models/test_chaingun.g3dj", Model.class);
+        //world.addConstructor("chaingun", new BulletConstructor(chaingun, 0f));
+        world.add("chaingun", 0, 3f, 0);
         
-        // Ajoute la babo construit manuellement
-        ModelBuilder mb = new ModelBuilder();
-        float d = BaboViolentGame.BABO_DIAMETER;
-        Model babo =  mb.createSphere(
-        	s, s, s, 10, 10,
-        	new Material(ColorAttribute.createDiffuse(Color.RED)), 
-        	Usage.Position | Usage.Normal);
-        world.addConstructor(BaboViolentGame.BABO_MODEL_NAME, 
-            new BulletInstance.Constructor(
-                babo,
-                new btSphereShape(s/2),
-                10f)
-        );
+        Model babo = assets.get("data/models/babo_explode.g3dj", Model.class);
+        //world.addConstructor("babo", new BulletConstructor(babo, 0f));
+        world.add("babo", 0, 3f, 0);
+        loading = false;
     }
 	
 	@Override
 	public void render(float delta) {
+		if (loading && assets.update())
+            doneLoading();
+		
 		update();
 		beginRender();
 		renderWorld();
-		/*Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);*/		
-	}
-	
-	private void beginRender() {
-		Gdx.gl.glClearColor(255, 255, 255, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-	}
-	
-	private void renderWorld () {
-		modelBatch.begin(camera);
-		world.render(modelBatch, environment);
-		modelBatch.end();
-	}
-	
-	private void update () {
-		camera.update();
-		world.update();
-		mode.update();
-		
-		// La mise à jour du controller doit absolument etre faite
-		// après la mise à jour du monde bullet
-		controller.update();
+		Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
+		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);		
 	}
 
 	@Override
@@ -175,5 +143,23 @@ public class GameScreen implements Screen {
 		modelBatch = null;
 
 		light = null;
+	}
+
+	private void beginRender() {
+		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		Gdx.gl.glClearColor(255, 255, 255, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		//camera.update();
+		camController.update();
+	}
+	
+	private void renderWorld () {
+		modelBatch.begin(camera);
+		world.render(modelBatch, environment);
+		modelBatch.end();
+	}
+	
+	private void update () {
+		world.update();
 	}
 }
