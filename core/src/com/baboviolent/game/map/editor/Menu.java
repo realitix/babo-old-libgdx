@@ -45,6 +45,7 @@ public class Menu {
         // On créé les boutons
         final TextField mapNameWidget = new TextField("", skin);
         Label saveWidget = new Label("Enregistrer", skin);
+        Label loadWidget = new Label("Charger", skin);
         Label clearWidget = new Label("Effacer", skin);
         TextButton exitWidget = new TextButton("Quitter", skin);
         
@@ -53,6 +54,13 @@ public class Menu {
     		new ClickListener() {
     			public void clicked (InputEvent event, float x, float y) {
     				editorScreen.saveMap(mapNameWidget.getText());
+    			}
+    	});
+    	
+    	loadWidget.addListener(
+    		new ClickListener() {
+    			public void clicked (InputEvent event, float x, float y) {
+    				editorScreen.loadMap(mapNameWidget.getText());
     			}
     	});
     	
@@ -70,10 +78,11 @@ public class Menu {
     			}
     	});
         
+        table.add(exitWidget);
         table.add(clearWidget);
         table.add(mapNameWidget);
         table.add(saveWidget);
-        table.add(exitWidget);
+        table.add(loadWidget);
         table.row();
         
         // Chargement des textures dans le bon ordre

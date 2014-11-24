@@ -156,7 +156,7 @@ public class Map {
 	 **/
 	public static void save(Map map, String mapname) {
 		//FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
-		FileHandle file = Gdx.files.absolute("/tmp/"+mapname+".json");
+		FileHandle file = Gdx.files.external(""+mapname+".json");
 		Json json = new Json();
 		json.setOutputType(OutputType.json);
 		json.toJson(map, file);

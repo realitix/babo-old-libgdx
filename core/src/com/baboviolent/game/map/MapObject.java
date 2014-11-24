@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector3;
 
 public class MapObject {
 	private Vector3 position;
-	private float rotation; // Rotation en degrée
+	private float rotation = 0; // Rotation en degrée
 	private String type; // Nom de l'objet
 	
 	public Vector3 getPosition() {

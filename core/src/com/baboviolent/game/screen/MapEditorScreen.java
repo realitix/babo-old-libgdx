@@ -209,7 +209,6 @@ public class MapEditorScreen implements Screen {
     	Vector3 position = positionToCell(getPositionFromMouse(screenX, screenY));
     	ModelInstance i = new ModelInstance(currentModel);
     	i.transform.setTranslation(position);
-    	i.userData = Map.TYPE_WALL;
     	instances.add(i);
     	
     	String type = "";
@@ -218,6 +217,7 @@ public class MapEditorScreen implements Screen {
     	if(currentType == Map.TYPE_WALL)
     		type = Map.TYPE_WALL;
     	
+    	i.userData = type;
     	map.addCell(new Cell().setPosition(position).setTextureName(currentCellTexture).setType(type));
     }
     
@@ -280,10 +280,45 @@ public class MapEditorScreen implements Screen {
 	}
 	
 	/**
-     * Sauvegarde la map actuelle'
+     * Nettoie la map en cours
+     */ 
+    public void clearMap() {
+    	map = new Map();
+    	instances = new Array<ModelInstance>();
+		currentModelInstance = null;
+    }
+    
+	/**
+     * Sauvegarde la map actuelle
      */ 
     public void saveMap(String mapName) {
     	Map.save(map, mapName);
+    }
+    
+    /**
+     * Charge la map en paramètre
+     */ 
+    public void loadMap(String mapName) {
+    	clearMap();
+    	map = Map.load(mapname);
+    	
+    	// Chargement des cellules
+    	for(int i = 0; i < map.getCells().size; i++ ) {
+    		Cell c = map.getCells().get(i);
+    		ModelInstance ci = new ModelInstance(models.get(c.getTextureName()));
+    		ci.transform.setTranslation(c.getPosition());
+    		ci.userData = c.getType();
+    		instances.add(ci);
+    	}
+    	
+    	// Chargement des objets
+    	for(int i = 0; i < map.getObjects().size; i++ ) {
+    		MapObject mo = map.getObjects().get(i);
+    		ModelInstance moi = new ModelInstance(models.get(mo.getType()));
+    		moi.transform.setTranslation(mo.getPosition());
+    		moi.userData = Map.TYPE_OBJECT;
+    		instances.add(moi);
+    	}
     }
     
     
