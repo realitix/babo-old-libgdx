@@ -4,6 +4,7 @@ public class BaseMode {
     protected final BulletWorld world;
     protected final String mapName;
     protected Player player;
+    protected Vector2 mapDimensions;
     
     public BaseMode(final BulletWorld world, final String mapName) {
         this.world = world;
@@ -12,6 +13,10 @@ public class BaseMode {
     
     public Player getPlayer() {
         return player;
+    }
+    
+    public Vector2 getMapDimensions() {
+        return mapDimensions;
     }
     
     /*

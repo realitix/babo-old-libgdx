@@ -59,13 +59,14 @@ public class GameScreen implements Screen {
 		// Initialisation du mode
 		mode = new DeathMatchMode(world);
 		mode.initWorld();
+		Vector2 md = mode.getMapDimensions();
 		
 		// Initialisation de la caméra
 		camera = new ChaseCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());;
 		camera.transform = mode.getPlayer().getInstance().transform;
-		camera.lookAt(0, 0, 0);
-		camera.far = 500;
-		camera.update();
+		camera.lookAt(md.x/2, 0, md.y/2);
+		camera.position.set(md.x/2, md.x, md.y/2);
+		camera.far = 1000;
 		
 		// Initialisation du controller
 		controller = new DesktopController(mode.getPlayer());
