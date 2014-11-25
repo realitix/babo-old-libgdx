@@ -73,8 +73,8 @@ public class MapEditorScreen implements Screen {
 		camera.update();
 
         // Chargement des textures
-        models = TextureLoader.getGroundModels();
-        models.putAll(TextureLoader.getWallModels());
+        models = TextureLoader.getModels(Map.TYPE_GROUND);
+        models.putAll(TextureLoader.getModels(Map.TYPE_WALL));
         Array<String> a = new Array<String>();
         a.add("flagpod");
         models.putAll(BaboModelLoader.getModels(a));

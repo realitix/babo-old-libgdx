@@ -28,7 +28,7 @@ public class TextureLoader {
      * Renvoie un tableau contenant le nom de toutes les textures en flnctione du type
      */ 
     static public Array<String> listTextureFolder(String type) {
-    	String p;
+    	String p = new String();
     	if( type == Map.TYPE_GROUND )
     		p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_GROUND);
     	if( type == Map.TYPE_WALL )
@@ -72,7 +72,7 @@ public class TextureLoader {
      * Charge toutes les textures passées en paramètre
      */ 
     static public ObjectMap<String, Texture> getTextures(Array<String> toLoad, String type) {
-    	String p;
+    	String p = new String();
     	if( type == Map.TYPE_GROUND )
     		p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_GROUND);
     	if( type == Map.TYPE_WALL )
@@ -98,7 +98,7 @@ public class TextureLoader {
      * Charge tous les material du type passé en paramètre
      */ 
     static public ObjectMap<String, Material> getMaterials(String type) {
-        return getMaterials(listTextureFolder(type));
+        return getMaterials(listTextureFolder(type), type);
 	}
 	
 	/**
@@ -137,40 +137,14 @@ public class TextureLoader {
 	/**
      * Charge les modèles du type passés en paramètre
      */ 
-    static public ObjectMap<String, Model> getGroundModels(Array<String> toLoad, String type) {
-        ObjectMap<String, Material> materials = getMaterials(toLoad, type);
+    static public ObjectMap<String, Model> getModels(Array<String> toLoad, String type) {
+        ObjectMap<String, Material> materials = TextureLoader.getMaterials(toLoad, type);
         ObjectMap<String, Model> models = new ObjectMap<String, Model>();
         ModelBuilder mb = new ModelBuilder();
         float s = BaboViolentGame.SIZE_MAP_CELL;
         
         for (ObjectMap.Entry<String, Material> e : materials.entries()) {
-            models.put(e.key, mb.createRect(
-                0, 0 ,0,
-                0, 0, s,
-		        s, 0, s,
-		        s, 0, 0,
-		        0, 1, 0,
-		        e.value,
-		        //new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-		        Usage.Position | Usage.Normal | Usage.TextureCoordinates
-				//		Usage.Position | Usage.Normal
-            ));
-        }
-        
-	    return models;
-	}
-	
-	/**
-     * Charge tous les modèles du sol passés en paramètre
-     */ 
-    static public ObjectMap<String, Model> getGroundModels(Array<String> toLoad) {
-        ObjectMap<String, Material> materials = TextureLoader.getGroundMaterials(toLoad);
-        ObjectMap<String, Model> models = new ObjectMap<String, Model>();
-        ModelBuilder mb = new ModelBuilder();
-        float s = BaboViolentGame.SIZE_MAP_CELL;
-        
-        for (ObjectMap.Entry<String, Material> e : materials.entries()) {
-        	Model m;
+        	Model m = new Model();
         	if( type == Map.TYPE_GROUND ) {
         		m = mb.createRect(0,0,0,0,0,s,s,0,s,s,0,0,0,1,0,e.value,Usage.Position | Usage.Normal | Usage.TextureCoordinates);
         	}
