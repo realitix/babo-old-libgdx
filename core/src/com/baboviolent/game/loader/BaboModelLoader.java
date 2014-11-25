@@ -62,7 +62,9 @@ public class BaboModelLoader {
      * Charge le modèle en paramètre
      */ 
     static public Model getModel(String toLoad) {
-       return getModels(new Array<String>().add(toLoad)).get(toLoad);
+    	Array<String> a = new Array<String>();
+    	a.add(toLoad);
+       return getModels(a).get(toLoad);
     }
     
     /**
@@ -97,7 +99,9 @@ public class BaboModelLoader {
      * Charge le modèle en paramètre
      */ 
     static public ModelData getModelDatas(String toLoad) {
-	    return getModelDatas(new Array<String>().add(toLoad)).get(toLoad);
+    	Array<String> a = new Array<String>();
+    	a.add(toLoad);
+	    return getModelDatas(a).get(toLoad);
     }
     
     /**

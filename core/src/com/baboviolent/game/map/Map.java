@@ -98,7 +98,7 @@ public class Map {
 	 */ 
 	static public Model loadModel(Map map) {
 	    // Chargement des textures du sol
-	    ObjectMap<String, Material> materials = TextureLoader.getGroundMaterialsFromMap(map);
+	    ObjectMap<String, Material> materials = TextureLoader.getMaterialsFromMap(map);
 	    
 	    // Création du mesh cellule
 		MeshBuilder meshBuilder = new MeshBuilder();
@@ -144,7 +144,7 @@ public class Map {
 	 * Charge la map
 	 **/
 	static public Map load(String mapname) {
-		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
+		FileHandle file = Gdx.files.external(mapname+".json");
 		String jsonMap = file.readString();
 		Json json = new Json();
 		Map map = json.fromJson(Map.class, jsonMap);
@@ -156,7 +156,7 @@ public class Map {
 	 **/
 	public static void save(Map map, String mapname) {
 		//FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
-		FileHandle file = Gdx.files.external(""+mapname+".json");
+		FileHandle file = Gdx.files.external(mapname+".json");
 		Json json = new Json();
 		json.setOutputType(OutputType.json);
 		json.toJson(map, file);

@@ -22,6 +22,8 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
+import com.badlogic.gdx.physics.bullet.collision.btConvexHullShape;
+import com.badlogic.gdx.physics.bullet.collision.btShapeHull;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;

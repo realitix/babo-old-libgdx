@@ -1,9 +1,13 @@
 package com.baboviolent.game.mode;
 
+import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.gameobject.Babo;
+import com.badlogic.gdx.math.Vector2;
+
 public class BaseMode {
     protected final BulletWorld world;
     protected final String mapName;
-    protected Player player;
+    protected Babo player;
     protected Vector2 mapDimensions;
     
     public BaseMode(final BulletWorld world, final String mapName) {
@@ -11,7 +15,7 @@ public class BaseMode {
         this.mapName = mapName;
     }
     
-    public Player getPlayer() {
+    public Babo getPlayer() {
         return player;
     }
     

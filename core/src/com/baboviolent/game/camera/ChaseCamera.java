@@ -1,4 +1,4 @@
-package com.infernaltower.game.camera;
+package com.baboviolent.game.camera;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;

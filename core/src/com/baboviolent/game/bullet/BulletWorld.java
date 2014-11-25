@@ -67,9 +67,10 @@ public class BulletWorld implements Disposable {
 		return instance;
 	}
 	
-	public void add (final BulletInstance instance) {
+	public BulletInstance add (final BulletInstance instance) {
 		instances.add(instance);
 		world.addRigidBody(instance.body);
+		return instance;
 	}
 
 	public void render (final ModelBatch modelBatch, final Environment environment) {

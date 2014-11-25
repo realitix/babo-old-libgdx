@@ -55,13 +55,30 @@ public class TextureLoader {
     /**
      * Renvoie un tableau contenant le nom de toutes les textures dans une map
      */ 
-    static public Array<String> listTextureMap(final Map map) {
+    static public Array<String> listGroundTextureMap(final Map map) {
         Array<String> textures = new Array<String>();
         
 	    for(int i = 0; i < map.getCells().size; i++) {
-	        String type = map.getCells().get(i).getTextureName();
-	        if( !textures.contains(type, false) ) {
-	            textures.add(type);
+	        String textureName = map.getCells().get(i).getTextureName();
+	        if( !textures.contains(textureName, false) && map.getCells().get(i).getType() == Map.TYPE_GROUND ) {
+	            textures.add(textureName);
+	        }
+	    }
+	    textures.sort();
+        
+        return textures;
+    }
+    
+    /**
+     * Renvoie un tableau contenant le nom de toutes les textures dans une map
+     */ 
+    static public Array<String> listWallTextureMap(final Map map) {
+        Array<String> textures = new Array<String>();
+        
+	    for(int i = 0; i < map.getCells().size; i++) {
+	        String textureName = map.getCells().get(i).getTextureName();
+	        if( !textures.contains(textureName, false) && map.getCells().get(i).getType() == Map.TYPE_WALL ) {
+	            textures.add(textureName);
 	        }
 	    }
 	    textures.sort();
@@ -126,6 +143,15 @@ public class TextureLoader {
     }
     
     /**
+     * Charge tous les material de la map
+     */ 
+	static public ObjectMap<String, Material> getMaterialsFromMap(final Map map) {
+		ObjectMap<String, Material> materials =  getGroundMaterials(listGroundTextureMap(map));
+		materials.putAll(getWallMaterials(listWallTextureMap(map)));
+	    return TextureLoader.getGroundMaterials(TextureLoader.listGroundTextureMap(map));
+	}
+    
+    /**
      * Charge tous les material du sol
      */ 
     static public ObjectMap<String, Material> getGroundMaterials() {
@@ -136,7 +162,7 @@ public class TextureLoader {
      * Charge tous les material de la map
      */ 
 	static public ObjectMap<String, Material> getGroundMaterialsFromMap(final Map map) {
-	    return TextureLoader.getGroundMaterials(TextureLoader.listTextureMap(map));
+	    return TextureLoader.getGroundMaterials(TextureLoader.listGroundTextureMap(map));
 	}
     
     /**

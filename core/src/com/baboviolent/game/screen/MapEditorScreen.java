@@ -75,9 +75,9 @@ public class MapEditorScreen implements Screen {
         // Chargement des textures
         models = TextureLoader.getGroundModels();
         models.putAll(TextureLoader.getWallModels());
-        models.putAll(BaboModelLoader.getModels(
-            new Array<String>().add("flagpod")
-        ));
+        Array<String> a = new Array<String>();
+        a.add("flagpod");
+        models.putAll(BaboModelLoader.getModels(a));
         
         // Chargement du menu
         menu = new Menu(this);
@@ -88,7 +88,7 @@ public class MapEditorScreen implements Screen {
         cameraController.rotateButton = Buttons.MIDDLE;
         cameraController.forwardButton = -10; // On désactive le forward
         cameraController.scrollFactor = -0.1f;
-        cameraController.translateUnits = 400f;
+        cameraController.translateUnits = 3000f;
         
         // Ajout du contrôle
         Gdx.input.setInputProcessor(new InputMultiplexer(
@@ -302,7 +302,7 @@ public class MapEditorScreen implements Screen {
      */ 
     public void loadMap(String mapName) {
     	clearMap();
-    	map = Map.load(mapname);
+    	map = Map.load(mapName);
     	
     	// Chargement des cellules
     	for(int i = 0; i < map.getCells().size; i++ ) {

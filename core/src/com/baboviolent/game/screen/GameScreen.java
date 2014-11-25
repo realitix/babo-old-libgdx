@@ -1,7 +1,14 @@
 package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.Utils;
+import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.camera.ChaseCamera;
+import com.baboviolent.game.controller.DesktopController;
+import com.baboviolent.game.loader.BaboModelLoader;
+import com.baboviolent.game.mode.BaseMode;
+import com.baboviolent.game.mode.DeathMatchMode;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -22,10 +29,13 @@ import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public class GameScreen implements Screen {
 	final private BaboViolentGame game;
@@ -57,7 +67,7 @@ public class GameScreen implements Screen {
 		populateWorld();
 		
 		// Initialisation du mode
-		mode = new DeathMatchMode(world);
+		mode = new DeathMatchMode(world, "test");
 		mode.initWorld();
 		Vector2 md = mode.getMapDimensions();
 		
@@ -92,13 +102,13 @@ public class GameScreen implements Screen {
         ModelBuilder mb = new ModelBuilder();
         float d = BaboViolentGame.BABO_DIAMETER;
         Model babo =  mb.createSphere(
-        	s, s, s, 10, 10,
+        	d, d, d, 10, 10,
         	new Material(ColorAttribute.createDiffuse(Color.RED)), 
         	Usage.Position | Usage.Normal);
         world.addConstructor(BaboViolentGame.BABO_MODEL_NAME, 
             new BulletInstance.Constructor(
                 babo,
-                new btSphereShape(s/2),
+                new btSphereShape(d/2),
                 10f)
         );
     }

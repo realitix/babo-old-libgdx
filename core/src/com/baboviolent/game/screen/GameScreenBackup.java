@@ -27,7 +27,7 @@ import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
-public class GameScreen implements Screen {
+public class GameScreenBackup implements Screen {
 	final BaboViolentGame game;
 	public Environment environment;
 	public DirectionalLight light;
@@ -40,7 +40,7 @@ public class GameScreen implements Screen {
 	public AssetManager assets;
 	public boolean loading;
 	
-	public GameScreen(final BaboViolentGame g) {
+	public GameScreenBackup(final BaboViolentGame g) {
 		
 		Bullet.init();
 		game = g;        
@@ -72,7 +72,7 @@ public class GameScreen implements Screen {
 				10f,
 				new Material(ColorAttribute.createDiffuse(Color.BLUE)) , Usage.Position | Usage.Normal | Usage.TextureCoordinates);
 		disposables.add(largeGroundModel);
-		world.addConstructor("largeground", new BulletConstructor(largeGroundModel, 0f));
+		//world.addConstructor("largeground", new BulletConstructor(largeGroundModel, 0f));
 		world.add("largeground", 0, -1f, 0f);
     }
 	
