@@ -51,6 +51,7 @@ public class Babo extends GameObject {
     
     public void update() {
         if( !force.isZero() ) {
+        	force.scl(Gdx.graphics.getDeltaTime());
             instance.body.applyCentralForce(force);
         }
     }
