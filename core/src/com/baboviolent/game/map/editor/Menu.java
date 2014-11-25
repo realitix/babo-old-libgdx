@@ -86,10 +86,10 @@ public class Menu {
         table.row();
         
         // Chargement des textures dans le bon ordre
-        Array<String> tsGround = TextureLoader.listTextureFolder(Map.TYPE_GROUND);
-        ObjectMap<String, Texture> texturesGround = TextureLoader.getTextures(Map.TYPE_GROUND);
-        Array<String> tsWall = TextureLoader.listTextureFolder(Map.TYPE_WALL);
-        ObjectMap<String, Texture> texturesWall = TextureLoader.getTextures(Map.TYPE_WALL);
+        Array<String> tsGround = TextureLoader.listTextureFolder(TextureLoader.TYPE_GROUND);
+        ObjectMap<String, Texture> texturesGround = TextureLoader.getTextures(TextureLoader.TYPE_GROUND);
+        Array<String> tsWall = TextureLoader.listTextureFolder(TextureLoader.TYPE_WALL);
+        ObjectMap<String, Texture> texturesWall = TextureLoader.getTextures(TextureLoader.TYPE_WALL);
         for( int i = 0; i < tsGround.size; i++ ) {
         	Image image = new Image(texturesGround.get(tsGround.get(i)));
         	image.setScaling(Scaling.fit);

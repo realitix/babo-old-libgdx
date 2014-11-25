@@ -23,17 +23,15 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class TextureLoader {
+    public static final String TYPE_GROUND = "ground/";
+    public static final String TYPE_WALL = "wall/";
+    public static final String TYPE_SKIN = "skin/";
     
     /**
      * Renvoie un tableau contenant le nom de toutes les textures en flnctione du type
      */ 
     static public Array<String> listTextureFolder(String type) {
-    	String p = new String();
-    	if( type == Map.TYPE_GROUND )
-    		p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_GROUND);
-    	if( type == Map.TYPE_WALL )
-    		p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_WALL);
-    		
+    	String p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE+type);
         Array<String> textures = new Array<String>();	    
 	    FileHandle[] files = Gdx.files.internal(p).list();
         for(FileHandle file: files) {
@@ -47,12 +45,12 @@ public class TextureLoader {
     /**
      * Renvoie un tableau contenant le nom des textures dans une map en fonction du type
      */ 
-    static public Array<String> listTextureMap(final Map map, String type) {
+    static public Array<String> listTextureMap(final Map map, String typeCell) {
         Array<String> textures = new Array<String>();
         
 	    for(int i = 0; i < map.getCells().size; i++) {
 	        String textureName = map.getCells().get(i).getTextureName();
-	        if( !textures.contains(textureName, false) && map.getCells().get(i).getType() == type ) {
+	        if( !textures.contains(textureName, false) && map.getCells().get(i).getType() == typeCell ) {
 	            textures.add(textureName);
 	        }
 	    }
@@ -72,12 +70,7 @@ public class TextureLoader {
      * Charge toutes les textures passées en paramètre
      */ 
     static public ObjectMap<String, Texture> getTextures(Array<String> toLoad, String type) {
-    	String p = new String();
-    	if( type == Map.TYPE_GROUND )
-    		p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_GROUND);
-    	if( type == Map.TYPE_WALL )
-    		p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_WALL);
-    	
+    	String p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE+type);
     	AssetManager manager = new AssetManager();
 	    ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 	    
@@ -95,6 +88,15 @@ public class TextureLoader {
     }
     
     /**
+     * Charge le material passé en paramètre avec le type
+     */ 
+    static public Material getMaterial(String name, String type) {
+        Array<String> a = new Array<String>();
+        a.add(name);
+        return getMaterials(a, type).get(name);
+	}
+	
+    /**
      * Charge tous les material du type passé en paramètre
      */ 
     static public ObjectMap<String, Material> getMaterials(String type) {
@@ -106,8 +108,8 @@ public class TextureLoader {
      */ 
 	static public ObjectMap<String, Material> getMaterialsFromMap(final Map map) {
 		ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
-		materials.putAll(getMaterials(listTextureMap(map, Map.TYPE_GROUND), Map.TYPE_GROUND));
-		materials.putAll(getMaterials(listTextureMap(map, Map.TYPE_WALL), Map.TYPE_WALL));
+		materials.putAll(getMaterials(listTextureMap(map, TYPE_GROUND), TYPE_GROUND));
+		materials.putAll(getMaterials(listTextureMap(map, TYPE_WALL), TYPE_WALL));
 	    return materials;
 	}
     
@@ -145,10 +147,10 @@ public class TextureLoader {
         
         for (ObjectMap.Entry<String, Material> e : materials.entries()) {
         	Model m = new Model();
-        	if( type == Map.TYPE_GROUND ) {
+        	if( type == TYPE_GROUND ) {
         		m = mb.createRect(0,0,0,0,0,s,s,0,s,s,0,0,0,1,0,e.value,Usage.Position | Usage.Normal | Usage.TextureCoordinates);
         	}
-        	if( type == Map.TYPE_WALL) {
+        	if( type == TYPE_WALL) {
         		m =  mb.createBox(s, s, s, e.value, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
         		// On déplace le cub pour le mettre au niveau du sol
         		m.meshes.get(0).transform(new Matrix4(new Vector3(s/2, s/2, s/2), new Quaternion(), new Vector3(1,1,1)));

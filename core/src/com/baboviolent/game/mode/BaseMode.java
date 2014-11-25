@@ -33,5 +33,6 @@ public class BaseMode {
      * Analyse le monde
      */ 
 	public void update() {
+	    player.update();
 	}
 }

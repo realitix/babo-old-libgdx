@@ -86,7 +86,7 @@ public class GameScreen implements Screen {
     /**
      * Ajoute les constructeurs dans le monde
      */ 
-    private void populateWorld() {
+    /*private void populateWorld() {
     	// Ajoute tous les modèles
         ObjectMap<String, Model> models = BaboModelLoader.getModels();
         for (ObjectMap.Entry<String, Model> m : models.entries()) {
@@ -111,7 +111,7 @@ public class GameScreen implements Screen {
                 new btSphereShape(d/2),
                 10f)
         );
-    }
+    }*/
 	
 	@Override
 	public void render(float delta) {
@@ -140,7 +140,7 @@ public class GameScreen implements Screen {
 		
 		// La mise à jour du controller doit absolument etre faite
 		// après la mise à jour du monde bullet
-		controller.update();
+		//controller.update();
 	}
 
 	@Override
