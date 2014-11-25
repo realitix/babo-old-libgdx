@@ -186,11 +186,11 @@ public class Utils {
 	
 	public static btConvexHullShape convexHullShapeFromModel (final Model model) {
 		final Mesh mesh = model.meshes.get(0);
-		final btConvexHullShape shape = new btConvexHullShape(mesh.getVerticesBuffer(), mesh.getNumVertices(), mesh.getVertexSize());
+		btConvexHullShape shape = new btConvexHullShape(mesh.getVerticesBuffer(), mesh.getNumVertices(), mesh.getVertexSize());
 		// now optimize the shape
-		final btShapeHull hull = new btShapeHull(shape);
+		btShapeHull hull = new btShapeHull(shape);
 		hull.buildHull(shape.getMargin());
-		final btConvexHullShape result = new btConvexHullShape(hull);
+		btConvexHullShape result = new btConvexHullShape(hull);
 		// delete the temporary shape
 		shape.dispose();
 		hull.dispose();

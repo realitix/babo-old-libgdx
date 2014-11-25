@@ -25,11 +25,17 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class TextureLoader {
     
     /**
-     * Renvoie un tableau contenant le nom de toutes les textures de sol
+     * Renvoie un tableau contenant le nom de toutes les textures en flnctione du type
      */ 
-    static public Array<String> listTextureGroundFolder() {
+    static public Array<String> listTextureFolder(String type) {
+    	String p;
+    	if( type == Map.TYPE_GROUND )
+    		p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_GROUND);
+    	if( type == Map.TYPE_WALL )
+    		p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_WALL);
+    		
         Array<String> textures = new Array<String>();	    
-	    FileHandle[] files = Gdx.files.internal(BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_GROUND)).list();
+	    FileHandle[] files = Gdx.files.internal(p).list();
         for(FileHandle file: files) {
             textures.add(file.nameWithoutExtension());
         }
@@ -39,28 +45,14 @@ public class TextureLoader {
     }
     
     /**
-     * Renvoie un tableau contenant le nom de toutes les textures de mur
+     * Renvoie un tableau contenant le nom des textures dans une map en fonction du type
      */ 
-    static public Array<String> listTextureWallFolder() {
-        Array<String> textures = new Array<String>();	    
-	    FileHandle[] files = Gdx.files.internal(BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_WALL)).list();
-        for(FileHandle file: files) {
-            textures.add(file.nameWithoutExtension());
-        }
-        textures.sort();
-        
-        return textures;
-    }
-    
-    /**
-     * Renvoie un tableau contenant le nom de toutes les textures dans une map
-     */ 
-    static public Array<String> listGroundTextureMap(final Map map) {
+    static public Array<String> listTextureMap(final Map map, String type) {
         Array<String> textures = new Array<String>();
         
 	    for(int i = 0; i < map.getCells().size; i++) {
 	        String textureName = map.getCells().get(i).getTextureName();
-	        if( !textures.contains(textureName, false) && map.getCells().get(i).getType() == Map.TYPE_GROUND ) {
+	        if( !textures.contains(textureName, false) && map.getCells().get(i).getType() == type ) {
 	            textures.add(textureName);
 	        }
 	    }
@@ -70,42 +62,23 @@ public class TextureLoader {
     }
     
     /**
-     * Renvoie un tableau contenant le nom de toutes les textures dans une map
+     * Charge toutes les textures en fonction du paramètre
      */ 
-    static public Array<String> listWallTextureMap(final Map map) {
-        Array<String> textures = new Array<String>();
-        
-	    for(int i = 0; i < map.getCells().size; i++) {
-	        String textureName = map.getCells().get(i).getTextureName();
-	        if( !textures.contains(textureName, false) && map.getCells().get(i).getType() == Map.TYPE_WALL ) {
-	            textures.add(textureName);
-	        }
-	    }
-	    textures.sort();
-        
-        return textures;
+    static public ObjectMap<String, Texture> getTextures(String type) {
+	    return getTextures(listTextureFolder(type), type);
     }
     
     /**
-     * Charge toutes les textures du sol
+     * Charge toutes les textures passées en paramètre
      */ 
-    static public ObjectMap<String, Texture> getGroundTextures() {
-	    return TextureLoader.getGroundTextures(TextureLoader.listTextureGroundFolder());
-    }
-    
-    /**
-     * Charge toutes les textures des murs
-     */ 
-    static public ObjectMap<String, Texture> getWallTextures() {
-	    return TextureLoader.getWallTextures(TextureLoader.listTextureWallFolder());
-    }
-    
-    /**
-     * Charge toutes les textures du sol passées en paramètre
-     */ 
-    static public ObjectMap<String, Texture> getGroundTextures(Array<String> toLoad) {
+    static public ObjectMap<String, Texture> getTextures(Array<String> toLoad, String type) {
+    	String p;
+    	if( type == Map.TYPE_GROUND )
+    		p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_GROUND);
+    	if( type == Map.TYPE_WALL )
+    		p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE_WALL);
+    	
     	AssetManager manager = new AssetManager();
-        String p = BaboViolentGame.PATH_TEXTURE_GROUND;
 	    ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 	    
 	    // On charge les textures
@@ -122,70 +95,27 @@ public class TextureLoader {
     }
     
     /**
-     * Charge toutes les textures du sol passées en paramètre
+     * Charge tous les material du type passé en paramètre
      */ 
-    static public ObjectMap<String, Texture> getWallTextures(Array<String> toLoad) {
-    	AssetManager manager = new AssetManager();
-        String p = BaboViolentGame.PATH_TEXTURE_WALL;
-	    ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
-	    
-	    // On charge les textures
-	    for( int i = 0; i < toLoad.size; i++ ) {
-	        manager.load(p+toLoad.get(i)+".png", Texture.class);
-	        manager.update();
-		    manager.finishLoading();
-		    textures.put(
-		            toLoad.get(i),
-		            manager.get(p+toLoad.get(i)+".png", Texture.class));
-	    }
-	    
-	    return textures;
-    }
-    
-    /**
-     * Charge tous les material de la map
-     */ 
-	static public ObjectMap<String, Material> getMaterialsFromMap(final Map map) {
-		ObjectMap<String, Material> materials =  getGroundMaterials(listGroundTextureMap(map));
-		materials.putAll(getWallMaterials(listWallTextureMap(map)));
-	    return TextureLoader.getGroundMaterials(TextureLoader.listGroundTextureMap(map));
-	}
-    
-    /**
-     * Charge tous les material du sol
-     */ 
-    static public ObjectMap<String, Material> getGroundMaterials() {
-        return TextureLoader.getGroundMaterials(TextureLoader.listTextureGroundFolder());
+    static public ObjectMap<String, Material> getMaterials(String type) {
+        return getMaterials(listTextureFolder(type));
 	}
 	
 	/**
      * Charge tous les material de la map
      */ 
-	static public ObjectMap<String, Material> getGroundMaterialsFromMap(final Map map) {
-	    return TextureLoader.getGroundMaterials(TextureLoader.listGroundTextureMap(map));
-	}
-    
-    /**
-     * Charge tous les material du sol passés en paramètre
-     */ 
-    static public ObjectMap<String, Material> getGroundMaterials(Array<String> toLoad) {
-        ObjectMap<String, Texture> textures = TextureLoader.getGroundTextures(toLoad);
-        ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
-        
-        for (ObjectMap.Entry<String, Texture> e : textures.entries()) {
-	        TextureAttribute textureAttribute = new TextureAttribute(TextureAttribute.Diffuse, e.value);
-	        Material material = new Material(textureAttribute);
-	        materials.put(e.key, material);
-        }
-        
+	static public ObjectMap<String, Material> getMaterialsFromMap(final Map map) {
+		ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
+		materials.putAll(getMaterials(listTextureMap(map, Map.TYPE_GROUND), Map.TYPE_GROUND));
+		materials.putAll(getMaterials(listTextureMap(map, Map.TYPE_WALL), Map.TYPE_WALL));
 	    return materials;
 	}
     
     /**
-     * Charge tous les material de mur passés en paramètre
+     * Charge tous les material du type passés en paramètre
      */ 
-    static public ObjectMap<String, Material> getWallMaterials(Array<String> toLoad) {
-        ObjectMap<String, Texture> textures = TextureLoader.getWallTextures(toLoad);
+    static public ObjectMap<String, Material> getMaterials(Array<String> toLoad, String type) {
+        ObjectMap<String, Texture> textures = getTextures(toLoad, type);
         ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
         
         for (ObjectMap.Entry<String, Texture> e : textures.entries()) {
@@ -198,24 +128,17 @@ public class TextureLoader {
 	}
 	
 	/**
-     * Charge tous les modèles du sol
+     * Charge tous les modèles du type passé en paramètre
      */ 
-    static public ObjectMap<String, Model> getGroundModels() {
-        return TextureLoader.getGroundModels(TextureLoader.listTextureGroundFolder());
-	}
-    
-    /**
-     * Charge tous les modèles de mur
-     */ 
-    static public ObjectMap<String, Model> getWallModels() {
-        return TextureLoader.getWallModels(TextureLoader.listTextureWallFolder());
+    static public ObjectMap<String, Model> getModels(String type) {
+        return getModels(listTextureFolder(type), type);
 	}
 	
 	/**
-     * Charge tous les modèles du sol passés en paramètre
+     * Charge les modèles du type passés en paramètre
      */ 
-    static public ObjectMap<String, Model> getGroundModels(Array<String> toLoad) {
-        ObjectMap<String, Material> materials = TextureLoader.getGroundMaterials(toLoad);
+    static public ObjectMap<String, Model> getGroundModels(Array<String> toLoad, String type) {
+        ObjectMap<String, Material> materials = getMaterials(toLoad, type);
         ObjectMap<String, Model> models = new ObjectMap<String, Model>();
         ModelBuilder mb = new ModelBuilder();
         float s = BaboViolentGame.SIZE_MAP_CELL;
@@ -236,21 +159,27 @@ public class TextureLoader {
         
 	    return models;
 	}
-    
-    /**
-     * Charge tous les modèles de mur passés en paramètre
+	
+	/**
+     * Charge tous les modèles du sol passés en paramètre
      */ 
-    static public ObjectMap<String, Model> getWallModels(Array<String> toLoad) {
-        ObjectMap<String, Material> materials = TextureLoader.getWallMaterials(toLoad);
+    static public ObjectMap<String, Model> getGroundModels(Array<String> toLoad) {
+        ObjectMap<String, Material> materials = TextureLoader.getGroundMaterials(toLoad);
         ObjectMap<String, Model> models = new ObjectMap<String, Model>();
         ModelBuilder mb = new ModelBuilder();
         float s = BaboViolentGame.SIZE_MAP_CELL;
         
         for (ObjectMap.Entry<String, Material> e : materials.entries()) {
-        	Model box =  mb.createBox(s, s, s, e.value, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
-        	// On déplace le cub pour le mettre au niveau du sol
-        	box.meshes.get(0).transform(new Matrix4(new Vector3(s/2, s/2, s/2), new Quaternion(), new Vector3(1,1,1)));
-            models.put(e.key, box);
+        	Model m;
+        	if( type == Map.TYPE_GROUND ) {
+        		m = mb.createRect(0,0,0,0,0,s,s,0,s,s,0,0,0,1,0,e.value,Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+        	}
+        	if( type == Map.TYPE_WALL) {
+        		m =  mb.createBox(s, s, s, e.value, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+        		// On déplace le cub pour le mettre au niveau du sol
+        		m.meshes.get(0).transform(new Matrix4(new Vector3(s/2, s/2, s/2), new Quaternion(), new Vector3(1,1,1)));
+        	}
+            models.put(e.key, m);
         }
         
 	    return models;
