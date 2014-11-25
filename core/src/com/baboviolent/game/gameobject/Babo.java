@@ -49,6 +49,10 @@ public class Babo extends GameObject {
         force.set(f.x, f.y, f.z);
     }
     
+    public Vector3 getForce() {
+        return force.cpy();
+    }
+    
     public void update() {
         if( !force.isZero() ) {
         	force.scl(Gdx.graphics.getDeltaTime());
