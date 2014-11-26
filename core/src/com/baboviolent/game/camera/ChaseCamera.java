@@ -77,6 +77,15 @@ public class ChaseCamera extends PerspectiveCamera {
 
 	public ChaseCamera(float fieldOfView, float viewportWidth, float viewportHeight) {
 		super(fieldOfView, viewportWidth, viewportHeight);
+		far = 10000;
+		near = 10;
+	}
+	
+	public void chase(GameObject go) {
+	    transform = go.getInstance().transform;
+	    Vector3 goPos = new Vector3();
+	    transform.getTranslation(goPos);
+	    position.set(goPos.x, desiredOffset.y, goPos.z + desiredOffset.z);
 	}
 	
 	private final static Vector3 current = new Vector3();

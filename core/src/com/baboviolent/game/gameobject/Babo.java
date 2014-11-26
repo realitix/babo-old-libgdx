@@ -54,8 +54,11 @@ public class Babo extends GameObject {
         ci.setLinearDamping(linearDamping);
         ci.setAngularDamping(angularDamping);
         ci.setRestitution(restitution);
+        btRigidBody body = new btRigidBody(constructionInfo);
+        body.setActivationState(int newState);
+        body.setActivationState(Collision.DISABLE_DEACTIVATION);
         
-        instance = new BulletInstance(model, ci);
+        instance = new BulletInstance(model, body);
     }
     
     public Babo setForce(Vector3 f) {

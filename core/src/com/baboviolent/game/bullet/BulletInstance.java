@@ -24,6 +24,13 @@ public class BulletInstance extends ModelInstance implements Disposable {
 		init(constructionInfo);
 	}
 	
+	public BulletInstance (Model model, btRigidBody body) {
+		super(model);
+		motionState = new BulletInstance.MotionState(this.transform);
+		this.body = body;
+		this.body.setMotionState(motionState);
+	}
+	
     public BulletInstance (Model model, String node, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
 		super(model, node);
 		init(constructionInfo);

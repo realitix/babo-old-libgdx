@@ -72,12 +72,8 @@ public class GameScreen implements Screen {
 		Vector2 md = mode.getMapDimensions();
 		
 		// Initialisation de la caméra
-		camera = new ChaseCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());;
-		camera.transform = mode.getPlayer().getInstance().transform;
-		camera.lookAt(md.x/2, 0, md.y/2);
-		camera.position.set(md.x/2, md.x, md.y/2);
-		camera.far = 10000;
-		camera.near = 10;
+		camera = new ChaseCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera.chase(mode.getPlayer());
 		
 		// Initialisation du controller
 		controller = new DesktopController(mode.getPlayer());

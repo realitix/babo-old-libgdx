@@ -67,7 +67,8 @@ public class MapEditorScreen implements Screen {
 		modelBatch = new ModelBatch();
 		instances = new Array<ModelInstance>();
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());;
-		camera.position.set(0f, 600f, 0f);
+		camera.position.set(0f, 600, 0f);
+		camera.up.set(0, 0, 1);
 		camera.lookAt(0, 0, 0);
 		camera.far = 10000;
 		camera.update();
