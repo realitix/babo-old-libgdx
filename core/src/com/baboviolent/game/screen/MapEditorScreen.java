@@ -103,14 +103,19 @@ public class MapEditorScreen implements Screen {
         	.setName("Name");
         
         // Création des flèche indiquant les directions
-        ModelBuilder mb = new ModelBuilder();
-        int gridX = 100;
-        int gridZ = 100;
-        float s = BaboViolentGame.SIZE_CELL_MAP;
-        instances.add(mb.createXYZCoordinates( s*5, new Material(Color.createDiffuse(Color.BLUE)), GL20.GL_TRIANGLES));
-        instances.add(mb.createLineGrid(gridX, gridZ, s*gridX, s*gridZ, new Material(Color.createDiffuse(Color.GREY)), GL20.GL_TRIANGLES));
+        initGrid();
     }
     
+	private void initGrid() {
+		ModelBuilder mb = new ModelBuilder();
+        int gridX = 100;
+        int gridZ = 100;
+        float s = BaboViolentGame.SIZE_MAP_CELL;
+        // X = ROUGE, Y = VERT, Z = BLEU
+        instances.add(new ModelInstance(mb.createXYZCoordinates( s*5, new Material(), Usage.Position | Usage.ColorUnpacked )));
+        instances.add(new ModelInstance(mb.createLineGrid(gridX, gridZ, s, s, new Material(ColorAttribute.createDiffuse(Color.GRAY)), Usage.Position)));
+	}
+	
     /**
      * Sélectionne le sol
      */ 
@@ -295,6 +300,7 @@ public class MapEditorScreen implements Screen {
     	map = new Map();
     	instances = new Array<ModelInstance>();
 		currentModelInstance = null;
+		initGrid();
     }
     
 	/**

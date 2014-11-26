@@ -21,8 +21,12 @@ import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btBvhTriangleMeshShape;
+import com.badlogic.gdx.physics.bullet.collision.btCompoundShape;
+import com.badlogic.gdx.physics.bullet.collision.btStaticPlaneShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Json;
@@ -86,22 +90,23 @@ public class Map {
 	 * et un cube pour chaque mur
 	*/
 	static public BulletInstance loadInstance (Model model) {
-		// Calcul de la taille
-		Vector3 dimensions = Utils.getModelDimensions(model);
-        
         // On créé le shape composé
 		btCompoundShape shape = new btCompoundShape();
 		
 		// On ajoute le sol
-		// @TODO vérifier a quoi sert le deuxieme argument
-		shape.addChildShape(new Matrix4(), new btStaticPlaneShape(new Vector3(0, 1, 0), 10000));
+		// Le deuxieme argument est la hauteur par rapport à l'axe
+		// Dans notre cas, le sol est a y = 0
+		shape.addChildShape(new Matrix4(), new btStaticPlaneShape(new Vector3(0, 1, 0), 0));
 
 		// On ajoute les murs
 		float s = BaboViolentGame.SIZE_MAP_CELL;
 		Vector3 wallSize = new Vector3(s/2,s/2,s/2);
 		for( int i = 0; i < model.nodes.size; i++) {
 			if( model.nodes.get(i).parts.get(0).meshPart.id.equals(TYPE_WALL) ) {
-				shape.addChildShape(new Matrix4(), new btBoxShape(wallSize);
+				Matrix4 matrix = new Matrix4();
+				matrix.setToTranslation(model.nodes.get(i).translation);
+				matrix.translate(0, BaboViolentGame.SIZE_MAP_CELL/2, 0);
+				shape.addChildShape(matrix, new btBoxShape(wallSize));
 			}
 		}
 		
@@ -131,19 +136,19 @@ public class Map {
 		MeshBuilder meshBuilder = new MeshBuilder();
 		meshBuilder.begin(Usage.Position | Usage.Normal | Usage.TextureCoordinates, GL20.GL_TRIANGLES);
 		
-		// Sol
+		// Sol, on soustrait s/2 en x et y afin de placer le mesh au centre
 		MeshPart groundMeshPart = meshBuilder.part(TYPE_GROUND, GL20.GL_TRIANGLES);
 		meshBuilder.rect(
-		    new Vector3(0, 0, 0),
-		    new Vector3(0, 0, s),
-		    new Vector3(s, 0, s),
-		    new Vector3(s, 0, 0),
+		    new Vector3(-s/2, 0, -s/2),
+		    new Vector3(-s/2, 0, s/2),
+		    new Vector3(s/2, 0, s/2),
+		    new Vector3(s/2, 0, -s/2),
 		    new Vector3(0, 1, 0)
 		);
 		
 		// Mur
 		MeshPart wallMeshPart = meshBuilder.part(TYPE_WALL, GL20.GL_TRIANGLES);
-		meshBuilder.box(s/2, s/2, s/2, s, s, s);
+		meshBuilder.box(0, s/2, 0, s, s, s);
 		meshBuilder.end();
 		
 		// Création du model avec un modelbuilder et ajout de toutes les cellules

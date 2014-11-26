@@ -42,4 +42,9 @@ public class GameObject {
     public BulletInstance getInstance() {
         return instance;
     }
+    
+    public void translate(Vector3 v) {
+    	this.instance.body.translate(v);
+    	this.instance.transform.translate(v);
+    }
 }

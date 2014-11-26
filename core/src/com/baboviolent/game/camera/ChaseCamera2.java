@@ -41,7 +41,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
  * TODO: The acceleration (and speed) are to be futher implemented to give a more smooth follow of the object. 
  * @author Xoppa
  */
-public class ChaseCamera extends PerspectiveCamera {
+public class ChaseCamera2 extends PerspectiveCamera {
 	/** enable or disable chasing */
 	public boolean chasing = true;
 	/** The object (zero based transformation) to follow */
@@ -72,11 +72,11 @@ public class ChaseCamera extends PerspectiveCamera {
 	/** Read this to get the current absolute speed (units per second) */
 	public float absoluteSpeed = 0;
 	
-	public ChaseCamera() {
+	public ChaseCamera2() {
 		super();
 	}
 
-	public ChaseCamera(float fieldOfView, float viewportWidth, float viewportHeight) {
+	public ChaseCamera2(float fieldOfView, float viewportWidth, float viewportHeight) {
 		super(fieldOfView, viewportWidth, viewportHeight);
 		far = 10000;
 		near = 10;
@@ -101,50 +101,10 @@ public class ChaseCamera extends PerspectiveCamera {
 
 	public void update(final float delta, final boolean updateFrustum) {
 		if (chasing && transform != null) {
-			transform.getTranslation(direction);
-			
-			current.set(position).sub(direction);
-			desired.set(desiredLocation).rot(transform).add(desiredOffset);
-			final float desiredDistance = desired.len();
-			if (rotationSpeed < 0)
-				current.set(desired).nor().scl(desiredDistance);
-			else if (rotationSpeed == 0 || tmp.set(current).dst2(desired) < rotationOffsetSq) 
-				current.nor().scl(desiredDistance);
-			else {
-				current.nor();
-				desired.nor();
-				rotationAxis.set(current).crs(desired);
-				float angle = (float)Math.acos(current.dot(desired)) * MathUtils.radiansToDegrees;
-				final float maxAngle = rotationSpeed * delta;
-				if (Math.abs(angle) > maxAngle) {
-					angle = (angle < 0) ? -maxAngle : maxAngle;
-				}
-				current.rot(rotationMatrix.idt().rotate(rotationAxis, angle));
-				current.scl(desiredDistance);
-			}
-
-			current.add(direction);
-			absoluteSpeed = Math.min(absoluteSpeed + acceleration, current.dst(position) / delta);
-			position.add(speed.set(current).sub(position).nor().scl(absoluteSpeed * delta));
-			if (bounds.isValid()) {
-				if (position.x < bounds.min.x) position.x = bounds.min.x;
-				if (position.x > bounds.max.x) position.x = bounds.max.x;
-				if (position.y < bounds.min.y) position.y = bounds.min.y;
-				if (position.y > bounds.max.y) position.y = bounds.max.y;
-				if (position.z < bounds.min.z) position.z = bounds.min.z;
-				if (position.z > bounds.max.z) position.z = bounds.max.z;
-			}
-			if (offsetBounds.isValid()) {
-				tmp.set(position).sub(direction);
-				if (tmp.x < offsetBounds.min.x) position.x = offsetBounds.min.x + direction.x;
-				if (tmp.x > offsetBounds.max.x) position.x = offsetBounds.max.x + direction.x;
-				if (tmp.y < offsetBounds.min.y) position.y = offsetBounds.min.y + direction.y;
-				if (tmp.y > offsetBounds.max.y) position.y = offsetBounds.max.y + direction.y;
-				if (tmp.z < offsetBounds.min.z) position.z = offsetBounds.min.z + direction.z;
-				if (tmp.z > offsetBounds.max.z) position.z = offsetBounds.max.z + direction.z;
-			}
-
-			direction.add(target.set(targetLocation).rot(transform).add(targetOffset)).sub(position).nor();
+			Vector3 goPos = new Vector3();
+		    transform.getTranslation(goPos);
+		    lookAt(goPos);
+		    position.set(goPos.x, goPos.y + desiredOffset.y, goPos.z + desiredOffset.z);
 		}
 		super.update(updateFrustum);		
 	}

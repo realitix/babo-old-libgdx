@@ -74,8 +74,7 @@ public class BulletWorld implements Disposable {
 		return instance;
 	}
 	
-	public BulletInstance add (final GameObject go, float x, float y, float z) {
-	    go.getInstance().transform.setToTranslation(x, y, z);
+	public BulletInstance add (final GameObject go) {
 		instances.add(go.getInstance());
 		world.addRigidBody(go.getInstance().body);
 		return go.getInstance();

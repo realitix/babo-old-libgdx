@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.Collision;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
@@ -28,13 +29,9 @@ public class Babo extends GameObject {
         linearDamping = 0;
         angularDamping = 0;
         restitution = 0;
-        mass = 1;
+        mass = 40;
         
         initInstance();
-	}
-	
-	private void initPhysics() {
-	    
 	}
 	
 	@Override
@@ -43,25 +40,23 @@ public class Babo extends GameObject {
         Material material = TextureLoader.getMaterial(skin, TextureLoader.TYPE_SKIN);
         Model model =  new ModelBuilder().createSphere(
         	d, d, d, 10, 10,
-        	//new Material(ColorAttribute.createDiffuse(Color.RED)),
-        	material,
-        	Usage.Position | Usage.Normal);
+        	new Material(ColorAttribute.createDiffuse(Color.RED)),
+        	//material,
+        	Usage.Position | Usage.Normal | Usage.TextureCoordinates);
         
         shape = new btSphereShape(d/2);
         Vector3 localInertia = new Vector3();
         shape.calculateLocalInertia(mass, localInertia);
         
         ci = new btRigidBody.btRigidBodyConstructionInfo(mass, null, shape, localInertia);
-        ci.setFriction(friction);
+        /*ci.setFriction(friction);
         ci.setRollingFriction(rollingFriction);
         ci.setLinearDamping(linearDamping);
         ci.setAngularDamping(angularDamping);
-        ci.setRestitution(restitution);
-        btRigidBody body = new btRigidBody(constructionInfo);
-        body.setActivationState(int newState);
-        body.setActivationState(Collision.DISABLE_DEACTIVATION);
-        
-        instance = new BulletInstance(model, body);
+        ci.setRestitution(restitution);*/
+        /*btRigidBody body = new btRigidBody(ci);
+        body.setActivationState(Collision.DISABLE_DEACTIVATION);*/
+        instance = new BulletInstance(model, ci);
     }
     
     public Babo setForce(Vector3 f) {
@@ -75,8 +70,7 @@ public class Babo extends GameObject {
     
     public void update() {
         if( !force.isZero() ) {
-        	force.scl(Gdx.graphics.getDeltaTime());
-        	System.out.println("Bouge: "+force.toString());
+        	force.scl(Gdx.graphics.getDeltaTime()*100);
             instance.body.applyCentralForce(force);
         }
     }

@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Menu {
-    public static final Array<String> modelsToLoad = new Array<String>({"flagpod"});
+    public static final Array<String> modelsToLoad = new Array<String>(new String[]{"flagpod"});
     private Stage stage;
     
     public Menu(final MapEditorScreen editorScreen) {

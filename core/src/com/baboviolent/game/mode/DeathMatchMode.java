@@ -1,6 +1,7 @@
 package com.baboviolent.game.mode;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.gameobject.Babo;
@@ -27,7 +28,8 @@ public class DeathMatchMode extends BaseMode {
         
         // Ajout du joueur
         player = new Babo("skin03");
-        world.add(player, 100, 100, 100);
+        player.translate(new Vector3(800, 1000, 800));
+        world.add(player);
     }
     
     /**

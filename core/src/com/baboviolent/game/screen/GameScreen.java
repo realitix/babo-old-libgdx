@@ -5,6 +5,7 @@ import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.camera.ChaseCamera;
+import com.baboviolent.game.camera.ChaseCamera2;
 import com.baboviolent.game.controller.DesktopController;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.mode.BaseMode;
@@ -45,7 +46,7 @@ public class GameScreen implements Screen {
 	private ModelBuilder modelBuilder = new ModelBuilder();
 	private ModelBatch modelBatch;
 	private Array<Disposable> disposables = new Array<Disposable>();
-	private ChaseCamera camera;
+	private ChaseCamera2 camera;
 	private AssetManager assets;
 	private boolean loading;
 	private BaseMode mode;
@@ -72,8 +73,9 @@ public class GameScreen implements Screen {
 		Vector2 md = mode.getMapDimensions();
 		
 		// Initialisation de la caméra
-		camera = new ChaseCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		camera = new ChaseCamera2(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		camera.chase(mode.getPlayer());
+		camera.update();
 		
 		// Initialisation du controller
 		controller = new DesktopController(mode.getPlayer());

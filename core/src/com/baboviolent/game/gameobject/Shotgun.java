@@ -17,7 +17,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 public class Shotgun extends GameObject {
 	
 	public Shotgun() {
-		super()
+		super();
 		name = "Shotgun";
 	    friction = 0;
         rollingFriction = 0;

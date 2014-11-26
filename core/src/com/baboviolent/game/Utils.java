@@ -1,5 +1,6 @@
 package com.baboviolent.game;
 
+import com.baboviolent.game.bullet.BulletInstance;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,6 +23,8 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btConvexHullShape;
 import com.badlogic.gdx.physics.bullet.collision.btShapeHull;
 import com.badlogic.gdx.utils.BufferUtils;

@@ -158,12 +158,13 @@ public class TextureLoader {
         for (ObjectMap.Entry<String, Material> e : materials.entries()) {
         	Model m = new Model();
         	if( type == TYPE_GROUND ) {
-        		m = mb.createRect(0,0,0,0,0,s,s,0,s,s,0,0,0,1,0,e.value,Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+        		m = mb.createRect(0,0,0,0,0,s,s,0,s,s,0,0,0,1,0,e.value, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
+        		m.meshes.get(0).transform(new Matrix4(new Vector3(-s/2, 0, -s/2), new Quaternion(), new Vector3(1,1,1)));
         	}
         	if( type == TYPE_WALL) {
         		m =  mb.createBox(s, s, s, e.value, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
         		// On déplace le cub pour le mettre au niveau du sol
-        		m.meshes.get(0).transform(new Matrix4(new Vector3(s/2, s/2, s/2), new Quaternion(), new Vector3(1,1,1)));
+        		m.meshes.get(0).transform(new Matrix4(new Vector3(0, s/2, 0), new Quaternion(), new Vector3(1,1,1)));
         	}
             models.put(e.key, m);
         }

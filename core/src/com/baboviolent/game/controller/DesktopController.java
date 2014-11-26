@@ -27,9 +27,9 @@ public class DesktopController extends BaseController {
        	if( keycode == Keys.DOWN )
         	force.z = -1;
         if( keycode == Keys.LEFT )
-        	force.x = -1;
-        if( keycode == Keys.RIGHT )
         	force.x = 1;
+        if( keycode == Keys.RIGHT )
+        	force.x = -1;
 
 		player.setForce(force.nor().scl(BaboViolentGame.BABO_SPEED));
 		return true;
