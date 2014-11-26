@@ -75,9 +75,7 @@ public class MapEditorScreen implements Screen {
         // Chargement des textures
         models = TextureLoader.getModels(TextureLoader.TYPE_GROUND);
         models.putAll(TextureLoader.getModels(TextureLoader.TYPE_WALL));
-        Array<String> a = new Array<String>();
-        a.add("flagpod");
-        models.putAll(BaboModelLoader.getModels(a));
+        models.putAll(BaboModelLoader.getModels(Menu.modelsToLoad));
         
         // Chargement du menu
         menu = new Menu(this);
@@ -102,6 +100,14 @@ public class MapEditorScreen implements Screen {
         	.setVersion(1)
         	.setAuthor("Test")
         	.setName("Name");
+        
+        // Création des flèche indiquant les directions
+        ModelBuilder mb = new ModelBuilder();
+        int gridX = 100;
+        int gridZ = 100;
+        float s = BaboViolentGame.SIZE_CELL_MAP;
+        instances.add(mb.createXYZCoordinates( s*5, new Material(Color.createDiffuse(Color.BLUE)), GL20.GL_TRIANGLES));
+        instances.add(mb.createLineGrid(gridX, gridZ, s*gridX, s*gridZ, new Material(Color.createDiffuse(Color.GREY)), GL20.GL_TRIANGLES));
     }
     
     /**

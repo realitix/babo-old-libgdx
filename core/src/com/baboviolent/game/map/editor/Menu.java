@@ -23,6 +23,7 @@ import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 public class Menu {
+    public static final Array<String> modelsToLoad = new Array<String>({"flagpod"});
     private Stage stage;
     
     public Menu(final MapEditorScreen editorScreen) {
@@ -107,7 +108,7 @@ public class Menu {
         
         // Chargement des modèles
         table.row();
-        Array<String> models = BaboModelLoader.listModelFolder();
+        Array<String> models = modelsToLoad;
         for (int i = 0; i < models.size; i++) {
             Label l = new Label(models.get(i), skin);
             l.addListener(new BaboInputListener(editorScreen, models.get(i), Map.TYPE_OBJECT));
