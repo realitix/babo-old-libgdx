@@ -21,20 +21,6 @@ public class DesktopController extends BaseController {
     	/**
     	 * La caméra est toujours pointé vers l'axe Z donc c'est facile'
     	 */ 
-        /*switch(keycode) {
-            case Keys.LEFT:
-                player.getInstance().transform.rotate(0, 1, 0, 5f);
-			    break;
-			case Keys.RIGHT:
-                player.getInstance().transform.rotate(0, 1, 0, -5f);
-			    break;
-        }
-        
-        Vector3 playerDirection = new Vector3()
-            .set(-1,0,0)
-            .rot(player.getInstance().transform)
-            .nor();*/
-            
         Vector3 force = player.getForce();
         if( keycode == Keys.UP )
         	force.z = 1;
@@ -51,6 +37,9 @@ public class DesktopController extends BaseController {
     
     @Override
     public boolean keyUp(int keycode) {
+    	if( keycode == Keys.ESCAPE )
+    		Gdx.app.exit();
+    	
     	Vector3 force = player.getForce();
     	
     	if( keycode == Keys.UP || keycode == Keys.DOWN )

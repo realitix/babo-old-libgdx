@@ -21,7 +21,7 @@ public class BaboViolentGame extends Game {
     static public String BABO_MODEL_NAME = "babo";
     static public final float SIZE_MAP_CELL = 200;
     static public final float BABO_DIAMETER = 50;
-    static public final float BABO_SPEED = 50;
+    static public final float BABO_SPEED = 20000;
 	public SpriteBatch batch;
 	public BitmapFont font;
 	

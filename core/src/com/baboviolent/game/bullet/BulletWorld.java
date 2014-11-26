@@ -1,5 +1,6 @@
 package com.baboviolent.game.bullet;
 
+import com.baboviolent.game.gameobject.GameObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;

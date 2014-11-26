@@ -64,7 +64,7 @@ public class GameScreen implements Screen {
 		
 		// Initialisation du monde
 		world = new BulletWorld();
-		populateWorld();
+		//populateWorld();
 		
 		// Initialisation du mode
 		mode = new DeathMatchMode(world, "test");
@@ -76,7 +76,8 @@ public class GameScreen implements Screen {
 		camera.transform = mode.getPlayer().getInstance().transform;
 		camera.lookAt(md.x/2, 0, md.y/2);
 		camera.position.set(md.x/2, md.x, md.y/2);
-		camera.far = 1000;
+		camera.far = 10000;
+		camera.near = 10;
 		
 		// Initialisation du controller
 		controller = new DesktopController(mode.getPlayer());

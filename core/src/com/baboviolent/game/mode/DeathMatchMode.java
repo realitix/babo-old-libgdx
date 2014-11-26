@@ -29,14 +29,14 @@ public class DeathMatchMode extends BaseMode {
         mapDimensions.set(d.x, d.z);
         
         // Ajout du joueur
-        player = new Babo("skin01");
-        world.add(player, 100, 100, 100));
+        player = new Babo("skin03");
+        world.add(player, 100, 100, 100);
     }
     
     /**
      * Analyse le monde
      */ 
 	public void update() {
-		super();
+		super.update();
 	}
 }

@@ -50,7 +50,7 @@ public class TextureLoader {
         
 	    for(int i = 0; i < map.getCells().size; i++) {
 	        String textureName = map.getCells().get(i).getTextureName();
-	        if( !textures.contains(textureName, false) && map.getCells().get(i).getType() == typeCell ) {
+	        if( !textures.contains(textureName, false) && map.getCells().get(i).getType().equals(typeCell) ) {
 	            textures.add(textureName);
 	        }
 	    }
@@ -88,6 +88,16 @@ public class TextureLoader {
     }
     
     /**
+     * Charge toutes les textures de la map
+     */ 
+	static public ObjectMap<String, Texture> getTexturesFromMap(final Map map) {
+		ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
+		textures.putAll(getTextures(listTextureMap(map, Map.TYPE_GROUND), TYPE_GROUND));
+		textures.putAll(getTextures(listTextureMap(map, Map.TYPE_WALL), TYPE_WALL));
+	    return textures;
+	}
+    
+    /**
      * Charge le material passé en paramètre avec le type
      */ 
     static public Material getMaterial(String name, String type) {
@@ -108,8 +118,8 @@ public class TextureLoader {
      */ 
 	static public ObjectMap<String, Material> getMaterialsFromMap(final Map map) {
 		ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
-		materials.putAll(getMaterials(listTextureMap(map, TYPE_GROUND), TYPE_GROUND));
-		materials.putAll(getMaterials(listTextureMap(map, TYPE_WALL), TYPE_WALL));
+		materials.putAll(getMaterials(listTextureMap(map, Map.TYPE_GROUND), TYPE_GROUND));
+		materials.putAll(getMaterials(listTextureMap(map, Map.TYPE_WALL), TYPE_WALL));
 	    return materials;
 	}
     

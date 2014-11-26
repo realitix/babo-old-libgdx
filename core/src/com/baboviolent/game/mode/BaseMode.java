@@ -13,6 +13,7 @@ public class BaseMode {
     public BaseMode(final BulletWorld world, final String mapName) {
         this.world = world;
         this.mapName = mapName;
+        mapDimensions = new Vector2();
     }
     
     public Babo getPlayer() {

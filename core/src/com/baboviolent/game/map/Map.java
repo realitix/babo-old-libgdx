@@ -7,11 +7,15 @@ import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.TextureLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
@@ -97,22 +101,22 @@ public class Map {
 	 * Transforme la map en modèle
 	 */ 
 	static public Model loadModel(Map map) {
-	    // Chargement des textures du sol
+		// @TODO Pouvoir vider les textures une fois le modèle détruit
 	    ObjectMap<String, Material> materials = TextureLoader.getMaterialsFromMap(map);
 	    
 	    // Création du mesh cellule
 		MeshBuilder meshBuilder = new MeshBuilder();
-		meshBuilder.begin(Usage.Position | Usage.Normal, GL20.GL_TRIANGLES);
+		meshBuilder.begin(Usage.Position | Usage.Normal | Usage.TextureCoordinates, GL20.GL_TRIANGLES);
+		MeshPart cellMeshPart = meshBuilder.part("ground", GL20.GL_TRIANGLES);
 		float s = BaboViolentGame.SIZE_MAP_CELL;
 		meshBuilder.rect(
 		    new Vector3(0, 0, 0),
-		    new Vector3(s, 0, 0),
-		    new Vector3(s, 0, s),
 		    new Vector3(0, 0, s),
+		    new Vector3(s, 0, s),
+		    new Vector3(s, 0, 0),
 		    new Vector3(0, 1, 0)
 		);
-		MeshPart cellMeshPart = meshBuilder.getMeshPart();
-        meshBuilder.end();
+		meshBuilder.end();
 		
 		// Création du model avec un modelbuilder et ajout de toutes les cellules
 		ModelBuilder modelBuilder = new ModelBuilder();
@@ -120,12 +124,13 @@ public class Map {
         
         Array<Cell> cells = map.getCells();
         for(int i = 0; i < map.getCells().size; i++) {
+        	Material material = materials.get(cells.get(i).getTextureName());
             Node node = modelBuilder.node();
             node.id = "cell"+i;
             node.translation.set(cells.get(i).getPosition());
             modelBuilder.part(
             	cellMeshPart, 
-            	materials.get(cells.get(i).getTextureName())
+            	material
             );
         }
         
