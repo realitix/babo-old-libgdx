@@ -22,10 +22,7 @@ public class DeathMatchMode extends BaseMode {
         BulletInstance worldInstance = world.add(Map.loadInstance(mapName));
         
         // Calcul des dimensions
-        BoundingBox bb = new BoundingBox();
-        worldInstance.calculateBoundingBox(bb);
-        Vector3 d = new Vector3();
-        bb.getDimensions(d);
+        Vector3 d = Utils.getInstanceDimensions(worldInstance);
         mapDimensions.set(d.x, d.z);
         
         // Ajout du joueur

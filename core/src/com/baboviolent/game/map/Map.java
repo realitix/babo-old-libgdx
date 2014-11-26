@@ -81,9 +81,31 @@ public class Map {
 	
 	/**
 	 * Créer une instance à partir d'un modèle'
+	 * Pour le shape, on va faire un Shape composé
+	 * On créer un rectangle de la taille de la map pour le sol
+	 * et un cube pour chaque mur
 	*/
 	static public BulletInstance loadInstance (Model model) {
-        btBvhTriangleMeshShape shape = new btBvhTriangleMeshShape(model.meshParts);
+		// Calcul de la taille
+		Vector3 dimensions = Utils.getModelDimensions(model);
+        
+        // On créé le shape composé
+		btCompoundShape shape = new btCompoundShape();
+		
+		// On ajoute le sol
+		// @TODO vérifier a quoi sert le deuxieme argument
+		shape.addChildShape(new Matrix4(), new btStaticPlaneShape(new Vector3(0, 1, 0), 10000));
+
+		// On ajoute les murs
+		float s = BaboViolentGame.SIZE_MAP_CELL;
+		Vector3 wallSize = new Vector3(s/2,s/2,s/2);
+		for( int i = 0; i < model.nodes.size; i++) {
+			if( model.nodes.get(i).parts.get(0).meshPart.id.equals(TYPE_WALL) ) {
+				shape.addChildShape(new Matrix4(), new btBoxShape(wallSize);
+			}
+		}
+		
+		// On créé l'instance
         btRigidBody.btRigidBodyConstructionInfo constructionInfo = 
             new btRigidBody.btRigidBodyConstructionInfo(0, null, shape);
             
@@ -107,7 +129,7 @@ public class Map {
 	    // Création du mesh cellule
 		MeshBuilder meshBuilder = new MeshBuilder();
 		meshBuilder.begin(Usage.Position | Usage.Normal | Usage.TextureCoordinates, GL20.GL_TRIANGLES);
-		MeshPart cellMeshPart = meshBuilder.part("ground", GL20.GL_TRIANGLES);
+		MeshPart groundMeshPart = meshBuilder.part(TYPE_GROUND, GL20.GL_TRIANGLES);
 		float s = BaboViolentGame.SIZE_MAP_CELL;
 		meshBuilder.rect(
 		    new Vector3(0, 0, 0),
@@ -129,7 +151,7 @@ public class Map {
             node.id = "cell"+i;
             node.translation.set(cells.get(i).getPosition());
             modelBuilder.part(
-            	cellMeshPart, 
+            	groundMeshPart, 
             	material
             );
         }

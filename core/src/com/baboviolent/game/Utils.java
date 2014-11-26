@@ -196,4 +196,20 @@ public class Utils {
 		hull.dispose();
 		return result;
 	}
+	
+	public static Vector3 getModelDimensions(final Model model) {
+	    Vector3 result = new Vector3();
+	    BoundingBox bb = new BoundingBox();
+        model.calculateBoundingBox(bb);
+        bb.getDimensions(result);
+        return result;
+	}
+
+    public static Vector3 getInstanceDimensions(final BulletInstance instance) {
+	    Vector3 result = new Vector3();
+	    BoundingBox bb = new BoundingBox();
+        instance.calculateBoundingBox(bb);
+        bb.getDimensions(result);
+        return result;
+	}
 }
