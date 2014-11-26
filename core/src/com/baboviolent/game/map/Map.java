@@ -127,10 +127,12 @@ public class Map {
 	    ObjectMap<String, Material> materials = TextureLoader.getMaterialsFromMap(map);
 	    
 	    // Création du mesh cellule
+	    float s = BaboViolentGame.SIZE_MAP_CELL;
 		MeshBuilder meshBuilder = new MeshBuilder();
 		meshBuilder.begin(Usage.Position | Usage.Normal | Usage.TextureCoordinates, GL20.GL_TRIANGLES);
+		
+		// Sol
 		MeshPart groundMeshPart = meshBuilder.part(TYPE_GROUND, GL20.GL_TRIANGLES);
-		float s = BaboViolentGame.SIZE_MAP_CELL;
 		meshBuilder.rect(
 		    new Vector3(0, 0, 0),
 		    new Vector3(0, 0, s),
@@ -138,6 +140,10 @@ public class Map {
 		    new Vector3(s, 0, 0),
 		    new Vector3(0, 1, 0)
 		);
+		
+		// Mur
+		MeshPart wallMeshPart = meshBuilder.part(TYPE_WALL, GL20.GL_TRIANGLES);
+		meshBuilder.box(s/2, s/2, s/2, s, s, s);
 		meshBuilder.end();
 		
 		// Création du model avec un modelbuilder et ajout de toutes les cellules
@@ -146,12 +152,16 @@ public class Map {
         
         Array<Cell> cells = map.getCells();
         for(int i = 0; i < map.getCells().size; i++) {
+        	MeshPart meshPart = groundMeshPart;
+        	if( map.getCells().get(i).getType().equals(TYPE_WALL) )
+        		meshPart = wallMeshPart;
+        		
         	Material material = materials.get(cells.get(i).getTextureName());
             Node node = modelBuilder.node();
             node.id = "cell"+i;
             node.translation.set(cells.get(i).getPosition());
             modelBuilder.part(
-            	groundMeshPart, 
+            	meshPart, 
             	material
             );
         }
