@@ -18,16 +18,13 @@ public class Shotgun extends GameObject {
 	
 	public Shotgun() {
 		super()
-	    initPhysics();
-        super.initInstance();
-	}
-	
-	private void initPhysics() {
+		name = "Shotgun";
 	    friction = 0;
         rollingFriction = 0;
         linearDamping = 0;
         angularDamping = 0;
         restitution = 0;
         mass = 1;
+        super.initInstance();
 	}
 }

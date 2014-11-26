@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
 public class GameObject {
+	protected String name;
     protected float friction;
     protected float rollingFriction;
     protected float linearDamping;
@@ -23,8 +24,7 @@ public class GameObject {
 	}
 	
 	protected void initInstance() {
-        String className = this.getClass().getSimpleName();
-        Model model = BaboModelLoader.getModel(className);
+        Model model = BaboModelLoader.getModel(name);
         shape = Utils.convexHullShapeFromModel(model);
         Vector3 localInertia = new Vector3();
         shape.calculateLocalInertia(mass, localInertia);

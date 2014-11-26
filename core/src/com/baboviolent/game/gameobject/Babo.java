@@ -20,18 +20,21 @@ public class Babo extends GameObject {
 	
 	public Babo(String skin) {
 	    this.skin = skin;
+	    name = "Babo";
 	    force = new Vector3();
-	    initPhysics();
-        initInstance();
-	}
-	
-	private void initPhysics() {
+	    
 	    friction = 0;
         rollingFriction = 0;
         linearDamping = 0;
         angularDamping = 0;
         restitution = 0;
         mass = 1;
+        
+        initInstance();
+	}
+	
+	private void initPhysics() {
+	    
 	}
 	
 	@Override
