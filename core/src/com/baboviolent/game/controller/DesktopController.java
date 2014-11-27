@@ -32,9 +32,8 @@ public class DesktopController extends BaseController {
         	direction.x = -1;
         if( keycode == Keys.RIGHT )
         	direction.x = 1;
-        System.out.println("Direction1: "+direction.toString());
+        
 		player.setDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
-		System.out.println("Direction2: "+direction.toString());
 		return true;
     }
     
@@ -45,9 +44,13 @@ public class DesktopController extends BaseController {
     	
     	Vector3 direction = player.getDirection();
     	
-    	if( keycode == Keys.UP || keycode == Keys.DOWN )
+    	if( keycode == Keys.UP && direction.z > 0 )
     		direction.z = 0;
-    	if( keycode == Keys.LEFT || keycode == Keys.RIGHT )
+    	if( keycode == Keys.DOWN && direction.z < 0 )
+    		direction.z = 0;	
+    	if( keycode == Keys.LEFT && direction.x < 0 )
+    		direction.x = 0;
+    	if( keycode == Keys.RIGHT && direction.x > 0 )
     		direction.x = 0;
     	
     	player.setDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));

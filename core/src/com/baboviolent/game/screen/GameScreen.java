@@ -75,7 +75,7 @@ public class GameScreen implements Screen {
 		world.add(mode.getMapInstance());
 		
 		 // Initialisation du joueur
-        player = (Babo) new Babo("skin03").translate(new Vector3(800, 20, 600));
+        player = (Babo) new Babo("skin22").translate(new Vector3(800, 20, 600));
         world.add(player);
         
         // Initialisation de l'arme

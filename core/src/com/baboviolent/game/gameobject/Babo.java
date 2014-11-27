@@ -46,6 +46,13 @@ public class Babo extends GameObject {
         restitution = 0;
         mass = 200;
         
+        friction = 3f;
+        rollingFriction = 1.2f;
+        linearDamping = 0;
+        angularDamping = 0.8f;
+        restitution = 0;
+        mass = 100;
+        
         initInstance();
 	}
 	
@@ -85,14 +92,16 @@ public class Babo extends GameObject {
     // TEST 3
     // Algo ici: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=8487&view=previous
     public void update() {
-    	float s1 = 10000;
-    	float s2 = 1000000;
+    	float s1 = 100000;
+    	float s2 = 10000000;
     	
     	// velocity_factor est ma direction
     	btRigidBody b = instance.body;
     	Vector3 maxVelocity = new Vector3(s1, s1, s1);
 		Vector3 velocity = direction.cpy().scl(maxVelocity);
 		Vector3 currentVelocity = b.getAngularVelocity(); // TODO: check ang vel component and coord. systs
+		currentVelocity.set(currentVelocity.z, currentVelocity.y, currentVelocity.x);
+		System.out.println("currentVelocity: "+currentVelocity.toString());
 		Vector3 deltaVelocity = velocity.sub(currentVelocity);
 		
 		float SIMD_EPSILON = 1.1920928955078125E-7f;
@@ -124,9 +133,10 @@ public class Babo extends GameObject {
 		trans.setTranslation(0, 0, 0);
 		//b.applyTorque(torque.rot(trans));
 		System.out.println("Torque: "+torque.toString());
-		System.out.println("Direction: "+direction.toString());
-		//b.applyTorque(torque);
-		b.applyTorque(new Vector3(0,0,100000).rot(trans));
+		
+		// Le vecteur torque indique sur quel axe on tourne. Si on veut aller vers x, il faut tourner sur l'axe z
+		b.applyTorque(new Vector3(torque.z, torque.y, torque.x));
+		//b.applyTorque(new Vector3(0,0,-1000000));
     }
     
     public void update2() {
