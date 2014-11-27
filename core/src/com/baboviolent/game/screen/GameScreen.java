@@ -83,9 +83,25 @@ public class GameScreen implements Screen {
 		camera = new ChaseCamera2(player);
 		
 		// Initialisation du controller
-		controller = new DesktopController(player);
+		controller = new DesktopController(this, player);
 		Gdx.input.setInputProcessor(controller);
     }
+    
+    public void mouseMoved(int screenX, int screenY) {
+    	Vector3 position = getPositionFromMouse(screenX, screenY);
+    	player.setTarget(position);
+    }
+    
+    /**
+	 * Renvoie la position sur la grille en fonction de la souris
+	 */ 
+	private Vector3 getPositionFromMouse(int screenX, int screenY) {
+		Vector3 position = new Vector3();
+		Ray ray = camera.getPickRay(screenX, screenY);
+        final float distance = -ray.origin.y / ray.direction.y;
+        position.set(ray.direction).scl(distance).add(ray.origin);
+        return position;
+	}
 	
 	@Override
 	public void render(float delta) {

@@ -12,8 +12,8 @@ import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 
 public class DesktopController extends BaseController {
 	
-	public DesktopController(Babo player) {
-		super(player);
+	public DesktopController(final Screen screen, Babo player) {
+		super(screen, player);
     }
 	
     @Override
@@ -49,5 +49,11 @@ public class DesktopController extends BaseController {
     	
     	player.setDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
     	return true;
+    }
+    
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+    	screen.mouseMoved(screenX, screenY);
+    	return false;
     }
 }

@@ -18,21 +18,23 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 public class Babo extends GameObject {
 	private String skin;
 	private Vector3 direction;
+	private Vector3 target;
 	
 	public Babo(String skin) {
 	    this.skin = skin;
 	    name = "Babo";
 	    type = GameObject.TYPE_BABO;
 	    direction = new Vector3();
+	    target = new Vector3();
 	    
 	    /**
 	     * ///best simulation results when friction is non-zero
-btScalar m_friction;
-///the m_rollingFriction prevents rounded shapes, such as spheres, cylinders and capsules from rolling forever.
-///See Bullet/Demos/RollingFrictionDemo for usage
-btScalar m_rollingFriction;
-///best simulation results using zero restitution.
-btScalar m_restitution;
+			btScalar m_friction;
+			///the m_rollingFriction prevents rounded shapes, such as spheres, cylinders and capsules from rolling forever.
+			///See Bullet/Demos/RollingFrictionDemo for usage
+			btScalar m_rollingFriction;
+			///best simulation results using zero restitution.
+			btScalar m_restitution;
 	     */
 	    friction = 1f;
         rollingFriction = 0.6f;
@@ -66,6 +68,15 @@ btScalar m_restitution;
     
     public Vector3 getDirection() {
         return direction.cpy();
+    }
+    
+    public Babo settarget(Vector3 f) {
+        target.set(f.x, f.y, f.z);
+        return this;
+    }
+    
+    public Vector3 getTarget() {
+        return target.cpy();
     }
     
     // TEST 3

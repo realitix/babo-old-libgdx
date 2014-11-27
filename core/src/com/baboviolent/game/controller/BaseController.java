@@ -11,8 +11,10 @@ import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 
 public class BaseController extends InputAdapter {
     protected Babo player;
+    protected final Screen screen;
     
-    public BaseController(Babo player) {
+    public BaseController(final Screen screen, Babo player) {
         this.player = player;
+        this.screen = screen;
     }
 }

@@ -38,7 +38,7 @@ public class ChaseCamera2 extends PerspectiveCamera {
 		float delta = Gdx.graphics.getDeltaTime();
 		Matrix4 transform = babo.getInstance().transform;
 	    transform.getTranslation(tmp);
-	    lookAt(tmp);
+	    lookAt(tmp.lerp(babo.getTarget(), 0.5f));
 	    position.set(tmp.x, tmp.y + desiredOffset.y, tmp.z + desiredOffset.z);
 		super.update();		
 	}
