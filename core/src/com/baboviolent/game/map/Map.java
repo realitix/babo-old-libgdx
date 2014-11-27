@@ -174,10 +174,10 @@ public class Map {
         Model model = modelBuilder.end();
         
         // Fusion des objets dans le modèle
-        ObjectMap<String, ModelData> modelDatas = BaboModelLoader.getModelDatasFromMap(map);
+        /*ObjectMap<String, ModelData> modelDatas = BaboModelLoader.getModelDatasFromMap(map);
         for (ObjectMap.Entry<String, ModelData> d : modelDatas.entries()) {
             Utils.mergeModelDataToModel(d.value, model);
-        }
+        }*/
         
         return model;
 	}

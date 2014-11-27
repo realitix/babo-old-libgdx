@@ -27,7 +27,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PerformanceCounter;
 
 public class BulletWorld implements Disposable {
-	
+	public static final int GRAVITY_START = 1000;
 	private final ObjectMap<String, BulletInstance.Constructor> constructors = new ObjectMap<String, BulletInstance.Constructor>();
 	protected final Array<BulletInstance> instances = new Array<BulletInstance>();
 	public final btCollisionConfiguration collisionConfiguration;
@@ -50,7 +50,7 @@ public class BulletWorld implements Disposable {
 	}
 
 	public BulletWorld () {
-		this(new Vector3(0, -10, 0));
+		this(new Vector3(0, -GRAVITY_START, 0));
 	}
 	
 	public void addConstructor (final String name, final BulletInstance.Constructor constructor) {

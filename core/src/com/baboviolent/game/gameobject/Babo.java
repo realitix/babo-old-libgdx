@@ -24,12 +24,21 @@ public class Babo extends GameObject {
 	    name = "Babo";
 	    force = new Vector3();
 	    
-	    friction = 0;
-        rollingFriction = 0;
+	    /**
+	     * ///best simulation results when friction is non-zero
+btScalar m_friction;
+///the m_rollingFriction prevents rounded shapes, such as spheres, cylinders and capsules from rolling forever.
+///See Bullet/Demos/RollingFrictionDemo for usage
+btScalar m_rollingFriction;
+///best simulation results using zero restitution.
+btScalar m_restitution;
+	     */
+	    friction = 1f;
+        rollingFriction = 0.6f;
         linearDamping = 0;
-        angularDamping = 0;
+        angularDamping = 0.5f;
         restitution = 0;
-        mass = 40;
+        mass = 200;
         
         initInstance();
 	}
@@ -40,8 +49,7 @@ public class Babo extends GameObject {
         Material material = TextureLoader.getMaterial(skin, TextureLoader.TYPE_SKIN);
         Model model =  new ModelBuilder().createSphere(
         	d, d, d, 10, 10,
-        	new Material(ColorAttribute.createDiffuse(Color.RED)),
-        	//material,
+        	material,
         	Usage.Position | Usage.Normal | Usage.TextureCoordinates);
         
         shape = new btSphereShape(d/2);
@@ -49,14 +57,14 @@ public class Babo extends GameObject {
         shape.calculateLocalInertia(mass, localInertia);
         
         ci = new btRigidBody.btRigidBodyConstructionInfo(mass, null, shape, localInertia);
-        /*ci.setFriction(friction);
+        ci.setFriction(friction);
         ci.setRollingFriction(rollingFriction);
         ci.setLinearDamping(linearDamping);
         ci.setAngularDamping(angularDamping);
-        ci.setRestitution(restitution);*/
-        /*btRigidBody body = new btRigidBody(ci);
-        body.setActivationState(Collision.DISABLE_DEACTIVATION);*/
-        instance = new BulletInstance(model, ci);
+        ci.setRestitution(restitution);
+        btRigidBody body = new btRigidBody(ci);
+        body.setActivationState(Collision.DISABLE_DEACTIVATION);
+        instance = new BulletInstance(model, body);
     }
     
     public Babo setForce(Vector3 f) {
@@ -70,8 +78,8 @@ public class Babo extends GameObject {
     
     public void update() {
         if( !force.isZero() ) {
-        	force.scl(Gdx.graphics.getDeltaTime()*100);
-            instance.body.applyCentralForce(force);
+    		force.scl(Gdx.graphics.getDeltaTime()*100);
+        	instance.body.applyCentralForce(force);
         }
     }
 }
