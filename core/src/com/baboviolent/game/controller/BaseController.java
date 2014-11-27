@@ -2,7 +2,9 @@ package com.baboviolent.game.controller;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.gameobject.Babo;
+import com.baboviolent.game.screen.GameScreen;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
@@ -11,9 +13,9 @@ import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 
 public class BaseController extends InputAdapter {
     protected Babo player;
-    protected final Screen screen;
+    protected final GameScreen screen;
     
-    public BaseController(final Screen screen, Babo player) {
+    public BaseController(final GameScreen screen, Babo player) {
         this.player = player;
         this.screen = screen;
     }

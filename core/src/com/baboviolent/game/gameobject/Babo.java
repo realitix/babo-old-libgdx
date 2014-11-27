@@ -10,10 +10,13 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.Collision;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.physics.bullet.linearmath.btTransform;
 
 public class Babo extends GameObject {
 	private String skin;
@@ -70,7 +73,7 @@ public class Babo extends GameObject {
         return direction.cpy();
     }
     
-    public Babo settarget(Vector3 f) {
+    public Babo setTarget(Vector3 f) {
         target.set(f.x, f.y, f.z);
         return this;
     }
@@ -82,10 +85,13 @@ public class Babo extends GameObject {
     // TEST 3
     // Algo ici: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=8487&view=previous
     public void update() {
+    	float s1 = 10000;
+    	float s2 = 1000000;
+    	
     	// velocity_factor est ma direction
     	btRigidBody b = instance.body;
-    	Vector3 maxVelocity = new Vector3(20, 20, 20);
-		Vector3 velocity = direction.scl(maxVelocity);
+    	Vector3 maxVelocity = new Vector3(s1, s1, s1);
+		Vector3 velocity = direction.cpy().scl(maxVelocity);
 		Vector3 currentVelocity = b.getAngularVelocity(); // TODO: check ang vel component and coord. systs
 		Vector3 deltaVelocity = velocity.sub(currentVelocity);
 		
@@ -96,9 +102,10 @@ public class Babo extends GameObject {
 			deltaVelocity.z = 0;
 		
 		// acceleration ne doit pas etre egal a zero sur aucun composant
-		Vector3 acceleration = new Vector3(100,100,100);
+		Vector3 acceleration = new Vector3(s2,s2,s2);
 		// Inverse de l'accélération
-		Vector3 ai = acceleration.cpy().set(1/ai.x, 1/ai.y, 1/ai.y);
+		Vector3 ai = acceleration.cpy();
+		ai.set(1/ai.x, 1/ai.y, 1/ai.y);
 		Vector3 dt = deltaVelocity.cpy().scl(ai);
 		Vector3 torque = acceleration.cpy(); /* TODO: times mass inertia */;
 		
@@ -112,27 +119,31 @@ public class Babo extends GameObject {
 		if (dt.z == 0) torque.z = 0;
 		else torque.z *= (dt.z < 0 ? -1 : 1);
 		
-		btTransform trans;
+		Matrix4 trans = new Matrix4();
 		b.getMotionState().getWorldTransform(trans);
-		trans.setOrigin(new Vector3(0,0,0)); // leave only rotation
-		b.applyTorque(trans.scl(torque));
+		trans.setTranslation(0, 0, 0);
+		//b.applyTorque(torque.rot(trans));
+		System.out.println("Torque: "+torque.toString());
+		System.out.println("Direction: "+direction.toString());
+		//b.applyTorque(torque);
+		b.applyTorque(new Vector3(0,0,100000).rot(trans));
     }
     
     public void update2() {
     	// @TODO essayer avec applyTorque pour un effet réaliste
-        /*if( !force.isZero() ) {
-    		force.scl(Gdx.graphics.getDeltaTime()*100);
-        	instance.body.applyCentralForce(force);
-        }*/
+        if( !direction.isZero() ) {
+    		direction.scl(Gdx.graphics.getDeltaTime()*100);
+        	instance.body.applyTorque(direction);
+        }
         
         // TEST 2
         // test avec la velocity
-        btRigidBody b = instance.body;
+        /*btRigidBody b = instance.body;
         if( !direction.isZero() ) {
         	b.setLinearVelocity(b.getLinearVelocity().scl(Gdx.graphics.getDeltaTime()));
         }
         
         // On enlève de la vitesse
-        b.setLinearVelocity(b.getLinearVelocity().scl(Gdx.graphics.getDeltaTime()));
+        b.setLinearVelocity(b.getLinearVelocity().scl(Gdx.graphics.getDeltaTime()));*/
     }
 }

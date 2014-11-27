@@ -7,6 +7,8 @@ import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.camera.ChaseCamera;
 import com.baboviolent.game.camera.ChaseCamera2;
 import com.baboviolent.game.controller.DesktopController;
+import com.baboviolent.game.gameobject.Babo;
+import com.baboviolent.game.gameobject.Shotgun;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.mode.BaseMode;
 import com.baboviolent.game.mode.DeathMatchMode;
@@ -32,6 +34,7 @@ import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.utils.Array;
@@ -68,16 +71,17 @@ public class GameScreen implements Screen {
 		world = new BulletWorld();
 		
 		// Initialisation du mode
-		mode = new DeathMatchMode(world, "test");
+		mode = new DeathMatchMode("test");
 		world.add(mode.getMapInstance());
 		
 		 // Initialisation du joueur
-        player = new Babo("skin03").translate(new Vector3(800, 1000, 800));
+        player = (Babo) new Babo("skin03").translate(new Vector3(800, 20, 600));
         world.add(player);
         
         // Initialisation de l'arme
-        Shotgun shotgun = new Shotgun();
-        world.attachWeaponToBabo(player, shotgun);
+        /*Shotgun shotgun = (Shotgun) new Shotgun().translate(new Vector3(800, 20, 600));
+        world.add(shotgun);
+        world.attachWeaponToBabo(player, shotgun);*/
 		
 		// Initialisation de la caméra
 		camera = new ChaseCamera2(player);

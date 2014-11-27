@@ -2,8 +2,10 @@ package com.baboviolent.game.controller;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.gameobject.Babo;
+import com.baboviolent.game.screen.GameScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
@@ -12,7 +14,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 
 public class DesktopController extends BaseController {
 	
-	public DesktopController(final Screen screen, Babo player) {
+	public DesktopController(final GameScreen screen, Babo player) {
 		super(screen, player);
     }
 	
@@ -27,11 +29,12 @@ public class DesktopController extends BaseController {
        	if( keycode == Keys.DOWN )
         	direction.z = -1;
         if( keycode == Keys.LEFT )
-        	direction.x = 1;
-        if( keycode == Keys.RIGHT )
         	direction.x = -1;
-
+        if( keycode == Keys.RIGHT )
+        	direction.x = 1;
+        System.out.println("Direction1: "+direction.toString());
 		player.setDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
+		System.out.println("Direction2: "+direction.toString());
 		return true;
     }
     

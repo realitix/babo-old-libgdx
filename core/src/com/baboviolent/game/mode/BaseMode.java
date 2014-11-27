@@ -1,7 +1,9 @@
 package com.baboviolent.game.mode;
 
+import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.gameobject.Babo;
+import com.baboviolent.game.map.Map;
 import com.badlogic.gdx.math.Vector2;
 
 public class BaseMode {
