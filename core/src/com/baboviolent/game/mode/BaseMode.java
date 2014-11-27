@@ -5,35 +5,13 @@ import com.baboviolent.game.gameobject.Babo;
 import com.badlogic.gdx.math.Vector2;
 
 public class BaseMode {
-    protected final BulletWorld world;
     protected final String mapName;
-    protected Babo player;
-    protected Vector2 mapDimensions;
     
-    public BaseMode(final BulletWorld world, final String mapName) {
-        this.world = world;
+    public BaseMode(final String mapName) {
         this.mapName = mapName;
-        mapDimensions = new Vector2();
     }
     
-    public Babo getPlayer() {
-        return player;
+    public BulletInstance getMapInstance() {
+        return Map.loadInstance(mapName);
     }
-    
-    public Vector2 getMapDimensions() {
-        return mapDimensions;
-    }
-    
-    /*
-     * Initialise le monde
-    */
-    public void initWorld() {
-    }
-    
-    /**
-     * Analyse le monde
-     */ 
-	public void update() {
-	    player.update();
-	}
 }

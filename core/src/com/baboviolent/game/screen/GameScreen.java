@@ -50,6 +50,7 @@ public class GameScreen implements Screen {
 	private AssetManager assets;
 	private boolean loading;
 	private BaseMode mode;
+	private Babo player;
 	private DesktopController controller;
 	
 	public GameScreen(final BaboViolentGame g) {
@@ -65,52 +66,22 @@ public class GameScreen implements Screen {
 		
 		// Initialisation du monde
 		world = new BulletWorld();
-		//populateWorld();
 		
 		// Initialisation du mode
 		mode = new DeathMatchMode(world, "test");
-		mode.initWorld();
-		Vector2 md = mode.getMapDimensions();
+		world.add(mode.getMapInstance());
+		
+		 // Initialisation du joueur
+        player = new Babo("skin03").translate(new Vector3(800, 1000, 800));
+        world.add(player);
 		
 		// Initialisation de la caméra
-		camera = new ChaseCamera2(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		camera.chase(mode.getPlayer());
-		camera.update();
+		camera = new ChaseCamera2(player);
 		
 		// Initialisation du controller
-		controller = new DesktopController(mode.getPlayer());
+		controller = new DesktopController(player);
 		Gdx.input.setInputProcessor(controller);
     }
-    
-    /**
-     * Ajoute les constructeurs dans le monde
-     */ 
-    /*private void populateWorld() {
-    	// Ajoute tous les modèles
-        ObjectMap<String, Model> models = BaboModelLoader.getModels();
-        for (ObjectMap.Entry<String, Model> m : models.entries()) {
-	        world.addConstructor(m.key, 
-	            new BulletInstance.Constructor(
-	                m.value,
-	                Utils.convexHullShapeFromModel(m.value),
-	                1f)
-	        );
-        }
-        
-        // Ajoute la babo construit manuellement
-        ModelBuilder mb = new ModelBuilder();
-        float d = BaboViolentGame.BABO_DIAMETER;
-        Model babo =  mb.createSphere(
-        	d, d, d, 10, 10,
-        	new Material(ColorAttribute.createDiffuse(Color.RED)), 
-        	Usage.Position | Usage.Normal);
-        world.addConstructor(BaboViolentGame.BABO_MODEL_NAME, 
-            new BulletInstance.Constructor(
-                babo,
-                new btSphereShape(d/2),
-                10f)
-        );
-    }*/
 	
 	@Override
 	public void render(float delta) {
@@ -135,7 +106,7 @@ public class GameScreen implements Screen {
 	private void update () {
 		camera.update();
 		world.update();
-		mode.update();
+		player.update();
 		
 		// La mise à jour du controller doit absolument etre faite
 		// après la mise à jour du monde bullet

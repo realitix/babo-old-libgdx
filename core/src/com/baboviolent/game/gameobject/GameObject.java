@@ -43,8 +43,9 @@ public class GameObject {
         return instance;
     }
     
-    public void translate(Vector3 v) {
+    public GameObject translate(Vector3 v) {
     	this.instance.body.translate(v);
     	this.instance.transform.translate(v);
+    	return this;
     }
 }
