@@ -74,6 +74,10 @@ public class GameScreen implements Screen {
 		 // Initialisation du joueur
         player = new Babo("skin03").translate(new Vector3(800, 1000, 800));
         world.add(player);
+        
+        // Initialisation de l'arme
+        Shotgun shotgun = new Shotgun();
+        world.attachWeaponToBabo(player, shotgun);
 		
 		// Initialisation de la caméra
 		camera = new ChaseCamera2(player);

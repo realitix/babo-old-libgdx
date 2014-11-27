@@ -79,6 +79,17 @@ public class BulletWorld implements Disposable {
 		world.addRigidBody(go.getInstance().body);
 		return go.getInstance();
 	}
+	
+	public void attachWeaponToBabo(GameObject babo, GameObject weapon) {
+	    // @TODO Comprendre cette partie!!
+	    btPoint2PointConstraint constraint = new btPoint2PointConstraint(
+	        babo.getInstance().body,
+	        weapon.getInstance().body,
+			new Vector3(0,0,0),
+			new Vector3(0,0,0));
+		// Le deuxieme argument désactive les collisions entre babo et l'arme
+		world.addConstraint(constraint, true);
+	}
 
 	public void render (final ModelBatch modelBatch, final Environment environment) {
 		modelBatch.render(instances, environment);
