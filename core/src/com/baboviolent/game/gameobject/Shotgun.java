@@ -19,6 +19,8 @@ public class Shotgun extends GameObject {
 	public Shotgun() {
 		super();
 		name = "Shotgun";
+		type = GameObject.TYPE_WEAPON;
+		
 	    friction = 0;
         rollingFriction = 0;
         linearDamping = 0;

@@ -22,6 +22,7 @@ public class Babo extends GameObject {
 	public Babo(String skin) {
 	    this.skin = skin;
 	    name = "Babo";
+	    type = GameObject.TYPE_BABO;
 	    direction = new Vector3();
 	    
 	    /**
@@ -53,16 +54,7 @@ btScalar m_restitution;
         	Usage.Position | Usage.Normal | Usage.TextureCoordinates);
         
         shape = new btSphereShape(d/2);
-        Vector3 localInertia = new Vector3();
-        shape.calculateLocalInertia(mass, localInertia);
-        
-        ci = new btRigidBody.btRigidBodyConstructionInfo(mass, null, shape, localInertia);
-        ci.setFriction(friction);
-        ci.setRollingFriction(rollingFriction);
-        ci.setLinearDamping(linearDamping);
-        ci.setAngularDamping(angularDamping);
-        ci.setRestitution(restitution);
-        btRigidBody body = new btRigidBody(ci);
+        btRigidBody body = super.initBody(shape);
         body.setActivationState(Collision.DISABLE_DEACTIVATION);
         instance = new BulletInstance(model, body);
     }
@@ -72,7 +64,7 @@ btScalar m_restitution;
         return this;
     }
     
-    public Vector3 getForce() {
+    public Vector3 getDirection() {
         return direction.cpy();
     }
     

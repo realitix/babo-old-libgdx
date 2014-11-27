@@ -21,17 +21,17 @@ public class DesktopController extends BaseController {
     	/**
     	 * La caméra est toujours pointé vers l'axe Z donc c'est facile'
     	 */ 
-        Vector3 force = player.getForce();
+        Vector3 direction = player.getDirection();
         if( keycode == Keys.UP )
-        	force.z = 1;
+        	direction.z = 1;
        	if( keycode == Keys.DOWN )
-        	force.z = -1;
+        	direction.z = -1;
         if( keycode == Keys.LEFT )
-        	force.x = 1;
+        	direction.x = 1;
         if( keycode == Keys.RIGHT )
-        	force.x = -1;
+        	direction.x = -1;
 
-		player.setForce(force.nor().scl(BaboViolentGame.BABO_SPEED));
+		player.setDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
 		return true;
     }
     
@@ -40,14 +40,14 @@ public class DesktopController extends BaseController {
     	if( keycode == Keys.ESCAPE )
     		Gdx.app.exit();
     	
-    	Vector3 force = player.getForce();
+    	Vector3 direction = player.getDirection();
     	
     	if( keycode == Keys.UP || keycode == Keys.DOWN )
-    		force.z = 0;
+    		direction.z = 0;
     	if( keycode == Keys.LEFT || keycode == Keys.RIGHT )
-    		force.x = 0;
+    		direction.x = 0;
     	
-    	player.setForce(force.nor().scl(BaboViolentGame.BABO_SPEED));
+    	player.setDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
     	return true;
     }
 }
