@@ -42,5 +42,8 @@ public class Shotgun extends Weapon {
 		instance.body.getMotionState().getWorldTransform(tmpM);
     	a.body.setCenterOfMassTransform(tmpM);
     	a.body.applyCentralImpulse(target.nor().scl(impulse));
+    	
+    	// On créer la force inverse
+    	instance.body.applyCentralImpulse(target.scl(-1/10);
 	}
 }
