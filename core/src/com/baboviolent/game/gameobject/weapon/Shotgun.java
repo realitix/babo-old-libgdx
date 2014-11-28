@@ -1,4 +1,4 @@
-package com.baboviolent.game.gameobject;
+package com.baboviolent.game.gameobject.weapon;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.BulletInstance;
@@ -14,12 +14,15 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
-public class Shotgun extends GameObject {
+public class Shotgun extends Weapon {
 	
-	public Shotgun() {
-		super();
+	public Shotgun(final BulletWorld world) {
+		super(world);
 		name = "Shotgun";
 		type = GameObject.TYPE_WEAPON;
+		ammo = new SmallCalibre();
+		impulse = 1000;
+		frequency = 500;
 		
 	    friction = 0;
         rollingFriction = 0;
@@ -28,5 +31,16 @@ public class Shotgun extends GameObject {
         restitution = 0;
         mass = 1;
         super.initInstance();
+	}
+	
+	public void shoot(Vector3 target) {
+		if( TimeUtils.millis() - lastShoot < frequency )
+			return;
+			
+		BulletInstance a = ammo.getInstance();
+		world.add(a);
+		instance.body.getMotionState().getWorldTransform(tmpM);
+    	a.body.setCenterOfMassTransform(tmpM);
+    	a.body.applyCentralImpulse(target.nor().scl(impulse));
 	}
 }

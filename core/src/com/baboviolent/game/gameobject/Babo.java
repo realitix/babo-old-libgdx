@@ -22,7 +22,7 @@ public class Babo extends GameObject {
 	private String skin;
 	private Vector3 direction;
 	private Vector3 target;
-	private GameObject weapon;
+	private Weapon weapon;
 	
 	public Babo(String skin) {
 	    this.skin = skin;
@@ -72,6 +72,11 @@ public class Babo extends GameObject {
         instance = new BulletInstance(model, body);
     }
     
+    public Babo shoot(Vector3 target) {
+    	weapon.shoot(target);
+        return this;
+    }
+    
     public Babo setDirection(Vector3 f) {
         direction.set(f.x, f.y, f.z);
         return this;
@@ -91,12 +96,12 @@ public class Babo extends GameObject {
         return target.cpy();
     }
     
-    public Babo setWeapon(GameObject weapon) {
+    public Babo setWeapon(Weapon weapon) {
         this.weapon = weapon;
         return this;
     }
     
-    public GameObject getWeapon() {
+    public Weapon getWeapon() {
         return weapon;
     }
     
@@ -104,7 +109,6 @@ public class Babo extends GameObject {
     	this.weapon.lookAt(target);
     }
     
-    // TEST 3
     // Algo ici: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=8487&view=previous
     public void update() {
     	float s1 = 10000000;
@@ -145,28 +149,8 @@ public class Babo extends GameObject {
 		Matrix4 trans = new Matrix4();
 		b.getMotionState().getWorldTransform(trans);
 		trans.setTranslation(0, 0, 0);
-		//b.applyTorque(torque.rot(trans));
 		
 		// Le vecteur torque indique sur quel axe on tourne. Si on veut aller vers x, il faut tourner sur l'axe z
 		b.applyTorque(new Vector3(torque.z, torque.y, torque.x));
-		//b.applyTorque(new Vector3(0,0,-1000000));
-    }
-    
-    public void update2() {
-    	// @TODO essayer avec applyTorque pour un effet réaliste
-        if( !direction.isZero() ) {
-    		direction.scl(Gdx.graphics.getDeltaTime()*100);
-        	instance.body.applyTorque(direction);
-        }
-        
-        // TEST 2
-        // test avec la velocity
-        /*btRigidBody b = instance.body;
-        if( !direction.isZero() ) {
-        	b.setLinearVelocity(b.getLinearVelocity().scl(Gdx.graphics.getDeltaTime()));
-        }
-        
-        // On enlève de la vitesse
-        b.setLinearVelocity(b.getLinearVelocity().scl(Gdx.graphics.getDeltaTime()));*/
     }
 }

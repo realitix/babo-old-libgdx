@@ -79,7 +79,7 @@ public class GameScreen implements Screen {
         world.add(player);
         
         // Initialisation de l'arme
-        Shotgun shotgun = (Shotgun) new Shotgun().translate(new Vector3(800, 20, 600));
+        Shotgun shotgun = new Shotgun();
         world.attachWeaponToBabo(player, shotgun);
 		
 		// Initialisation de la caméra
@@ -93,6 +93,11 @@ public class GameScreen implements Screen {
     public void mouseMoved(int screenX, int screenY) {
     	Vector3 position = getPositionFromMouse(screenX, screenY);
     	player.setTarget(position);
+    }
+    
+    public void mouseClicked(int screenX, int screenY) {
+    	Vector3 position = getPositionFromMouse(screenX, screenY);
+    	player.shoot(position);
     }
     
     /**

@@ -84,16 +84,18 @@ public class BulletWorld implements Disposable {
 		return go.getInstance();
 	}
 	
-	public void attachWeaponToBabo(Babo babo, GameObject weapon) {
+	public void attachWeaponToBabo(Babo babo, Weapon weapon) {
+	    weapon.translate(babo.body.getCenterOfMassPosition());
 		add(weapon);
-	    // @TODO Comprendre cette partie!!
-	    // Hypothese, Respectivement pour le 2 le vecteur 1 est le point sur le body 1
+		
+	    // Respectivement pour le 2 le vecteur 1 est le point sur le body 1
 	    btPoint2PointConstraint constraint = new btPoint2PointConstraint(
 	        babo.getInstance().body,
 	        weapon.getInstance().body,
 			new Vector3(0,0,0),
 			new Vector3(0,0,0));
 	    constraints.add(constraint);
+	    
 		// Le deuxieme argument désactive les collisions entre babo et l'arme
 		world.addConstraint(constraint, true);
 		

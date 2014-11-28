@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 public class GameObject {
     public static final int TYPE_WEAPON = 1;
     public static final int TYPE_BABO = 2;
+    public static final int TYPE_AMMO = 3;
     
 	protected String name;
 	protected int type;
@@ -23,6 +24,7 @@ public class GameObject {
     protected float angularDamping;
     protected float restitution;
     protected float mass;
+    protected Model model;
 	protected BulletInstance instance;
 	protected btCollisionShape shape;
 	protected btRigidBody.btRigidBodyConstructionInfo ci;
@@ -36,8 +38,12 @@ public class GameObject {
 	public GameObject() {
 	}
 	
+	protected void initModel() {
+	    model = BaboModelLoader.getModel(name);
+	}
+	
 	protected void initInstance() {
-        Model model = BaboModelLoader.getModel(name);
+        initModel(); 
         shape = Utils.convexHullShapeFromModel(model);
         btRigidBody body = initBody(shape);
         
