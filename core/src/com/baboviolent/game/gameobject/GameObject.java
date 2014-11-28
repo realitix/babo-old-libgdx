@@ -27,9 +27,11 @@ public class GameObject {
 	protected btCollisionShape shape;
 	protected btRigidBody.btRigidBodyConstructionInfo ci;
 	protected btRigidBody body;
-	protected Vector3 tmpV = new Vector3();
+	protected Vector3 tmpV3 = new Vector3();
 	protected Vector2 tmpV2 = new Vector2();
 	protected Vector3 up = new Vector3(0,1,0);
+	protected Matrix4 tmpM = new Matrix4();
+	protected Quaternion tmpQ = new Quaternion();
 	
 	public GameObject() {
 	}
@@ -71,16 +73,12 @@ public class GameObject {
     }
     
     public void lookAt(Vector3 t) {
-    	instance.transform.getTranslation(tmpV);
-    	tmpV.sub(t);
-    	tmpV2.set(tmpV.x, tmpV.z);
-    	float degree = tmpV2.angle();
-    	
-    	Quaternion quat = new Quaternion();
-    	quat.set(up, degree);
-    	Matrix4 transBody = new Matrix4();
-    	instance.body.getMotionState().getWorldTransform(transBody);
-    	transBody.rotate(quat);
-    	body.setCenterOfMassTransform(transBody);
+    	instance.body.getMotionState().getWorldTransform(tmpM);
+    	tmpM.getTranslation(tmpV3);
+    	tmpV3.sub(t);
+    	tmpV2.set(tmpV3.x, tmpV3.z);
+    	tmpQ.idt().set(up, tmpV2.angle());
+    	tmpM.rotate(tmpQ);
+    	instance.body.setCenterOfMassTransform(tmpM);
     }
 }

@@ -85,6 +85,7 @@ public class BulletWorld implements Disposable {
 	}
 	
 	public void attachWeaponToBabo(Babo babo, GameObject weapon) {
+		add(weapon);
 	    // @TODO Comprendre cette partie!!
 	    // Hypothese, Respectivement pour le 2 le vecteur 1 est le point sur le body 1
 	    btPoint2PointConstraint constraint = new btPoint2PointConstraint(
