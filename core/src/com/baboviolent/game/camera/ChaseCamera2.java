@@ -25,6 +25,7 @@ public class ChaseCamera2 extends PerspectiveCamera {
 		super(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		this.far = 10000;
 		this.near = 10;
+		this.up.set(0,1,0);
 		loaded = false;
 		init(babo);
 		update();
@@ -42,12 +43,15 @@ public class ChaseCamera2 extends PerspectiveCamera {
 		if( !loaded )
 			return;
 		
+		this.up.set(0,1,0);
 		float delta = Gdx.graphics.getDeltaTime();
 		Matrix4 transform = babo.getInstance().transform;
 	    transform.getTranslation(tmp);
-	    //lookAt(tmp.lerp(babo.getTarget(), 0.5f));
-	    lookAt(tmp);
-	    position.set(tmp.x, tmp.y + desiredOffset.y, tmp.z + desiredOffset.z);
+	    //lookAt(tmp);
+	    Vector3 tmp2 = tmp.cpy();
+	    tmp2.lerp(babo.getTarget(), 0.1f);
+	    position.set(tmp2.x, tmp.y + desiredOffset.y, tmp2.z + desiredOffset.z);
+	    lookAt(tmp2);
 		super.update();		
 	}
 }

@@ -1,5 +1,6 @@
 package com.baboviolent.game.bullet;
 
+import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btDynamicsWorld;
 import com.badlogic.gdx.physics.bullet.dynamics.btPoint2PointConstraint;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
+import com.badlogic.gdx.physics.bullet.dynamics.btTypedConstraint;
 import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
@@ -31,6 +33,7 @@ public class BulletWorld implements Disposable {
 	public static final int GRAVITY_START = 1000;
 	private final ObjectMap<String, BulletInstance.Constructor> constructors = new ObjectMap<String, BulletInstance.Constructor>();
 	protected final Array<BulletInstance> instances = new Array<BulletInstance>();
+	private Array<btTypedConstraint> constraints = new Array<btTypedConstraint>();
 	public final btCollisionConfiguration collisionConfiguration;
 	public final btCollisionDispatcher dispatcher;
 	public final btBroadphaseInterface broadphase;
@@ -81,7 +84,7 @@ public class BulletWorld implements Disposable {
 		return go.getInstance();
 	}
 	
-	public void attachWeaponToBabo(GameObject babo, GameObject weapon) {
+	public void attachWeaponToBabo(Babo babo, GameObject weapon) {
 	    // @TODO Comprendre cette partie!!
 	    // Hypothese, Respectivement pour le 2 le vecteur 1 est le point sur le body 1
 	    btPoint2PointConstraint constraint = new btPoint2PointConstraint(
@@ -89,8 +92,12 @@ public class BulletWorld implements Disposable {
 	        weapon.getInstance().body,
 			new Vector3(0,0,0),
 			new Vector3(0,0,0));
+	    constraints.add(constraint);
 		// Le deuxieme argument désactive les collisions entre babo et l'arme
 		world.addConstraint(constraint, true);
+		
+		// On ajoute le weapon dans le babo
+		babo.setWeapon(weapon);
 	}
 
 	public void render (final ModelBatch modelBatch, final Environment environment) {

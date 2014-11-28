@@ -79,9 +79,9 @@ public class GameScreen implements Screen {
         world.add(player);
         
         // Initialisation de l'arme
-        /*Shotgun shotgun = (Shotgun) new Shotgun().translate(new Vector3(800, 20, 600));
+        Shotgun shotgun = (Shotgun) new Shotgun().translate(new Vector3(800, 20, 600));
         world.add(shotgun);
-        world.attachWeaponToBabo(player, shotgun);*/
+        world.attachWeaponToBabo(player, shotgun);
 		
 		// Initialisation de la caméra
 		camera = new ChaseCamera2(player);

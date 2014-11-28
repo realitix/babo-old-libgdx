@@ -22,6 +22,7 @@ public class Babo extends GameObject {
 	private String skin;
 	private Vector3 direction;
 	private Vector3 target;
+	private GameObject weapon;
 	
 	public Babo(String skin) {
 	    this.skin = skin;
@@ -46,12 +47,12 @@ public class Babo extends GameObject {
         restitution = 0;
         mass = 200;
         
-        friction = 3f;
-        rollingFriction = 1.2f;
+        friction = 5f;
+        rollingFriction = 7f;
         linearDamping = 0;
-        angularDamping = 0.8f;
-        restitution = 0;
-        mass = 100;
+        angularDamping = 0.9f;
+        restitution = 0.5f;
+        mass = 2000;
         
         initInstance();
 	}
@@ -82,6 +83,7 @@ public class Babo extends GameObject {
     
     public Babo setTarget(Vector3 f) {
         target.set(f.x, f.y, f.z);
+        updateWeapon();
         return this;
     }
     
@@ -89,11 +91,24 @@ public class Babo extends GameObject {
         return target.cpy();
     }
     
+    public Babo setWeapon(GameObject weapon) {
+        this.weapon = weapon;
+        return this;
+    }
+    
+    public GameObject getWeapon() {
+        return weapon;
+    }
+    
+    public void updateWeapon() {
+    	this.weapon.lookAt(target);
+    }
+    
     // TEST 3
     // Algo ici: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=8487&view=previous
     public void update() {
-    	float s1 = 100000;
-    	float s2 = 10000000;
+    	float s1 = 10000000;
+    	float s2 = 200000000;
     	
     	// velocity_factor est ma direction
     	btRigidBody b = instance.body;
@@ -101,7 +116,6 @@ public class Babo extends GameObject {
 		Vector3 velocity = direction.cpy().scl(maxVelocity);
 		Vector3 currentVelocity = b.getAngularVelocity(); // TODO: check ang vel component and coord. systs
 		currentVelocity.set(currentVelocity.z, currentVelocity.y, currentVelocity.x);
-		System.out.println("currentVelocity: "+currentVelocity.toString());
 		Vector3 deltaVelocity = velocity.sub(currentVelocity);
 		
 		float SIMD_EPSILON = 1.1920928955078125E-7f;
@@ -132,7 +146,6 @@ public class Babo extends GameObject {
 		b.getMotionState().getWorldTransform(trans);
 		trans.setTranslation(0, 0, 0);
 		//b.applyTorque(torque.rot(trans));
-		System.out.println("Torque: "+torque.toString());
 		
 		// Le vecteur torque indique sur quel axe on tourne. Si on veut aller vers x, il faut tourner sur l'axe z
 		b.applyTorque(new Vector3(torque.z, torque.y, torque.x));
