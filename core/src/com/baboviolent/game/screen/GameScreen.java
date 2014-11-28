@@ -8,7 +8,7 @@ import com.baboviolent.game.camera.ChaseCamera;
 import com.baboviolent.game.camera.ChaseCamera2;
 import com.baboviolent.game.controller.DesktopController;
 import com.baboviolent.game.gameobject.Babo;
-import com.baboviolent.game.gameobject.Shotgun;
+import com.baboviolent.game.gameobject.weapon.Shotgun;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.mode.BaseMode;
 import com.baboviolent.game.mode.DeathMatchMode;
@@ -79,7 +79,7 @@ public class GameScreen implements Screen {
         world.add(player);
         
         // Initialisation de l'arme
-        Shotgun shotgun = new Shotgun();
+        Shotgun shotgun = new Shotgun(world);
         world.attachWeaponToBabo(player, shotgun);
 		
 		// Initialisation de la caméra

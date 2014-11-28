@@ -2,6 +2,7 @@ package com.baboviolent.game.gameobject;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.BulletInstance;
+import com.baboviolent.game.gameobject.weapon.Weapon;
 import com.baboviolent.game.loader.TextureLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

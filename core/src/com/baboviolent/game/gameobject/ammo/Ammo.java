@@ -2,6 +2,7 @@ package com.baboviolent.game.gameobject.ammo;
 
 import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletInstance;
+import com.baboviolent.game.gameobject.GameObject;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
@@ -16,7 +17,7 @@ public class Ammo extends GameObject {
 		super();
 	}
 	
-	protected init() {
+	protected void init() {
 	    super.initModel();
 	    shape = Utils.convexHullShapeFromModel(model);
 	}

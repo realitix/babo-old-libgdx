@@ -2,6 +2,7 @@ package com.baboviolent.game.bullet;
 
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
+import com.baboviolent.game.gameobject.weapon.Weapon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -84,8 +85,9 @@ public class BulletWorld implements Disposable {
 		return go.getInstance();
 	}
 	
+	
 	public void attachWeaponToBabo(Babo babo, Weapon weapon) {
-	    weapon.translate(babo.body.getCenterOfMassPosition());
+	    weapon.translate(babo.getInstance().body.getCenterOfMassPosition());
 		add(weapon);
 		
 	    // Respectivement pour le 2 le vecteur 1 est le point sur le body 1

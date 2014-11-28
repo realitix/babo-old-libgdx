@@ -2,6 +2,9 @@ package com.baboviolent.game.gameobject.weapon;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.BulletInstance;
+import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.gameobject.GameObject;
+import com.baboviolent.game.gameobject.ammo.SmallCalibre;
 import com.baboviolent.game.loader.TextureLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -13,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class Shotgun extends Weapon {
 	
@@ -21,7 +25,7 @@ public class Shotgun extends Weapon {
 		name = "Shotgun";
 		type = GameObject.TYPE_WEAPON;
 		ammo = new SmallCalibre();
-		impulse = 1000;
+		impulse = 3000;
 		frequency = 500;
 		
 	    friction = 0;
@@ -41,9 +45,10 @@ public class Shotgun extends Weapon {
 		world.add(a);
 		instance.body.getMotionState().getWorldTransform(tmpM);
     	a.body.setCenterOfMassTransform(tmpM);
+    	target.y = 0;
     	a.body.applyCentralImpulse(target.nor().scl(impulse));
     	
     	// On créer la force inverse
-    	instance.body.applyCentralImpulse(target.scl(-1/10);
+    	instance.body.applyCentralImpulse(target.scl(-100));
 	}
 }

@@ -1,5 +1,7 @@
 package com.baboviolent.game.gameobject.ammo;
 
+import com.baboviolent.game.gameobject.GameObject;
+
 public class SmallCalibre extends Ammo {
 	public SmallCalibre() {
 		super();

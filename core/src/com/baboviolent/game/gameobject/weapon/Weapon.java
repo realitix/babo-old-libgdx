@@ -2,6 +2,9 @@ package com.baboviolent.game.gameobject.weapon;
 
 import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletInstance;
+import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.gameobject.GameObject;
+import com.baboviolent.game.gameobject.ammo.Ammo;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
