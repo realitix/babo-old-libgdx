@@ -89,7 +89,6 @@ public class Babo extends GameObject {
     
     public Babo setTarget(Vector3 f) {
         target.set(f.x, f.y, f.z);
-        updateWeapon();
         return this;
     }
     
@@ -106,12 +105,9 @@ public class Babo extends GameObject {
         return weapon;
     }
     
-    public void updateWeapon() {
-    	this.weapon.lookAt(target);
-    }
-    
     // Algo ici: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=8487&view=previous
     public void update() {
+    	this.weapon.lookAt(target);
     	float s1 = 10000000;
     	float s2 = 200000000;
     	
