@@ -16,6 +16,7 @@ public class GameObject {
     public static final int TYPE_BABO = 2;
     public static final int TYPE_AMMO = 3;
     
+
 	protected String name;
 	protected int type;
     protected float friction;

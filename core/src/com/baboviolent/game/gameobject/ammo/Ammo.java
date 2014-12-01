@@ -26,11 +26,15 @@ public class Ammo extends GameObject {
 	    
 	    // Empeche la balle de traverser les murs
         // http://www.bulletphysics.org/mediawiki-1.5.8/index.php?title=Anti_tunneling_by_Motion_Clamping
-        btCollisionShape = body.getcollisionShape();
+        btCollisionShape = body.getCollisionShape();
         float radius;
         shape.getBoundingSphere(new Vector3(), radius);
         body.setCcdMotionThreshold(radius);
         body.setCcdSweptSphereRadius(radius/2);
+        
+        // Permet de detecter les contacts de la balle avec les babos
+		body.setCollisionFlags(body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
+		body.setContactCallbackFilter(BulletContactListener.PLAYER_FLAG);
 	}
 	
 	public BulletInstance getInstance() {

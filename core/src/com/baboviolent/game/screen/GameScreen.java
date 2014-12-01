@@ -53,8 +53,10 @@ public class GameScreen implements Screen {
 	private AssetManager assets;
 	private boolean loading;
 	private BaseMode mode;
+	private Array<Babo> babos = new Array<Babo>();
 	private Babo player;
 	private DesktopController controller;
+	private BulletContactListener bulletContactListener;
 	
 	public GameScreen(final BaboViolentGame g) {
 		Bullet.init();
@@ -77,6 +79,7 @@ public class GameScreen implements Screen {
 		 // Initialisation du joueur
         player = (Babo) new Babo("skin22").translate(new Vector3(800, 20, 600));
         world.add(player);
+        babos.add(player);
         
         // Initialisation de l'arme
         Shotgun shotgun = new Shotgun(world);
@@ -88,6 +91,9 @@ public class GameScreen implements Screen {
 		// Initialisation du controller
 		controller = new DesktopController(this, player);
 		Gdx.input.setInputProcessor(controller);
+		
+		// On créé le contact listener de bullet
+		bulletContactListener = new BulletContactListener(babos);
     }
     
     public void mouseMoved(int screenX, int screenY) {
@@ -180,6 +186,7 @@ public class GameScreen implements Screen {
 
 	@Override
 	public void dispose() {
+		bulletContactListener.dispose();
 		world.dispose();
 		world = null;
 

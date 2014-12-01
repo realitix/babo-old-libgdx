@@ -20,6 +20,8 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.linearmath.btTransform;
 
 public class Babo extends GameObject {
+    private static int idIncrement = 1;
+    private int id = idIncrement++;
 	private String skin;
 	private Vector3 direction;
 	private Vector3 target;
@@ -70,7 +72,15 @@ public class Babo extends GameObject {
         
         shape = new btSphereShape(d/2);
         btRigidBody body = super.initBody(shape);
+        
+        // Empeche la desactvation des collisions
         body.setActivationState(Collision.DISABLE_DEACTIVATION);
+        
+        // Detection de la collision entre les balles et les babos
+        body.setUserData(id);
+        body.setContactCallbackFlag(BulletContactListener.PLAYER_FLAG);
+        
+        // création de l'instance
         instance = new BulletInstance(model, body);
     }
     
@@ -109,6 +119,10 @@ public class Babo extends GameObject {
     
     public Weapon getWeapon() {
         return weapon;
+    }
+    
+    public int getId() {
+        return id;
     }
     
     public void update(Vector3 target) {
