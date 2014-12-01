@@ -94,6 +94,11 @@ public class GameScreen implements Screen {
 		
 		// On créé le contact listener de bullet
 		bulletContactListener = new BulletContactListener(babos);
+		
+		// Creation d'un deuxieme joueur pour tester
+		Babo b2 = new Babo("skin22").translate(new Vector3(800, 20, 1000));
+        world.add(b2);
+        babos.add(b2);
     }
     
     public void mouseMoved(int screenX, int screenY) {
