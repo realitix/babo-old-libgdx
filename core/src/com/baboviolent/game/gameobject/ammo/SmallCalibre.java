@@ -15,6 +15,8 @@ public class SmallCalibre extends Ammo {
         angularDamping = 0;
         restitution = 0;
         mass = 1;
+        
+        expireTime = 3000;
         super.init();
 	}
 }

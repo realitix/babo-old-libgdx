@@ -40,20 +40,20 @@ public class Shotgun extends Weapon {
 	public void shoot(Vector3 target) {
 		if( TimeUtils.millis() - lastShoot < frequency )
 			return;
-		lastShoot = TimeUtils.millis();
 		
+		tmpV.set(target);
+		tmpV.y = 0;
+		
+		lastShoot = TimeUtils.millis();
 		BulletInstance a = ammo.getInstance();
 		world.add(a);
 		instance.body.getMotionState().getWorldTransform(tmpM);
     	a.body.setCenterOfMassTransform(tmpM);
-    	target.y = 0;
-    	Vector3 test = new Vector3();
-    	test.set(target);
-    	test.sub(a.body.getCenterOfMassPosition());
-    	a.body.applyCentralImpulse(test.nor().scl(impulse));
+    	tmpV.sub(a.body.getCenterOfMassPosition()).nor().scl(impulse);
+    	a.body.applyCentralImpulse(tmpV);
     	
     	// On créer la force inverse
-    	instance.body.applyCentralImpulse(test.scl(-100));
+    	instance.body.applyCentralImpulse(tmpV.scl(-100));
 	}
 	
 	public void stopShoot() {

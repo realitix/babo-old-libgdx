@@ -81,18 +81,6 @@ public class GameObject {
     	return this;
     }
     
-    public float getCurrentAngle() {
-    	instance.body.getMotionState().getWorldTransform(tmpM);
-    	tmpM.getRotation(tmpQ, true);
-    	Vector3 currentAngleAxis = new Vector3();
-    	float currentAngle = tmpQ.getAxisAngle(currentAngleAxis);
-    	if( currentAngleAxis.y < 0 ) {
-    		currentAngle = 360 - currentAngle;
-    	}
-    	currentAngle = (360 - currentAngle + 180) %360;
-    	return currentAngle;
-    }
-    
     public void lookAt(Vector3 t) {
     	instance.body.getMotionState().getWorldTransform(tmpM);
     	tmpM.getTranslation(tmpV3);

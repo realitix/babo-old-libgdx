@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.Disposable;
 public class BulletInstance extends ModelInstance implements Disposable {
 	public BulletInstance.MotionState motionState;
 	public btRigidBody body;
+	private long expire; // Moment de l'expiration en milliseconde
 	
 	public BulletInstance (Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
 		super(model);
@@ -40,6 +41,15 @@ public class BulletInstance extends ModelInstance implements Disposable {
     	motionState = new BulletInstance.MotionState(this.transform);
 		body = new btRigidBody(constructionInfo);
 		body.setMotionState(motionState);
+    }
+    
+    public BulletInstance setExpire(long e) {
+        expire = e;
+        return this;
+    }
+    
+    public long getExpire() {
+        return expire;
     }
 
 	@Override

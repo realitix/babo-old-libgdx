@@ -34,6 +34,7 @@ public class BulletWorld implements Disposable {
 	public static final int GRAVITY_START = 1000;
 	private final ObjectMap<String, BulletInstance.Constructor> constructors = new ObjectMap<String, BulletInstance.Constructor>();
 	protected final Array<BulletInstance> instances = new Array<BulletInstance>();
+	protected final Array<BulletInstance> instancesToExpire = new Array<BulletInstance>();
 	private Array<btTypedConstraint> constraints = new Array<btTypedConstraint>();
 	public final btCollisionConfiguration collisionConfiguration;
 	public final btCollisionDispatcher dispatcher;
@@ -76,15 +77,17 @@ public class BulletWorld implements Disposable {
 	public BulletInstance add (final BulletInstance instance) {
 		instances.add(instance);
 		world.addRigidBody(instance.body);
+		
+		if( instance.getExpire() > TimeUtils.millis() ) {
+			instancesToExpire.add(instance);
+		}
+		
 		return instance;
 	}
 	
 	public BulletInstance add (final GameObject go) {
-		instances.add(go.getInstance());
-		world.addRigidBody(go.getInstance().body);
-		return go.getInstance();
+		return add(go.getInstance());
 	}
-	
 	
 	public void attachWeaponToBabo(Babo babo, Weapon weapon) {
 	    weapon.translate(babo.getInstance().body.getCenterOfMassPosition());
@@ -104,12 +107,27 @@ public class BulletWorld implements Disposable {
 		// On ajoute le weapon dans le babo
 		babo.setWeapon(weapon);
 	}
+	
+	/*
+	 * Supprime une instance
+	*/
+	public void remove (BulletInstance instance) {
+		instance.dispose();
+		instances.removeValue(instance, true);
+	}
 
 	public void render (final ModelBatch modelBatch, final Environment environment) {
 		modelBatch.render(instances, environment);
 	}
 
 	public void update () {
+		for( int i = 0; i < instancesToExpire.size; i++) {
+			if( instancesToExpire.get(i).getExpire() < TimeUtils.millis() ) {
+				remove(instancesToExpire.get(i));
+				instancesToExpire.removeIndex(i);
+			}
+		}
+		
 		world.stepSimulation(Gdx.graphics.getDeltaTime(), maxSubSteps, fixedTimeStep);
 	}
 
