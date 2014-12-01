@@ -18,7 +18,7 @@ public class Weapon extends GameObject {
 	protected final BulletWorld world;
 	protected Ammo ammo;
 	protected float impulse; // Puissance de la balle
-	protected float frequency; // Temps en millisecond entre deu tirs
+	protected float frequency; // Temps en millisecond entre deux tirs
 	protected long lastShoot;
 	
 	public Weapon(final BulletWorld world) {

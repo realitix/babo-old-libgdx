@@ -96,8 +96,11 @@ public class GameScreen implements Screen {
     }
     
     public void mouseClicked(int screenX, int screenY) {
-    	Vector3 position = getPositionFromMouse(screenX, screenY);
-    	player.shoot(position);
+    	player.shoot();
+    }
+    
+    public void mouseReleased(int screenX, int screenY) {
+    	player.stopShoot();
     }
     
     /**
@@ -109,6 +112,10 @@ public class GameScreen implements Screen {
         final float distance = -ray.origin.y / ray.direction.y;
         position.set(ray.direction).scl(distance).add(ray.origin);
         return position;
+	}
+
+	private Vector3 getPositionFromMouse() {
+		return getPositionFromMouse(Gdx.input.getX(), Gdx.input.getY());
 	}
 	
 	@Override
@@ -134,7 +141,7 @@ public class GameScreen implements Screen {
 	private void update () {
 		camera.update();
 		world.update();
-		player.update();
+		player.update(getPositionFromMouse());
 		
 		// La mise à jour du controller doit absolument etre faite
 		// après la mise à jour du monde bullet

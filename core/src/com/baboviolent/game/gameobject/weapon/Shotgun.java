@@ -26,7 +26,7 @@ public class Shotgun extends Weapon {
 		type = GameObject.TYPE_WEAPON;
 		ammo = new SmallCalibre();
 		impulse = 3000;
-		frequency = 500;
+		frequency = 100;
 		
 	    friction = 0;
         rollingFriction = 0;
@@ -40,15 +40,23 @@ public class Shotgun extends Weapon {
 	public void shoot(Vector3 target) {
 		if( TimeUtils.millis() - lastShoot < frequency )
 			return;
-			
+		lastShoot = TimeUtils.millis();
+		
 		BulletInstance a = ammo.getInstance();
 		world.add(a);
 		instance.body.getMotionState().getWorldTransform(tmpM);
     	a.body.setCenterOfMassTransform(tmpM);
     	target.y = 0;
-    	a.body.applyCentralImpulse(target.nor().scl(impulse));
+    	Vector3 test = new Vector3();
+    	test.set(target);
+    	test.sub(a.body.getCenterOfMassPosition());
+    	a.body.applyCentralImpulse(test.nor().scl(impulse));
     	
     	// On créer la force inverse
-    	instance.body.applyCentralImpulse(target.scl(-100));
+    	instance.body.applyCentralImpulse(test.scl(-100));
+	}
+	
+	public void stopShoot() {
+		
 	}
 }

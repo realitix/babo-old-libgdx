@@ -24,6 +24,7 @@ public class Babo extends GameObject {
 	private Vector3 direction;
 	private Vector3 target;
 	private Weapon weapon;
+	private boolean shooting = false;
 	
 	public Babo(String skin) {
 	    this.skin = skin;
@@ -73,8 +74,13 @@ public class Babo extends GameObject {
         instance = new BulletInstance(model, body);
     }
     
-    public Babo shoot(Vector3 target) {
-    	weapon.shoot(target);
+    public Babo shoot() {
+    	shooting = true;
+        return this;
+    }
+    
+    public Babo stopShoot() {
+    	shooting = false;
         return this;
     }
     
@@ -105,9 +111,18 @@ public class Babo extends GameObject {
         return weapon;
     }
     
+    public void update(Vector3 target) {
+    	this.target.set(target);
+    	this.weapon.lookAt(target);
+    	if( shooting ) {
+    		weapon.shoot(target);
+    	}    	
+    	
+    	this.update();
+    }
+    
     // Algo ici: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=8487&view=previous
     public void update() {
-    	this.weapon.lookAt(target);
     	float s1 = 10000000;
     	float s2 = 200000000;
     	

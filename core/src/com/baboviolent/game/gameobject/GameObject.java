@@ -36,6 +36,8 @@ public class GameObject {
 	protected Quaternion tmpQ = new Quaternion();
 	protected Quaternion tmpQ2 = new Quaternion();
 	
+	protected boolean testImpulse = true;
+	
 	public GameObject() {
 	}
 	
@@ -79,6 +81,18 @@ public class GameObject {
     	return this;
     }
     
+    public float getCurrentAngle() {
+    	instance.body.getMotionState().getWorldTransform(tmpM);
+    	tmpM.getRotation(tmpQ, true);
+    	Vector3 currentAngleAxis = new Vector3();
+    	float currentAngle = tmpQ.getAxisAngle(currentAngleAxis);
+    	if( currentAngleAxis.y < 0 ) {
+    		currentAngle = 360 - currentAngle;
+    	}
+    	currentAngle = (360 - currentAngle + 180) %360;
+    	return currentAngle;
+    }
+    
     public void lookAt(Vector3 t) {
     	instance.body.getMotionState().getWorldTransform(tmpM);
     	tmpM.getTranslation(tmpV3);
@@ -91,20 +105,23 @@ public class GameObject {
     	// A partir de 240 = 120 et ensuite décroit jusqu'a 0
     	// Si l'axe y du quaternion = -1 on soustrait l'angle a 360
     	
-    	Vector3 test2 = new Vector3();
-    	float test = tmpQ.getAxisAngle(test2);
-    	
-    	float currentAngle = test;
-    	if( test2.y < 0 ) {
+    	Vector3 currentAngleAxis = new Vector3();
+    	float currentAngle = tmpQ.getAxisAngle(currentAngleAxis);
+    	if( currentAngleAxis.y < 0 ) {
     		currentAngle = 360 - currentAngle;
     	}
     	currentAngle = (360 - currentAngle + 180) %360;
-    	System.out.println("angle : "+currentAngle);
+    	
+    	/*if(testImpulse) {
+    		instance.body.applyTorqueImpulse(new Vector3(0, -500, 0));
+    		testImpulse = false;
+    		
+    	}*/
     	
     	/**
     	 * Si on est dirigé vers la cible, on stoppe le mouvement
     	 */
-    	if( Math.abs(targetAngle - currentAngle) < 10 ) {
+    	if( Math.abs(targetAngle - currentAngle) < 5 ) {
     		instance.body.clearForces();
     		instance.body.applyTorqueImpulse(instance.body.getAngularVelocity().cpy().scl(-1000));
     	}
@@ -117,80 +134,27 @@ public class GameObject {
     	 * Pour savoir de quel côté est l'angle, on met l'origine du cercle sur le currentAngle,
     	 * On place le targetAngle sur cette origine (on ajoute ce qu'on a ajouté au currentAngle pour devenir l'origine)
     	 * On fait targetAngle - 180, si c'est positif = gauche, si c'est négatif = doite
+    	 * La vitesse angulaire est positive vers la gauche et negative vers la droite
     	 */
     	else {
+    		float av = instance.body.getAngularVelocity().y;
+    		float impulse = 10000;
+    		float minVelocity = 1;
+    		// On détermine le sens de la target
+    		boolean toLeft = false;
+    		float targetAngleOrigin2 = targetAngle - currentAngle;
+    		if( targetAngle < currentAngle )
+    			targetAngleOrigin2 = targetAngle + (360 - currentAngle);
     		
-    		float impulse = 0;
-    		if( targetAngle - currentAngle < 0 ) {
-    			impulse *= -1;
+    		if( targetAngleOrigin2 - 180 > 0 )
+    			toLeft = true;
+    		
+    		if( toLeft && av <= minVelocity ) {
+    			instance.body.applyTorqueImpulse(new Vector3(0, impulse, 0));
     		}
-    		instance.body.applyTorqueImpulse(new Vector3(0, impulse, 0));
+    		if( !toLeft && av >= -minVelocity) {
+    			instance.body.applyTorqueImpulse(new Vector3(0, -impulse, 0));
+    		}
     	}
-    }
-    
-    // Algo: http://gamedev.stackexchange.com/questions/81301/what-torque-should-i-apply-in-bullet-to-maintain-a-vertical-orientation
-    public void lookAt3(Vector3 t) {
-    	instance.body.getMotionState().getWorldTransform(tmpM);
-    	Quaternion targetOrientation = new Quaternion().set(up, 100);
-    	Quaternion currentOrientation = new Quaternion();
-    	tmpM.getRotation(currentOrientation);
-    	
-    	System.out.println("x="+currentOrientation.x+" y="+currentOrientation.y+" z="+currentOrientation.z);
-    	System.out.println("x="+targetOrientation.x+" y="+targetOrientation.y+" z="+targetOrientation.z);
-    	
-    	// Inverse currentOriantation
-    	Quaternion currentOrientationInverse = new Quaternion(-currentOrientation.x, -currentOrientation.y, -currentOrientation.z, currentOrientation.w);
-    	Quaternion deltaOrientation = new Quaternion();
-    	deltaOrientation = targetOrientation.cpy();
-    	
-    	// Scale with current
-    	deltaOrientation.x *= currentOrientationInverse.x;
-    	deltaOrientation.y *= currentOrientationInverse.y;
-    	deltaOrientation.z *= currentOrientationInverse.z;
-    	deltaOrientation.w *= currentOrientationInverse.w;
-    	//deltaOrientation.mul(currentOrientationInverse);
-
-    	Vector3 deltaEuler = quaternionToEulerXYZ(deltaOrientation);
-    	Vector3 torqueToApply = deltaEuler.cpy().scl(-100);
-    	instance.body.applyTorque(torqueToApply);
-    }
-    
-    private Vector3 quaternionToEulerXYZ(Quaternion q) {
-       float w = q.w;
-       float x = q.x;
-       float y = q.y;
-       float z = q.z;
-       double sqw = w*w; double sqx = x*x; double sqy = y*y; double sqz = z*z;
-       Vector3 euler = new Vector3();
-       euler.z = (float) Math.atan2(2.0 * (x*y + z*w), (sqx - sqy - sqz + sqw));
-       euler.x = (float) Math.atan2(2.0 * (y*z + x*w),(-sqx - sqy + sqz + sqw));
-       euler.y = (float) Math.asin(-2.0 * (x*z - y*w));
-       return euler;
-    }
-
-    public void lookAt2(Vector3 t) {
-    	
-    	/*instance.body.getMotionState().getWorldTransform(tmpM);
-    	tmpM.getTranslation(tmpV3);
-    	tmpM.getRotation(tmpQ);
-    	tmpV3.sub(t);
-    	tmpV2.set(tmpV3.x, tmpV3.z);
-    	float angle = -tmpV2.angle() + 180;
-    	//System.out.println("Rotation: "+(angle - tmpQ.getAngleAround(up)));
-    	System.out.println("Angle avant: "+tmpQ.getAngleAround(up));
-    	//System.out.println("Angle apres: "+angle);
-    	
-    	tmpQ2.idt().set(up, (angle - tmpQ.getAngle()));
-    	//tmpQ2.idt().set(up, angle);
-    	instance.body.getWorldTransform().set(tmpQ2);*/
-    	//tmpM.rotate(tmpQ2);
-    	//instance.body.proceedToTransform(tmpM);
-    	//instance.body.setWorldTransform(tmpM);
-    	//tmpM.setToRotation(up, tmpV2.angle());
-    	/*Matrix4 test = new Matrix4(tmpM.getTranslation(tmpV3), tmpQ2, new Vector3(1,1,1));
-    	instance.body.setCenterOfMassTransform(test);
-    	instance.body.clearForces();
-    	instance.body.*/
-    	//instance.body.setCenterOfMassTransform(tmpM);*/
     }
 }

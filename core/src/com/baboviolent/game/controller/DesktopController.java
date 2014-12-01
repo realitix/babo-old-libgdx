@@ -58,14 +58,15 @@ public class DesktopController extends BaseController {
     }
     
     @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-    	screen.mouseMoved(screenX, screenY);
-    	return false;
-    }
-    
-    @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
     	screen.mouseClicked(screenX, screenY);
     	return false;
     }
+    
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+    	screen.mouseReleased(screenX, screenY);
+    	return false;
+    }
+    
 }
