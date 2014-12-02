@@ -58,6 +58,8 @@ public class GameScreen implements Screen {
 	private Babo player;
 	private DesktopController controller;
 	private BulletContactListener bulletContactListener;
+	private ObjectMap<String, PoolParticle> particules = new ObjectMap<String, PoolParticle>();
+	private ParticleSystem particleSystem;
 	
 	public GameScreen(final BaboViolentGame g) {
 		Bullet.init();
@@ -82,12 +84,16 @@ public class GameScreen implements Screen {
         world.add(player);
         babos.add(player);
         
-        // Initialisation de l'arme
-        Shotgun shotgun = new Shotgun(world);
-        world.attachWeaponToBabo(player, shotgun);
-		
-		// Initialisation de la caméra
+        // Initialisation de la caméra
 		camera = new ChaseCamera2(player);
+		
+		// Initialisation des particules
+		particleSystem = ParticleLoader.init(camera);
+		particles = ParticuleLoader.getParticles();
+        
+        // Initialisation de l'arme
+        Shotgun shotgun = new Shotgun(world, particules.get("test"));
+        world.attachWeaponToBabo(player, shotgun);
 		
 		// Initialisation du controller
 		controller = new DesktopController(this, player);
@@ -135,6 +141,8 @@ public class GameScreen implements Screen {
 		update();
 		beginRender();
 		renderWorld();
+		renderParticleSystem();
+		endRender();
 		/*Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);*/		
 	}
@@ -142,22 +150,40 @@ public class GameScreen implements Screen {
 	private void beginRender() {
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		modelBatch.begin(camera);
+	}
+	
+	private void endRender() {
+		modelBatch.end();
 	}
 	
 	private void renderWorld () {
-		modelBatch.begin(camera);
 		world.render(modelBatch, environment);
-		modelBatch.end();
+	}
+	
+	private void renderParticleSystem() {
+		particleSystem.begin();
+		particleSystem.draw();
+		particleSystem.end();
+		modelBatch.render(particleSystem);
 	}
 	
 	private void update () {
 		camera.update();
 		world.update();
 		player.update(getPositionFromMouse());
+		updateParticleSystem();
 		
 		// La mise à jour du controller doit absolument etre faite
 		// après la mise à jour du monde bullet
 		//controller.update();
+	}
+	
+	private void updateParticleSystem() {
+		particleSystem.update();
+		for (ObjectMap.Entry<String, PoolParticle> e : particles.entries()) {
+			e.value.update();
+        }
 	}
 
 	@Override

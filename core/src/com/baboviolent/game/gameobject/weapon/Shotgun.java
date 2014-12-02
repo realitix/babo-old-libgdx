@@ -60,11 +60,20 @@ public class Shotgun extends Weapon {
 		BulletInstance a = ammo.getInstance();
 		System.out.println(tmpV3);
 		tmpM.translate(tmpV3.scl(200));
+		// Voir avec Matrix4.trn
+		
     	a.body.setCenterOfMassTransform(tmpM);
 		world.add(a);
 		
 		// Envoie la balle
     	//a.body.applyCentralImpulse(tmpV3.nor().scl(impulse));
+    	
+    	// Envoie la particule
+    	ParticuleEffect effect = particule.obtain();
+    	effect.init();
+        effect.start();
+        effect.setTransform(tmpM);
+        ParticleSystem.get().add(effect);
     	
     	// On créer la force inverse
     	instance.body.applyCentralImpulse(tmpV3.scl(-100));

@@ -17,6 +17,7 @@ public class BaboViolentGame extends Game {
     static public String PATH_TEXTURE_GROUND = "data/texture/ground/";
     static public String PATH_TEXTURE_WALL = "data/texture/wall/";
     static public String PATH_MODELS = "data/models/";
+    static public String PATH_PARTICLES = "data/particles/";
     static public String PATH_MAPS = "data/maps/";
     static public String BABO_MODEL_NAME = "babo";
     static public final float SIZE_MAP_CELL = 200;

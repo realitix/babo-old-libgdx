@@ -16,14 +16,16 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
 public class Weapon extends GameObject {
 	protected final BulletWorld world;
+	protected final PoolParticule particule;
 	protected Ammo ammo;
 	protected float impulse; // Puissance de la balle
 	protected float frequency; // Temps en millisecond entre deux tirs
 	protected long lastShoot;
 	
-	public Weapon(final BulletWorld world) {
+	public Weapon(final BulletWorld world, final PoolParticule particule) {
 		super();
 		this.world = world;
+		this.particule = particule;
 	}
 	
 	public void shoot(Vector3 target) {
