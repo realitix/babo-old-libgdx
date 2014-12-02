@@ -2,10 +2,13 @@ package com.baboviolent.game.loader;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.map.Map;
+import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,6 +18,11 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffectLoader;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
+import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
+import com.badlogic.gdx.graphics.g3d.particles.batches.PointSpriteParticleBatch;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -29,6 +37,7 @@ public class ParticleLoader {
     static public ParticleSystem init(Camera c) {
 	    ParticleSystem particleSystem = ParticleSystem.get();
 		BillboardParticleBatch b = new BillboardParticleBatch();
+	    //PointSpriteParticleBatch b = new PointSpriteParticleBatch();
 		b.setCamera(c);
 		particleSystem.add(b);
 		return particleSystem;
@@ -42,7 +51,9 @@ public class ParticleLoader {
         Array<String> particles = new Array<String>();	    
 	    FileHandle[] files = Gdx.files.internal(p).list();
         for(FileHandle file: files) {
-            particles.add(file.nameWithoutExtension());
+        	if( file.extension().equals("pfx") ) {
+        		particles.add(file.nameWithoutExtension());
+        	}
         }
         
         return particles;
@@ -59,12 +70,12 @@ public class ParticleLoader {
      * Charge toutes les particules passées en paramètre
      */ 
     static public ObjectMap<String, PoolParticle> getParticles(Array<String> toLoad) {
-    	String p = BaboViolentGame.path(BaboViolentGame.PATH_PARTICULES);
+    	String p = BaboViolentGame.path(BaboViolentGame.PATH_PARTICLES);
     	AssetManager manager = new AssetManager();
 	    ObjectMap<String, PoolParticle> particles = new ObjectMap<String, PoolParticle>();
         ParticleEffectLoader.ParticleEffectLoadParameter loadParam = new ParticleEffectLoader.ParticleEffectLoadParameter(ParticleSystem.get().getBatches());
         ParticleEffectLoader loader = new ParticleEffectLoader(new InternalFileHandleResolver());
-        assets.setLoader(ParticleEffect.class, loader);
+        manager.setLoader(ParticleEffect.class, loader);
 	    
 	    // On charge les particules
 	    for( int i = 0; i < toLoad.size; i++ ) {

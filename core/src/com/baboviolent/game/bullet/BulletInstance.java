@@ -41,6 +41,7 @@ public class BulletInstance extends ModelInstance implements Disposable {
     	motionState = new BulletInstance.MotionState(this.transform);
 		body = new btRigidBody(constructionInfo);
 		body.setMotionState(motionState);
+		constructionInfo.dispose();
     }
     
     public BulletInstance setExpire(long e) {

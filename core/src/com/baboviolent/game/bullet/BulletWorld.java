@@ -113,6 +113,7 @@ public class BulletWorld implements Disposable {
 	 * Supprime une instance
 	*/
 	public void remove (BulletInstance instance) {
+		world.removeRigidBody(instance.body);
 		instance.dispose();
 		instances.removeValue(instance, true);
 	}
@@ -128,7 +129,6 @@ public class BulletWorld implements Disposable {
 				instancesToExpire.removeIndex(i);
 			}
 		}
-		
 		world.stepSimulation(Gdx.graphics.getDeltaTime(), maxSubSteps, fixedTimeStep);
 	}
 

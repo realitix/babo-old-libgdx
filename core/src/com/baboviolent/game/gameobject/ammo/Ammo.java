@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.bullet.collision.SWIGTYPE_p_float;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class Ammo extends GameObject {
 	protected long expireTime; // temps avant expiration en millisecondes

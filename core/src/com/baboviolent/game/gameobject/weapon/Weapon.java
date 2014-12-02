@@ -6,6 +6,7 @@ import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.gameobject.GameObject;
 import com.baboviolent.game.gameobject.ammo.Ammo;
 import com.baboviolent.game.loader.BaboModelLoader;
+import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -16,13 +17,13 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
 public class Weapon extends GameObject {
 	protected final BulletWorld world;
-	protected final PoolParticule particule;
+	protected final PoolParticle particule;
 	protected Ammo ammo;
 	protected float impulse; // Puissance de la balle
 	protected float frequency; // Temps en millisecond entre deux tirs
 	protected long lastShoot;
 	
-	public Weapon(final BulletWorld world, final PoolParticule particule) {
+	public Weapon(final BulletWorld world, final PoolParticle particule) {
 		super();
 		this.world = world;
 		this.particule = particule;

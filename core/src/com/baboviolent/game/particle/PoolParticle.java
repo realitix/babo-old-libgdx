@@ -1,10 +1,17 @@
 package com.baboviolent.game.particle;
 
+import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
+import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Pool;
+
 public class PoolParticle extends Pool<ParticleEffect> {
     private ParticleEffect sourceEffect;
     private Array<ParticleEffect> activeEffects = new Array<ParticleEffect>();
 
-    public PoolParticule(ParticleEffect sourceEffect) {
+    public PoolParticle (ParticleEffect sourceEffect) {
         this.sourceEffect = sourceEffect;
     }
     
@@ -21,11 +28,13 @@ public class PoolParticle extends Pool<ParticleEffect> {
 
     @Override
     protected ParticleEffect newObject() {
+    	System.out.println("test2");
         return sourceEffect.copy();
     }
     
     @Override
-    protected ParticleEffect obtain() {
+    public ParticleEffect obtain() {
+    	System.out.println("test1");
         ParticleEffect e = super.obtain();
         activeEffects.add(e);
         return e;
@@ -55,6 +64,7 @@ public class PoolParticle extends Pool<ParticleEffect> {
             
             // Si effet non actif, on le supprime et remet dans le pool
             if( !isActive ) {
+            	System.out.println("Suppression de la particule");
                 ParticleEffect p = activeEffects.get(i);
                 ParticleSystem.get().remove(p);
                 this.free(p);

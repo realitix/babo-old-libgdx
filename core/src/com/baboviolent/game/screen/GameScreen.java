@@ -11,8 +11,10 @@ import com.baboviolent.game.controller.DesktopController;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.weapon.Shotgun;
 import com.baboviolent.game.loader.BaboModelLoader;
+import com.baboviolent.game.loader.ParticleLoader;
 import com.baboviolent.game.mode.BaseMode;
 import com.baboviolent.game.mode.DeathMatchMode;
+import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -30,6 +32,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
@@ -58,7 +61,7 @@ public class GameScreen implements Screen {
 	private Babo player;
 	private DesktopController controller;
 	private BulletContactListener bulletContactListener;
-	private ObjectMap<String, PoolParticle> particules = new ObjectMap<String, PoolParticle>();
+	private ObjectMap<String, PoolParticle> particles = new ObjectMap<String, PoolParticle>();
 	private ParticleSystem particleSystem;
 	
 	public GameScreen(final BaboViolentGame g) {
@@ -89,10 +92,10 @@ public class GameScreen implements Screen {
 		
 		// Initialisation des particules
 		particleSystem = ParticleLoader.init(camera);
-		particles = ParticuleLoader.getParticles();
+		particles = ParticleLoader.getParticles();
         
         // Initialisation de l'arme
-        Shotgun shotgun = new Shotgun(world, particules.get("test"));
+        Shotgun shotgun = new Shotgun(world, particles.get("test"));
         world.attachWeaponToBabo(player, shotgun);
 		
 		// Initialisation du controller

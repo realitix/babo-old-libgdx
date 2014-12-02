@@ -28,7 +28,6 @@ public class GameObject {
     protected Model model;
 	protected BulletInstance instance;
 	protected btCollisionShape shape;
-	protected btRigidBody.btRigidBodyConstructionInfo ci;
 	protected btRigidBody body;
 	protected Vector3 tmpV3 = new Vector3();
 	protected Vector3 tmpV32 = new Vector3();
@@ -63,14 +62,18 @@ public class GameObject {
     protected btRigidBody initBody(btCollisionShape shape) {
         Vector3 localInertia = new Vector3();
         shape.calculateLocalInertia(mass, localInertia);
-        ci = new btRigidBody.btRigidBodyConstructionInfo(mass, null, shape, localInertia);
+        btRigidBody.btRigidBodyConstructionInfo ci = new btRigidBody.btRigidBodyConstructionInfo(mass, null, shape, localInertia);
         ci.setFriction(friction);
         ci.setRollingFriction(rollingFriction);
         ci.setLinearDamping(linearDamping);
         ci.setAngularDamping(angularDamping);
         ci.setRestitution(restitution);
         body = new btRigidBody(ci);
-        return body;
+        
+     	// On enleve le constructioninfo
+     	ci.dispose();
+        
+     	return body;
     }
     
     public BulletInstance getInstance() {

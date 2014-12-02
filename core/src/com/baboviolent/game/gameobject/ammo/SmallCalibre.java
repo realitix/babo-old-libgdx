@@ -16,7 +16,7 @@ public class SmallCalibre extends Ammo {
         restitution = 0;
         mass = 1;
         
-        expireTime = 3000;
+        expireTime = 5000;
         super.init();
 	}
 }
