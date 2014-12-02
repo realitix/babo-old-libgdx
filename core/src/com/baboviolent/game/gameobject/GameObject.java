@@ -114,7 +114,7 @@ public class GameObject {
     	/**
     	 * Si on est dirigé vers la cible, on stoppe le mouvement
     	 */
-    	if( Math.abs(targetAngle - currentAngle) < 5 ) {
+    	if( Math.abs(targetAngle - currentAngle) < 4 ) {
     		instance.body.clearForces();
     		instance.body.applyTorqueImpulse(instance.body.getAngularVelocity().cpy().scl(-1000));
     	}

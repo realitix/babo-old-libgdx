@@ -27,6 +27,7 @@ public class Babo extends GameObject {
 	private Vector3 direction;
 	private Vector3 target;
 	private Weapon weapon;
+	private int energy = 100;
 	private boolean shooting = false;
 	
 	public Babo(String skin) {
@@ -124,6 +125,11 @@ public class Babo extends GameObject {
     
     public int getId() {
         return id;
+    }
+    
+    public Babo hit(int power) {
+    	energy -= power;
+    	return this;
     }
     
     public void update(Vector3 target) {

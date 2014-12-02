@@ -28,13 +28,11 @@ public class PoolParticle extends Pool<ParticleEffect> {
 
     @Override
     protected ParticleEffect newObject() {
-    	System.out.println("test2");
         return sourceEffect.copy();
     }
     
     @Override
     public ParticleEffect obtain() {
-    	System.out.println("test1");
         ParticleEffect e = super.obtain();
         activeEffects.add(e);
         return e;
@@ -64,7 +62,6 @@ public class PoolParticle extends Pool<ParticleEffect> {
             
             // Si effet non actif, on le supprime et remet dans le pool
             if( !isActive ) {
-            	System.out.println("Suppression de la particule");
                 ParticleEffect p = activeEffects.get(i);
                 ParticleSystem.get().remove(p);
                 this.free(p);

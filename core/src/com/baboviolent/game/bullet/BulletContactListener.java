@@ -3,6 +3,7 @@ package com.baboviolent.game.bullet;
 import com.baboviolent.game.gameobject.Babo;
 import com.badlogic.gdx.physics.bullet.collision.ContactListener;
 import com.badlogic.gdx.physics.bullet.collision.btManifoldPoint;
+import com.badlogic.gdx.physics.bullet.collision.btPersistentManifold;
 import com.badlogic.gdx.utils.Array;
 
 public class BulletContactListener extends ContactListener {
@@ -14,10 +15,15 @@ public class BulletContactListener extends ContactListener {
 	}
 	
 	@Override
-	public void onContactProcessed(btManifoldPoint cp, int userValue0, boolean match0, int userValue1, boolean match1) {
-		System.out.println("userValue0 = "+userValue0);
-		System.out.println("userValue1 = "+userValue1);
-		System.out.println("match0 = "+match0);
-		System.out.println("match1 = "+match1);
+	public void onContactStarted(int userValue0, boolean match0, int userValue1, boolean match1) {
+		// UserValue0 contient l'id de babo
+		// UserValue1 contient la puissance de la balle (l'énergie à enlever à babo)
+		Babo babo = null;
+		for( int i = 0; i < babos.size; i++ ) {
+			if( babos.get(i).getId() == userValue0 ) {
+				babo = babos.get(i);
+			}
+		}
+		babo.hit(userValue1);
 	}
 }

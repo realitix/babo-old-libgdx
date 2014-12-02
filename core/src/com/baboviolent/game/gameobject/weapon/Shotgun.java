@@ -36,7 +36,7 @@ public class Shotgun extends Weapon {
 		name = "Shotgun";
 		type = GameObject.TYPE_WEAPON;
 		ammo = new SmallCalibre();
-		impulse = 3000;
+		impulse = 50000;
 		frequency = 100;
 		
 	    friction = 0;

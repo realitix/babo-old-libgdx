@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class Ammo extends GameObject {
 	protected long expireTime; // temps avant expiration en millisecondes
+	protected int power;
 	
 	public Ammo() {
 		super();
@@ -41,6 +42,8 @@ public class Ammo extends GameObject {
         // Permet de detecter les contacts de la balle avec les babos
      	body.setCollisionFlags(body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
      	body.setContactCallbackFilter(BulletContactListener.PLAYER_FLAG);
+     	
+     	body.setUserValue(power);
 		
         return new BulletInstance(model, body).setExpire(TimeUtils.millis() + expireTime);
 	}
