@@ -41,6 +41,6 @@ public class Ammo extends GameObject {
      	body.setCollisionFlags(body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
      	body.setContactCallbackFilter(BulletContactListener.PLAYER_FLAG);
 		
-        return new BulletInstance(model, body).setExpire(expireTime);
+        return new BulletInstance(model, body).setExpire(TimeUtils.millis() + expireTime);
 	}
 }
