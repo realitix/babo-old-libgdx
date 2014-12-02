@@ -2,6 +2,7 @@ package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Utils;
+import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.camera.ChaseCamera;
@@ -77,7 +78,7 @@ public class GameScreen implements Screen {
 		world.add(mode.getMapInstance());
 		
 		 // Initialisation du joueur
-        player = (Babo) new Babo("skin22").translate(new Vector3(800, 20, 600));
+        player = new Babo("skin22").translate(new Vector3(800, 20, 600));
         world.add(player);
         babos.add(player);
         

@@ -29,6 +29,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.PerformanceCounter;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class BulletWorld implements Disposable {
 	public static final int GRAVITY_START = 1000;

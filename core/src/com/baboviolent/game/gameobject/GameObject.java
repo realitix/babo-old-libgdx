@@ -31,6 +31,7 @@ public class GameObject {
 	protected btRigidBody.btRigidBodyConstructionInfo ci;
 	protected btRigidBody body;
 	protected Vector3 tmpV3 = new Vector3();
+	protected Vector3 tmpV32 = new Vector3();
 	protected Vector2 tmpV2 = new Vector2();
 	protected Vector3 up = new Vector3(0,1,0);
 	protected Matrix4 tmpM = new Matrix4();

@@ -1,6 +1,7 @@
 package com.baboviolent.game.gameobject;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.gameobject.weapon.Weapon;
 import com.baboviolent.game.loader.TextureLoader;
@@ -77,7 +78,7 @@ public class Babo extends GameObject {
         body.setActivationState(Collision.DISABLE_DEACTIVATION);
         
         // Detection de la collision entre les balles et les babos
-        body.setUserData(id);
+        body.setUserValue(id);
         body.setContactCallbackFlag(BulletContactListener.PLAYER_FLAG);
         
         // création de l'instance
@@ -148,10 +149,10 @@ public class Babo extends GameObject {
 		currentVelocity.set(currentVelocity.z, currentVelocity.y, currentVelocity.x);
 		Vector3 deltaVelocity = velocity.sub(currentVelocity);
 		
-		float SIMD_EPSILON = 1.1920928955078125E-7f;
-		if( Math.abs(deltaVelocity.x) < SIMD_EPSILON )
+		float MIN_VELOCITY = 10;
+		if( Math.abs(deltaVelocity.x) < MIN_VELOCITY )
 			deltaVelocity.x = 0;
-		if( Math.abs(deltaVelocity.z) < SIMD_EPSILON )
+		if( Math.abs(deltaVelocity.z) < MIN_VELOCITY )
 			deltaVelocity.z = 0;
 		
 		// acceleration ne doit pas etre egal a zero sur aucun composant
@@ -178,5 +179,9 @@ public class Babo extends GameObject {
 		
 		// Le vecteur torque indique sur quel axe on tourne. Si on veut aller vers x, il faut tourner sur l'axe z
 		b.applyTorque(new Vector3(torque.z, torque.y, torque.x));
+    }
+    
+    public Babo translate(Vector3 v) {
+    	return this;
     }
 }

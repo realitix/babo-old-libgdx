@@ -41,19 +41,36 @@ public class Shotgun extends Weapon {
 		if( TimeUtils.millis() - lastShoot < frequency )
 			return;
 		
-		tmpV.set(target);
-		tmpV.y = 0;
+		// Vecteur de direction
+		tmpV3.set(target);
+		tmpV3.y = 0;
 		
-		lastShoot = TimeUtils.millis();
-		BulletInstance a = ammo.getInstance();
-		world.add(a);
+		// Applique la direction
 		instance.body.getMotionState().getWorldTransform(tmpM);
+		tmpM.getTranslation(tmpV32);
+		tmpV32.y = 0;
+		tmpV3.sub(tmpV32);
+		
+		// Normalise le vecteur
+		float xz = tmpV3.x + tmpV3.z;
+		tmpV3.x /= xz;
+		tmpV3.z /= xz;
+		
+		// Initialise la balle
+		BulletInstance a = ammo.getInstance();
+		System.out.println(tmpV3);
+		tmpM.translate(tmpV3.scl(200));
     	a.body.setCenterOfMassTransform(tmpM);
-    	tmpV.sub(a.body.getCenterOfMassPosition()).nor().scl(impulse);
-    	a.body.applyCentralImpulse(tmpV);
+		world.add(a);
+		
+		// Envoie la balle
+    	//a.body.applyCentralImpulse(tmpV3.nor().scl(impulse));
     	
     	// On créer la force inverse
-    	instance.body.applyCentralImpulse(tmpV.scl(-100));
+    	instance.body.applyCentralImpulse(tmpV3.scl(-100));
+    	
+    	// On enregistre la date du tir
+    	lastShoot = TimeUtils.millis();
 	}
 	
 	public void stopShoot() {
