@@ -26,6 +26,10 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.linearmath.btTransform;
 
 public class Babo extends GameObject {
+	public static final int STATE_ALIVE = 1;
+	public static final int STATE_EXPLODE = 2;
+	public static final int STATE_DEAD = 3;
+	
     private static int idIncrement = 1;
     private int id = idIncrement++;
 	private String skin;
@@ -35,6 +39,9 @@ public class Babo extends GameObject {
 	private int energy = 100;
 	private boolean shooting = false;
 	private final PoolParticle particule; // Particule émise lorsqu'on est touché par une balle
+	private ModelInstance explodingInstance;
+	private Animationcontroller explodingController;
+	private int state;
 	
 	public Babo(String skin, final PoolParticle particule) {
 		this.particule = particule;
@@ -43,23 +50,7 @@ public class Babo extends GameObject {
 	    type = GameObject.TYPE_BABO;
 	    direction = new Vector3();
 	    target = new Vector3();
-	    
-	    /**
-	     * ///best simulation results when friction is non-zero
-			btScalar m_friction;
-			///the m_rollingFriction prevents rounded shapes, such as spheres, cylinders and capsules from rolling forever.
-			///See Bullet/Demos/RollingFrictionDemo for usage
-			btScalar m_rollingFriction;
-			///best simulation results using zero restitution.
-			btScalar m_restitution;
-	     */
-	    friction = 1f;
-        rollingFriction = 0.6f;
-        linearDamping = 0;
-        angularDamping = 0.5f;
-        restitution = 0;
-        mass = 200;
-        
+	    state = STATE_ALIVE;
         friction = 5f;
         rollingFriction = 7f;
         linearDamping = 0;
@@ -68,6 +59,7 @@ public class Babo extends GameObject {
         mass = 2000;
         
         initInstance();
+        initExplodingInstance();
 	}
 	
 	@Override
@@ -91,6 +83,11 @@ public class Babo extends GameObject {
         
         // création de l'instance
         instance = new BulletInstance(model, body);
+    }
+    
+    private void initExplodingInstance() {
+    	explodingInstance = new ModelInstance(BaboModelLoader.getModel("BaboExploding"));
+    	explodingController = new AnimationController(explodingInstance);
     }
     
     public Babo shoot() {
@@ -134,6 +131,18 @@ public class Babo extends GameObject {
         return id;
     }
     
+    public int getState() {
+    	return state;
+    }
+    
+    public int getEnergy() {
+    	return energy;
+    }
+    
+    public ModelInstance getExplodingInstance() {
+    	return explodingInstance;
+    }
+    
     public Babo hit(int power) {
     	ParticleEffect effect = particule.obtain();
     	effect.init();
@@ -146,22 +155,53 @@ public class Babo extends GameObject {
     	return this;
     }
     
-    public int getEnergy() {
-    	return energy;
+    public void startExplode() {
+    	state = STATE_EXPLODE;
+    	
+    	// On cache l'instance pour ensuite faire apparaitre l'instance d'explosion
+    	instance.nodes.get(0).parts.get(0).enabled = false;
+    	// Désactive le body physic
+        body.setActivationState(Collision.DISABLE_SIMULATION);
+        // On position le model explosant
+        explodingInstance.transform.set(instance.transform);
+        // On lance l'animation
+        explodingController.setAnimation("explode", new BaboExplodingListener(this));
+    }
+    
+    public void endExplode() {
+    	state = STATE_DEAD;
     }
     
     public void update(Vector3 target) {
     	this.target.set(target);
-    	this.weapon.lookAt(target);
+    	checkEnergy();
+    	updateExplodingAnimation();
+    	updateWeapon(target);
+    	updateMovement();
+    	
+    }
+    
+    public void checkEnergy() {
+    	if( energy <= 0 && !explode ) {
+    		startExplode();
+    	}
+    }
+    
+    private void updateExplodingAnimation() {
+    	if( state == STATE_EXPLODE ) {
+    		explodingController.update(Gdx.graphics.getDeltaTime());
+    	}
+    }
+    
+    private void updateWeapon(Vector3 target) {
+    	weapon.lookAt(target);
     	if( shooting ) {
     		weapon.shoot(target);
-    	}    	
-    	
-    	this.update();
+    	}
     }
     
     // Algo ici: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=8487&view=previous
-    public void update() {
+    private void updateMovement() {
     	float s1 = 10000000;
     	float s2 = 200000000;
     	
