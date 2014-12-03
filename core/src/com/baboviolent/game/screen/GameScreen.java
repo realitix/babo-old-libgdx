@@ -82,17 +82,21 @@ public class GameScreen implements Screen {
 		mode = new DeathMatchMode("test");
 		world.add(mode.getMapInstance());
 		
-		 // Initialisation du joueur
-        player = new Babo("skin22").translate(new Vector3(800, 20, 600));
-        world.add(player);
-        babos.add(player);
-        
-        // Initialisation de la caméra
-		camera = new ChaseCamera2(player);
+		// Initialisation de la caméra
+		camera = new ChaseCamera2();
 		
 		// Initialisation des particules
 		particleSystem = ParticleLoader.init(camera);
 		particles = ParticleLoader.getParticles();
+		
+		 // Initialisation du joueur
+        player = new Babo("skin22", particles.get("blood")).translate(new Vector3(800, 20, 600));
+        world.add(player);
+        babos.add(player);
+        camera.init(player);
+        
+		
+		
         
         // Initialisation de l'arme
         Shotgun shotgun = new Shotgun(world, particles.get("test"));
@@ -106,7 +110,7 @@ public class GameScreen implements Screen {
 		bulletContactListener = new BulletContactListener(babos);
 		
 		// Creation d'un deuxieme joueur pour tester
-		Babo b2 = new Babo("skin22").translate(new Vector3(800, 20, 1000));
+		Babo b2 = new Babo("skin22", particles.get("blood")).translate(new Vector3(800, 20, 1000));
         world.add(b2);
         babos.add(b2);
     }

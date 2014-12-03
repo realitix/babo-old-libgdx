@@ -21,14 +21,12 @@ public class ChaseCamera2 extends PerspectiveCamera {
 	private Vector3 tmp = new Vector3();
 	private boolean loaded;
 	
-	public ChaseCamera2(Babo babo) {
+	public ChaseCamera2() {
 		super(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		this.far = 10000;
 		this.near = 10;
 		this.up.set(0,1,0);
 		loaded = false;
-		init(babo);
-		update();
 	}
 	
 	public void init(Babo babo) {
@@ -36,6 +34,7 @@ public class ChaseCamera2 extends PerspectiveCamera {
 	    this.babo.getInstance().transform.getTranslation(tmp);
 	    position.set(tmp.x, tmp.y + desiredOffset.y, tmp.z + desiredOffset.z);
 	    loaded = true;
+	    update();
 	}
 	
 	@Override
