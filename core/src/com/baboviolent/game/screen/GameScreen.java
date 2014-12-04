@@ -178,7 +178,7 @@ public class GameScreen implements Screen {
 	private void renderBaboExploding() {
 		for( int i = 0; i < babos.size; i++ ) {
 		    if( babos.get(i).getState() == Babo.STATE_EXPLODE ) {
-		        modelBatch.render(babos.get(i).getexplodingInstance(), environment);
+		        modelBatch.render(babos.get(i).getExplodingInstance(), environment);
 		    }
 		}
 	}

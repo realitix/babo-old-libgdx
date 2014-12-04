@@ -4,6 +4,8 @@ import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.gameobject.weapon.Weapon;
+import com.baboviolent.game.listener.animation.BaboExplodingListener;
+import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.Gdx;
@@ -11,11 +13,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.PolarAcceleration;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -40,7 +44,7 @@ public class Babo extends GameObject {
 	private boolean shooting = false;
 	private final PoolParticle particule; // Particule émise lorsqu'on est touché par une balle
 	private ModelInstance explodingInstance;
-	private Animationcontroller explodingController;
+	private AnimationController explodingController;
 	private int state;
 	
 	public Babo(String skin, final PoolParticle particule) {
@@ -182,7 +186,7 @@ public class Babo extends GameObject {
     }
     
     public void checkEnergy() {
-    	if( energy <= 0 && !explode ) {
+    	if( energy <= 0 && state != STATE_EXPLODE ) {
     		startExplode();
     	}
     }
