@@ -28,6 +28,7 @@ import com.badlogic.gdx.physics.bullet.collision.Collision;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.linearmath.btTransform;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Babo extends GameObject {
@@ -47,7 +48,7 @@ public class Babo extends GameObject {
 	private boolean shooting = false;
 	private final PoolParticle particule; // Particule émise lorsqu'on est touché par une balle
 	private ModelInstance explodingInstance;
-	private AnimationController explodingController;
+	private Array<AnimationController> explodingControllers = new Array<AnimationController>();
 	private int state;
 	
 	public Babo(String skin, final PoolParticle particule) {
@@ -96,7 +97,11 @@ public class Babo extends GameObject {
     
     private void initExplodingInstance() {
     	explodingInstance = new ModelInstance(BaboModelLoader.getModel("BaboExploding"));
-    	explodingController = new AnimationController(explodingInstance);
+    	// @TODO
+    	// TEST plusieurs animations
+        for(int i = 0; i < explodingInstance.animations.size; i++) {
+        	explodingControllers.add(new AnimationController(explodingInstance));
+        }
     }
     
     public Babo shoot() {
@@ -174,9 +179,16 @@ public class Babo extends GameObject {
         // On position le model explosant
         explodingInstance.transform.set(instance.transform);
         // On lance l'animation
-        explodingController.setAnimation("explode", new BaboExplodingListener(this));
+        
+        // @TODO
+        // On va tester en lancant toutes les animation du babo
+        for(int i = 0; i < explodingInstance.animations.size; i++) {
+        	explodingControllers.get(i).setAnimation(explodingInstance.animations.get(i).id, new BaboExplodingListener(this));
+        }
+        
+        
         // On ejecte l'arme
-        weapon.body.applyCentralImpulse(new Vector3(3000000, 2000000,0));
+        //weapon.body.applyCentralImpulse(new Vector3(3000000, 2000000,0));
     }
     
     public void endExplode() {
@@ -216,7 +228,9 @@ public class Babo extends GameObject {
     
     private void updateExplodingAnimation() {
     	if( state == STATE_EXPLODE ) {
-    		explodingController.update(Gdx.graphics.getDeltaTime());
+    		for( int i = 0; i < explodingControllers.size; i++) {
+    			explodingControllers.get(i).update(Gdx.graphics.getDeltaTime());
+    		}
     	}
     }
     

@@ -85,5 +85,11 @@ public class NotificationListener implements NotifyListener {
 	public void onUserResumed (String arg0, boolean arg1, String arg2) {
 		
 	}
+
+	@Override
+	public void onPrivateUpdateReceived(String arg0, byte[] arg1, boolean arg2) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

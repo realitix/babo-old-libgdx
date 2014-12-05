@@ -67,6 +67,7 @@ public class GameScreen implements Screen {
 
 		// Initialisation du mode
 		mode = new DeathMatchMode("test");
+		mode.init();
 
 		// Initialisation du controller
 		controller = new DesktopController(this, mode.getPlayer());
@@ -98,7 +99,7 @@ public class GameScreen implements Screen {
 		
 		mode.getWorld().render(modelBatch, environment);
 		modelBatch.render(mode.getParticleSystem());
-		modelBatch.render(mode.getExplodingBabos(), environnement);
+		modelBatch.render(mode.getExplodingBabos(), environment);
 		
 		modelBatch.end();		
 	}
@@ -136,16 +137,8 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		bulletContactListener.dispose();
-		world.dispose();
-		world = null;
-
-		for (Disposable disposable : disposables)
-			disposable.dispose();
-		disposables.clear();
-
 		modelBatch.dispose();
 		modelBatch = null;
-
 		light = null;
 	}
 }

@@ -1,17 +1,27 @@
 package com.baboviolent.game.mode;
 
+import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.camera.ChaseCamera2;
 import com.baboviolent.game.gameobject.Babo;
+import com.baboviolent.game.gameobject.weapon.Shotgun;
+import com.baboviolent.game.loader.ParticleLoader;
 import com.baboviolent.game.map.Map;
+import com.baboviolent.game.particle.PoolParticle;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public class BaseMode {
     protected final String mapName;
     protected Array<Babo> babos = new Array<Babo>();
     protected BulletWorld world;
     protected ChaseCamera2 camera;
-    protected Array<Babo> babos = new Array<Babo>();
     protected Babo player;
     protected ObjectMap<String, PoolParticle> particles = new ObjectMap<String, PoolParticle>();
 	protected ParticleSystem particleSystem;
@@ -76,11 +86,11 @@ public class BaseMode {
         return particleSystem;
     }
     
-    public Array<BulletInstance> getExplodingBabos() {
-        Array<BulletInstance> b = new Array<BulletInstance>();
+    public Array<ModelInstance> getExplodingBabos() {
+        Array<ModelInstance> b = new Array<ModelInstance>();
         for( int i = 0; i < babos.size; i++ ) {
 		    if( babos.get(i).getState() == Babo.STATE_EXPLODE ) {
-		        b.add(babos.get(i);
+		        b.add(babos.get(i).getExplodingInstance());
 		    }
 		}
 		
@@ -103,8 +113,17 @@ public class BaseMode {
     public void update() {
         camera.update();
 		world.update();
-		player.update(getPositionFromMouse(new Vector3(), camera));
+		player.update(Utils.getPositionFromMouse(new Vector3(), camera));
+		updateBabos();
 		updateParticleSystem();
+    }
+    
+    private void updateBabos() {
+    	for(int i = 0; i < babos.size; i++) {
+    		if( babos.get(i) != player ) {
+    			babos.get(i).update();
+    		}
+    	}
     }
     
     private void updateParticleSystem() {
@@ -117,4 +136,9 @@ public class BaseMode {
 		particleSystem.draw();
 		particleSystem.end();
 	}
+    
+    public void dispose() {
+		world.dispose();
+		world = null;
+    }
 }
