@@ -113,6 +113,8 @@ public class GameScreen implements Screen {
 		Babo b2 = new Babo("skin22", particles.get("blood")).translate(new Vector3(800, 20, 1000));
         world.add(b2);
         babos.add(b2);
+        Shotgun shotgun2 = new Shotgun(world, particles.get("test"));
+        world.attachWeaponToBabo(babos.get(1), shotgun2);
     }
     
     public void mouseMoved(int screenX, int screenY) {
@@ -149,6 +151,7 @@ public class GameScreen implements Screen {
 		beginRender();
 		renderWorld();
 		renderParticleSystem();
+		renderBaboExploding();
 		endRender();
 		/*Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);*/		
@@ -187,6 +190,7 @@ public class GameScreen implements Screen {
 		camera.update();
 		world.update();
 		player.update(getPositionFromMouse());
+		babos.get(1).update();
 		updateParticleSystem();
 		
 		// La mise à jour du controller doit absolument etre faite
