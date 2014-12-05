@@ -49,20 +49,10 @@ public class GameScreen implements Screen {
 	final private BaboViolentGame game;
 	private Environment environment;
 	private DirectionalLight light;
-	private BulletWorld world;
-	private ModelBuilder modelBuilder = new ModelBuilder();
 	private ModelBatch modelBatch;
-	private Array<Disposable> disposables = new Array<Disposable>();
-	private ChaseCamera2 camera;
-	private AssetManager assets;
-	private boolean loading;
 	private BaseMode mode;
-	private Array<Babo> babos = new Array<Babo>();
-	private Babo player;
 	private DesktopController controller;
 	private BulletContactListener bulletContactListener;
-	private ObjectMap<String, PoolParticle> particles = new ObjectMap<String, PoolParticle>();
-	private ParticleSystem particleSystem;
 	
 	public GameScreen(final BaboViolentGame g) {
 		Bullet.init();
@@ -74,132 +64,47 @@ public class GameScreen implements Screen {
 		light.set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f);
 		environment.add(light);
 		modelBatch = new ModelBatch();
-		
-		// Initialisation du monde
-		world = new BulletWorld();
-		
+
 		// Initialisation du mode
 		mode = new DeathMatchMode("test");
-		world.add(mode.getMapInstance());
-		
-		// Initialisation de la caméra
-		camera = new ChaseCamera2();
-		
-		// Initialisation des particules
-		particleSystem = ParticleLoader.init(camera);
-		particles = ParticleLoader.getParticles();
-		
-		 // Initialisation du joueur
-        player = new Babo("skin22", particles.get("blood")).translate(new Vector3(800, 20, 600));
-        world.add(player);
-        babos.add(player);
-        camera.init(player);
-        
-		
-		
-        
-        // Initialisation de l'arme
-        Shotgun shotgun = new Shotgun(world, particles.get("test"));
-        world.attachWeaponToBabo(player, shotgun);
-		
+
 		// Initialisation du controller
-		controller = new DesktopController(this, player);
+		controller = new DesktopController(this, mode.getPlayer());
 		Gdx.input.setInputProcessor(controller);
 		
 		// On créé le contact listener de bullet
-		bulletContactListener = new BulletContactListener(babos);
-		
-		// Creation d'un deuxieme joueur pour tester
-		Babo b2 = new Babo("skin22", particles.get("blood")).translate(new Vector3(800, 20, 1000));
-        world.add(b2);
-        babos.add(b2);
+		bulletContactListener = new BulletContactListener(mode.getBabos());
     }
     
     public void mouseMoved(int screenX, int screenY) {
-    	Vector3 position = getPositionFromMouse(screenX, screenY);
-    	player.setTarget(position);
+    	mode.mouseMoved(screenX, screenY);
     }
     
     public void mouseClicked(int screenX, int screenY) {
-    	player.shoot();
+    	mode.mouseClicked(screenX, screenY);
     }
     
     public void mouseReleased(int screenX, int screenY) {
-    	player.stopShoot();
+    	mode.mouseReleased(screenX, screenY);
     }
-    
-    /**
-	 * Renvoie la position sur la grille en fonction de la souris
-	 */ 
-	private Vector3 getPositionFromMouse(int screenX, int screenY) {
-		Vector3 position = new Vector3();
-		Ray ray = camera.getPickRay(screenX, screenY);
-        final float distance = -ray.origin.y / ray.direction.y;
-        position.set(ray.direction).scl(distance).add(ray.origin);
-        return position;
-	}
-
-	private Vector3 getPositionFromMouse() {
-		return getPositionFromMouse(Gdx.input.getX(), Gdx.input.getY());
-	}
 	
 	@Override
 	public void render(float delta) {
-		update();
-		beginRender();
-		renderWorld();
-		renderParticleSystem();
-		endRender();
-		/*Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
-		Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);*/		
-	}
-	
-	private void beginRender() {
+		mode.update();
+		
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		modelBatch.begin(camera);
-	}
-	
-	private void endRender() {
-		modelBatch.end();
-	}
-	
-	private void renderWorld () {
-		world.render(modelBatch, environment);
-	}
-	
-	private void renderParticleSystem() {
-		particleSystem.begin();
-		particleSystem.draw();
-		particleSystem.end();
-		modelBatch.render(particleSystem);
-	}
-	
-	private void renderBaboExploding() {
-		for( int i = 0; i < babos.size; i++ ) {
-		    if( babos.get(i).getState() == Babo.STATE_EXPLODE ) {
-		        modelBatch.render(babos.get(i).getexplodingInstance(), environment);
-		    }
-		}
-	}
-	
-	private void update () {
-		camera.update();
-		world.update();
-		player.update(getPositionFromMouse());
-		updateParticleSystem();
 		
-		// La mise à jour du controller doit absolument etre faite
-		// après la mise à jour du monde bullet
-		//controller.update();
+		modelBatch.begin(mode.getCamera());
+		
+		mode.getWorld().render(modelBatch, environment);
+		modelBatch.render(mode.getParticleSystem());
+		modelBatch.render(mode.getExplodingBabos(), environnement);
+		
+		modelBatch.end();		
 	}
 	
-	private void updateParticleSystem() {
-		particleSystem.update();
-		for (ObjectMap.Entry<String, PoolParticle> e : particles.entries()) {
-			e.value.update();
-        }
-	}
+	
 
 	@Override
 	public void resize(int width, int height) {

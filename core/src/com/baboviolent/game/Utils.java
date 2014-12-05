@@ -215,4 +215,23 @@ public class Utils {
         bb.getDimensions(result);
         return result;
 	}
+	
+	/**
+	 * Renvoie la position sur la grille en fonction de la souris
+	 * la grille est sur l'axe XZ, le vecteur doit être fourni pour optimiser
+	 * Car utiliser pendant une boucle'
+	 */ 
+	public static Vector3 getPositionFromMouse(Vector3 position, Camera camera, int screenX, int screenY) {
+		Ray ray = camera.getPickRay(screenX, screenY);
+        final float distance = -ray.origin.y / ray.direction.y;
+        position.set(ray.direction).scl(distance).add(ray.origin);
+        return position;
+	}
+	
+	/**
+	 * Comme au dessus mais récupère les coordonnée de la souris
+	 */ 
+	public static Vector3 getPositionFromMouse(Vector3 position, Camera camera) {
+		return getPositionFromMouse(position, camera, Gdx.input.getX(), Gdx.input.getY());
+	}
 }
