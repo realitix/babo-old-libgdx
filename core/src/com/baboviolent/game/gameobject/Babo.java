@@ -4,6 +4,8 @@ import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.gameobject.weapon.Weapon;
+import com.baboviolent.game.listener.animation.BaboExplodingListener;
+import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.Gdx;
@@ -11,11 +13,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.PolarAcceleration;
+import com.badlogic.gdx.graphics.g3d.utils.AnimationController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -24,6 +28,7 @@ import com.badlogic.gdx.physics.bullet.collision.Collision;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.linearmath.btTransform;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class Babo extends GameObject {
 	public static final int STATE_ALIVE = 1;
@@ -32,6 +37,8 @@ public class Babo extends GameObject {
 	
     private static int idIncrement = 1;
     private int id = idIncrement++;
+    private long timeBeforeAppear;
+    private long lastTimeDead;
 	private String skin;
 	private Vector3 direction;
 	private Vector3 target;
@@ -40,7 +47,7 @@ public class Babo extends GameObject {
 	private boolean shooting = false;
 	private final PoolParticle particule; // Particule émise lorsqu'on est touché par une balle
 	private ModelInstance explodingInstance;
-	private Animationcontroller explodingController;
+	private AnimationController explodingController;
 	private int state;
 	
 	public Babo(String skin, final PoolParticle particule) {
@@ -48,6 +55,7 @@ public class Babo extends GameObject {
 	    this.skin = skin;
 	    name = "Babo";
 	    type = GameObject.TYPE_BABO;
+	    timeBeforeAppear = 5000;
 	    direction = new Vector3();
 	    target = new Vector3();
 	    state = STATE_ALIVE;
@@ -57,6 +65,7 @@ public class Babo extends GameObject {
         angularDamping = 0.9f;
         restitution = 0.5f;
         mass = 2000;
+        target = new Vector3();
         
         initInstance();
         initExplodingInstance();
@@ -166,24 +175,42 @@ public class Babo extends GameObject {
         explodingInstance.transform.set(instance.transform);
         // On lance l'animation
         explodingController.setAnimation("explode", new BaboExplodingListener(this));
+        // On ejecte l'arme
+        weapon.body.applyCentralImpulse(new Vector3(3000000, 2000000,0));
     }
     
     public void endExplode() {
     	state = STATE_DEAD;
+    	lastTimeDead = TimeUtils.millis();
+    }
+    
+    public void appear() {
+    	// On reactive tout
+    	energy = 100;
+    	instance.nodes.get(0).parts.get(0).enabled = true;
+    	body.setActivationState(Collision.DISABLE_DEACTIVATION);
+    	state = STATE_ALIVE;
     }
     
     public void update(Vector3 target) {
     	this.target.set(target);
+    	update();
+    }
+    
+    public void update() {
     	checkEnergy();
     	updateExplodingAnimation();
-    	updateWeapon(target);
+    	updateWeapon();
     	updateMovement();
-    	
     }
     
     public void checkEnergy() {
-    	if( energy <= 0 && !explode ) {
+    	if( energy <= 0 && state == STATE_ALIVE ) {
     		startExplode();
+    	}
+    	
+    	if( state == STATE_DEAD && TimeUtils.millis() - lastTimeDead > timeBeforeAppear ) {
+    		appear();
     	}
     }
     
@@ -193,7 +220,7 @@ public class Babo extends GameObject {
     	}
     }
     
-    private void updateWeapon(Vector3 target) {
+    private void updateWeapon() {
     	weapon.lookAt(target);
     	if( shooting ) {
     		weapon.shoot(target);

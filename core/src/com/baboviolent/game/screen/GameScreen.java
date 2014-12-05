@@ -94,7 +94,6 @@ public class GameScreen implements Screen {
 		
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		
 		modelBatch.begin(mode.getCamera());
 		
 		mode.getWorld().render(modelBatch, environment);
@@ -103,8 +102,6 @@ public class GameScreen implements Screen {
 		
 		modelBatch.end();		
 	}
-	
-	
 
 	@Override
 	public void resize(int width, int height) {

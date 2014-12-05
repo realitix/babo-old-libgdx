@@ -52,6 +52,8 @@ public class BaseMode {
 		Babo b2 = new Babo("skin22", particles.get("blood")).translate(new Vector3(800, 20, 1000));
         world.add(b2);
         babos.add(b2);
+        Shotgun shotgun2 = new Shotgun(world, particles.get("test"));
+        world.attachWeaponToBabo(b2, shotgun2);
     }
     
     public Babo getPlayer() {
