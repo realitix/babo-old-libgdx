@@ -99,7 +99,6 @@ public class GameScreen implements Screen {
 		
 		mode.getWorld().render(modelBatch, environment);
 		modelBatch.render(mode.getParticleSystem());
-		modelBatch.render(mode.getExplodingBabos(), environment);
 		
 		modelBatch.end();		
 	}

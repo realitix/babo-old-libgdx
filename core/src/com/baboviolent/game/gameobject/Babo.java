@@ -1,10 +1,11 @@
 package com.baboviolent.game.gameobject;
 
+import java.util.Random;
+
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.gameobject.weapon.Weapon;
-import com.baboviolent.game.listener.animation.BaboExplodingListener;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.particle.PoolParticle;
@@ -29,12 +30,12 @@ import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.linearmath.btTransform;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Babo extends GameObject {
 	public static final int STATE_ALIVE = 1;
-	public static final int STATE_EXPLODE = 2;
-	public static final int STATE_DEAD = 3;
+	public static final int STATE_DEAD = 2;
 	
     private static int idIncrement = 1;
     private int id = idIncrement++;
@@ -46,13 +47,12 @@ public class Babo extends GameObject {
 	private Weapon weapon;
 	private int energy = 100;
 	private boolean shooting = false;
-	private final PoolParticle particule; // Particule émise lorsqu'on est touché par une balle
-	private ModelInstance explodingInstance;
+	private final ObjectMap<String, PoolParticle> particules; // Particule émise lorsqu'on est touché par une balle
 	private Array<AnimationController> explodingControllers = new Array<AnimationController>();
 	private int state;
 	
-	public Babo(String skin, final PoolParticle particule) {
-		this.particule = particule;
+	public Babo(String skin, final ObjectMap<String, PoolParticle> particules) {
+		this.particules = particules;
 	    this.skin = skin;
 	    name = "Babo";
 	    type = GameObject.TYPE_BABO;
@@ -69,7 +69,6 @@ public class Babo extends GameObject {
         target = new Vector3();
         
         initInstance();
-        initExplodingInstance();
 	}
 	
 	@Override
@@ -93,15 +92,6 @@ public class Babo extends GameObject {
         
         // création de l'instance
         instance = new BulletInstance(model, body);
-    }
-    
-    private void initExplodingInstance() {
-    	explodingInstance = new ModelInstance(BaboModelLoader.getModel("BaboExploding"));
-    	// @TODO
-    	// TEST plusieurs animations
-        for(int i = 0; i < explodingInstance.animations.size; i++) {
-        	explodingControllers.add(new AnimationController(explodingInstance));
-        }
     }
     
     public Babo shoot() {
@@ -153,12 +143,8 @@ public class Babo extends GameObject {
     	return energy;
     }
     
-    public ModelInstance getExplodingInstance() {
-    	return explodingInstance;
-    }
-    
     public Babo hit(int power) {
-    	ParticleEffect effect = particule.obtain();
+    	ParticleEffect effect = particules.get("blood").obtain();
     	effect.init();
     	effect.reset();
         effect.start();
@@ -169,31 +155,29 @@ public class Babo extends GameObject {
     	return this;
     }
     
-    public void startExplode() {
-    	state = STATE_EXPLODE;
+    public void explode() {
+    	state = STATE_DEAD;
+    	lastTimeDead = TimeUtils.millis();
     	
     	// On cache l'instance pour ensuite faire apparaitre l'instance d'explosion
     	instance.nodes.get(0).parts.get(0).enabled = false;
     	// Désactive le body physic
         body.setActivationState(Collision.DISABLE_SIMULATION);
-        // On position le model explosant
-        explodingInstance.transform.set(instance.transform);
-        // On lance l'animation
         
-        // @TODO
-        // On va tester en lancant toutes les animation du babo
-        for(int i = 0; i < explodingInstance.animations.size; i++) {
-        	explodingControllers.get(i).setAnimation(explodingInstance.animations.get(i).id, new BaboExplodingListener(this));
-        }
-        
+        // On génère beacoup de particules
+        ParticleEffect effect = particules.get("blood2").obtain();
+    	effect.init();
+    	effect.reset();
+        effect.start();
+        effect.setTransform(this.instance.transform);
+        ParticleSystem.get().add(effect);
         
         // On ejecte l'arme
-        //weapon.body.applyCentralImpulse(new Vector3(3000000, 2000000,0));
-    }
-    
-    public void endExplode() {
-    	state = STATE_DEAD;
-    	lastTimeDead = TimeUtils.millis();
+        Random rand = new Random();
+        int max = 3000000;
+        int min = 0;
+        weapon.body.setAngularFactor(new Vector3(1,1,1));
+        weapon.body.applyCentralImpulse(new Vector3(rand.nextInt((max - min) + 1) + min, rand.nextInt((max - min) + 1) + min, rand.nextInt((max - min) + 1) + min));
     }
     
     public void appear() {
@@ -211,26 +195,17 @@ public class Babo extends GameObject {
     
     public void update() {
     	checkEnergy();
-    	updateExplodingAnimation();
     	updateWeapon();
     	updateMovement();
     }
     
     public void checkEnergy() {
     	if( energy <= 0 && state == STATE_ALIVE ) {
-    		startExplode();
+    		explode();
     	}
     	
     	if( state == STATE_DEAD && TimeUtils.millis() - lastTimeDead > timeBeforeAppear ) {
     		appear();
-    	}
-    }
-    
-    private void updateExplodingAnimation() {
-    	if( state == STATE_EXPLODE ) {
-    		for( int i = 0; i < explodingControllers.size; i++) {
-    			explodingControllers.get(i).update(Gdx.graphics.getDeltaTime());
-    		}
     	}
     }
     

@@ -49,7 +49,7 @@ public class BaseMode {
 		particles = ParticleLoader.getParticles();
 		
 		// Initialisation du joueur
-        player = new Babo("skin22", particles.get("blood")).translate(new Vector3(800, 20, 600));
+        player = new Babo("skin22", particles).translate(new Vector3(800, 20, 600));
         world.add(player);
         babos.add(player);
         camera.init(player);
@@ -59,7 +59,7 @@ public class BaseMode {
         world.attachWeaponToBabo(player, shotgun);
         
         // Creation d'un deuxieme joueur pour tester
-		Babo b2 = new Babo("skin22", particles.get("blood")).translate(new Vector3(800, 20, 1000));
+		Babo b2 = new Babo("skin22", particles).translate(new Vector3(800, 20, 1000));
         world.add(b2);
         babos.add(b2);
         Shotgun shotgun2 = new Shotgun(world, particles.get("test"));
@@ -84,17 +84,6 @@ public class BaseMode {
     
     public ParticleSystem getParticleSystem() {
         return particleSystem;
-    }
-    
-    public Array<ModelInstance> getExplodingBabos() {
-        Array<ModelInstance> b = new Array<ModelInstance>();
-        for( int i = 0; i < babos.size; i++ ) {
-		    if( babos.get(i).getState() == Babo.STATE_EXPLODE ) {
-		        b.add(babos.get(i).getExplodingInstance());
-		    }
-		}
-		
-		return b;
     }
     
     public void mouseMoved(int screenX, int screenY) {
