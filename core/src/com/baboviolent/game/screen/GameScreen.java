@@ -14,8 +14,10 @@ import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.ParticleLoader;
 import com.baboviolent.game.mode.BaseMode;
 import com.baboviolent.game.mode.DeathMatchMode;
+import com.baboviolent.game.mode.DeathMatchMultiplayerMode;
 import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
@@ -70,8 +72,9 @@ public class GameScreen implements Screen {
         prefs.putString("username", Utils.getRandomUsername());
         
 		// Initialisation du mode
-		mode = new DeathMatchMode("test");
-		mode.init();
+		//mode = new DeathMatchMode("test");
+		mode = new DeathMatchMultiplayerMode("test");
+		//mode.init();
 
 		// Initialisation du controller
 		controller = new DesktopController(mode);

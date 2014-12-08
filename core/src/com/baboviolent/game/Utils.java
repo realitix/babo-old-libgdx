@@ -1,5 +1,7 @@
 package com.baboviolent.game;
 
+import java.util.Random;
+
 import com.baboviolent.game.bullet.BulletInstance;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -238,12 +240,12 @@ public class Utils {
 		return getPositionFromMouse(position, camera, Gdx.input.getX(), Gdx.input.getY());
 	}
 	
-	public String getRandomUsername() {
-	    Random r = new Random();
-          StringBuffer sb = new StringBuffer();
-          while(sb.length() < numchars){
-              sb.append(Integer.toHexString(r.nextInt()));
-          }
-          return sb.toString().substring(0, numchars);
+	public static String getRandomUsername() {
+		Random r = new Random();
+		StringBuffer sb = new StringBuffer();
+		while(sb.length() < 8){
+			sb.append(Integer.toHexString(r.nextInt()));
+		}
+		return sb.toString().substring(0, 8);
 	}
 }

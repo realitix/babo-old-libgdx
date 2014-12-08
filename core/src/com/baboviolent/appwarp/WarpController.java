@@ -2,7 +2,7 @@ package com.baboviolent.appwarp;
 
 import java.util.HashMap;
 import java.util.Hashtable;
-
+import org.json.JSONObject;
 
 import com.badlogic.gdx.utils.Json;
 import com.shephertz.app42.gaming.multiplayer.client.Constants;
@@ -12,7 +12,7 @@ import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 
 public class WarpController {
-    public static final String SEPARATOR = "||";
+    public static final String SEPARATOR = "#";
     
     // TYPES
     public static final String TYPE_ACTION = "a";
@@ -234,9 +234,9 @@ public class WarpController {
 		}
 	}
 	
-	private void startGame(){
+	private void startGame(String[] usernames){
 		STATE = STARTED;
-		warpListener.onGameStarted("Start the Game");
+		warpListener.onGameStarted(usernames);
 	}
 	
 	private void waitForOtherUser(){

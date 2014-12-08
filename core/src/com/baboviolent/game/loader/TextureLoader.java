@@ -71,17 +71,13 @@ public class TextureLoader {
      */ 
     static public ObjectMap<String, Texture> getTextures(Array<String> toLoad, String type) {
     	String p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE+type);
-    	AssetManager manager = new AssetManager();
 	    ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 	    
 	    // On charge les textures
 	    for( int i = 0; i < toLoad.size; i++ ) {
-	        manager.load(p+toLoad.get(i)+".png", Texture.class);
-	        manager.update();
-		    manager.finishLoading();
 		    textures.put(
 		            toLoad.get(i),
-		            manager.get(p+toLoad.get(i)+".png", Texture.class));
+		            new Texture(new FileHandle(p+toLoad.get(i)+".png")));
 	    }
 	    
 	    return textures;

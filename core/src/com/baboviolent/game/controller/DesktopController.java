@@ -2,6 +2,7 @@ package com.baboviolent.game.controller;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.gameobject.Babo;
+import com.baboviolent.game.mode.BaseMode;
 import com.baboviolent.game.screen.GameScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -57,7 +58,7 @@ public class DesktopController extends BaseController {
     	if( keycode == Keys.RIGHT && direction.x > 0 )
     		direction.x = 0;
     	
-    	player.onSetPlayerDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
+    	mode.onSetPlayerDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
     	return true;
     }
     
