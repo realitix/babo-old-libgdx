@@ -12,10 +12,14 @@ import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 
+/**
+ * On utilise pas mousemoved car la target doit etre mis a jour meme quand la souris
+ * ne bouge pas mais que babo bouge
+ */ 
 public class DesktopController extends BaseController {
 	
-	public DesktopController(final GameScreen screen, Babo player) {
-		super(screen, player);
+	public DesktopController(final BaseMode mode) {
+		super(mode);
     }
 	
     @Override
@@ -23,7 +27,7 @@ public class DesktopController extends BaseController {
     	/**
     	 * La caméra est toujours pointé vers l'axe Z donc c'est facile'
     	 */ 
-        Vector3 direction = player.getDirection();
+        Vector3 direction = mode.getPlayer().getDirection();
         if( keycode == Keys.UP )
         	direction.z = 1;
        	if( keycode == Keys.DOWN )
@@ -33,7 +37,7 @@ public class DesktopController extends BaseController {
         if( keycode == Keys.RIGHT )
         	direction.x = 1;
         
-		player.setDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
+		mode.onSetPlayerDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
 		return true;
     }
     
@@ -42,7 +46,7 @@ public class DesktopController extends BaseController {
     	if( keycode == Keys.ESCAPE )
     		Gdx.app.exit();
     	
-    	Vector3 direction = player.getDirection();
+    	Vector3 direction = mode.getPlayer().getDirection();
     	
     	if( keycode == Keys.UP && direction.z > 0 )
     		direction.z = 0;
@@ -53,20 +57,19 @@ public class DesktopController extends BaseController {
     	if( keycode == Keys.RIGHT && direction.x > 0 )
     		direction.x = 0;
     	
-    	player.setDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
+    	player.onSetPlayerDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
     	return true;
     }
     
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-    	screen.mouseClicked(screenX, screenY);
+    	mode.onMouseClicked(screenX, screenY);
     	return false;
     }
     
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-    	screen.mouseReleased(screenX, screenY);
+    	mode.onMouseReleased(screenX, screenY);
     	return false;
     }
-    
 }

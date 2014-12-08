@@ -10,6 +10,7 @@ public interface WarpListener {
 	
 	public void onGameFinished(int code, boolean isRemote);
 	
-	public void onGameUpdateReceived(String message);
+	public void onActionGameUpdateReceived(String type, String value, String username);
 	
+	public void onUserJoinedRoom(String username);
 }

@@ -12,6 +12,18 @@ import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 
 public class WarpController {
+    public static final String SEPARATOR = "||";
+    
+    // TYPES
+    public static final String TYPE_ACTION = "a";
+    public static final String TYPE_POSITION = "b";
+    
+    // ACTIONS
+    public static final String ACTION_DIRECTION = "a";
+    public static final String ACTION_TARGET = "c";
+    public static final String ACTION_STOP_TARGET = "d";
+    public static final String ACTION_SHOOT = "e";
+    public static final String ACTION_STOP_SHOOT = "f";
 
 	private static WarpController instance;
 	
@@ -64,11 +76,11 @@ public class WarpController {
 		warpClient.connectWithUserName(localUser);
 	}
 	
-	public void setListener(WarpListener listener){
+	public void setListener(WarpListener listener) {
 		this.warpListener = listener;
 	}
 	
-	public void stopApp(){
+	public void stopApp() {
 		if(isConnected){
 			warpClient.unsubscribeRoom(roomId);
 			warpClient.leaveRoom(roomId);
@@ -85,13 +97,13 @@ public class WarpController {
 		}
 	}
 	
+	public void sendActionGameUpdate(String type, String value){
+			sendGameUpdate(TYPE_ACTION+SEPARATOR+type+SEPARATOR+value);
+	}
+	
 	public void sendGameUpdate(String msg){
 		if(isConnected){
-			if(isUDPEnabled){
-				warpClient.sendUDPUpdatePeers((localUser+"#@"+msg).getBytes());
-			}else{
-				warpClient.sendUpdatePeers((localUser+"#@"+msg).getBytes());
-			}
+			warpClient.sendUDPUpdatePeers((localUser+SEPARATOR+msg).getBytes());
 		}
 	}
 	
@@ -129,14 +141,16 @@ public class WarpController {
 	
 	public void onJoinRoomDone(RoomEvent event){
 		log("onJoinRoomDone: "+event.getResult());
-		if(event.getResult()==WarpResponseResultCode.SUCCESS){// success case
+		if( event.getResult() == WarpResponseResultCode.SUCCESS ) {
 			this.roomId = event.getData().getId();
 			warpClient.subscribeRoom(roomId);
-		}else if(event.getResult()==WarpResponseResultCode.RESOURCE_NOT_FOUND){// no such room found
+		}
+		else if( event.getResult() == WarpResponseResultCode.RESOURCE_NOT_FOUND ) {
 			HashMap<String, Object> data = new HashMap<String, Object>();
 			data.put("result", "");
 			warpClient.createRoom("superjumper", "shephertz", 2, data);
-		}else{
+		}
+		else {
 			warpClient.disconnect();
 			handleError();
 		}
@@ -157,7 +171,7 @@ public class WarpController {
 		log("onGetLiveRoomInfo: "+liveUsers.length);
 		if(liveUsers!=null){
 			if(liveUsers.length==2){
-				startGame();	
+				startGame(liveUsers);	
 			}else{
 				waitForOtherUser();
 			}
@@ -171,8 +185,8 @@ public class WarpController {
 		/*
 		 * if room id is same and username is different then start the game
 		 */
-		if(localUser.equals(userName)==false){
-			startGame();
+		if( !localUser.equals(userName) ) {
+			startGame(new String[] {userName});
 		}
 	}
 
@@ -181,11 +195,16 @@ public class WarpController {
 	}
 	
 	public void onGameUpdateReceived(String message){
-//		log("onMoveUpdateReceived: message"+ message );
-		String userName = message.substring(0, message.indexOf("#@"));
-		String data = message.substring(message.indexOf("#@")+2, message.length());
-		if(!localUser.equals(userName)){
-			warpListener.onGameUpdateReceived(data);
+        String[] datas = message.split(SEPARATOR);
+		String userName = datas[0];
+		String type = datas[1];
+		String action = datas[2];
+		String value = datas[3];
+		
+		if( !localUser.equals(userName) ) {
+		    if( type.equals(TYPE_ACTION) ) {
+			    warpListener.onActionGameUpdateReceived(action, value, userName);
+		    }
 		}
 	}
 	

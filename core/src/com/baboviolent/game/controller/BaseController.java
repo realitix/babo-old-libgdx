@@ -12,11 +12,9 @@ import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
 
 public class BaseController extends InputAdapter {
-    protected Babo player;
-    protected final GameScreen screen;
+    protected final BaseMode mode;
     
-    public BaseController(final GameScreen screen, Babo player) {
-        this.player = player;
-        this.screen = screen;
+    public BaseController(final BaseMode mode) {
+        this.mode = mode;
     }
 }

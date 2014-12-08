@@ -36,30 +36,35 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class Babo extends GameObject {
 	public static final int STATE_ALIVE = 1;
 	public static final int STATE_DEAD = 2;
+	public static final int STATE_APPEAR = 3; // Attend la réapparition
+	public static final int ENERGY = 100;
 	
     private static int idIncrement = 1;
     private int id = idIncrement++;
     private long timeBeforeAppear;
     private long lastTimeDead;
 	private String skin;
+	private String username;
 	private Vector3 direction;
 	private Vector3 target;
 	private Weapon weapon;
-	private int energy = 100;
+	private int energy;
 	private boolean shooting = false;
 	private final ObjectMap<String, PoolParticle> particules; // Particule émise lorsqu'on est touché par une balle
 	private Array<AnimationController> explodingControllers = new Array<AnimationController>();
 	private int state;
 	
-	public Babo(String skin, final ObjectMap<String, PoolParticle> particules) {
+	public Babo(String username, String skin, final ObjectMap<String, PoolParticle> particules) {
 		this.particules = particules;
 	    this.skin = skin;
+	    this.username = username;
 	    name = "Babo";
 	    type = GameObject.TYPE_BABO;
 	    timeBeforeAppear = 5000;
 	    direction = new Vector3();
 	    target = new Vector3();
 	    state = STATE_ALIVE;
+	    energy = ENERGY;
         friction = 5f;
         rollingFriction = 7f;
         linearDamping = 0;
@@ -122,6 +127,10 @@ public class Babo extends GameObject {
         return target.cpy();
     }
     
+    public String getUsername() {
+        return username;
+    }
+    
     public Babo setWeapon(Weapon weapon) {
         this.weapon = weapon;
         return this;
@@ -180,11 +189,13 @@ public class Babo extends GameObject {
         weapon.body.applyCentralImpulse(new Vector3(rand.nextInt((max - min) + 1) + min, rand.nextInt((max - min) + 1) + min, rand.nextInt((max - min) + 1) + min));
     }
     
-    public void appear() {
-    	// On reactive tout
-    	energy = 100;
+    // On reactive tout
+    public void appear(Vector3 position) {
+    	energy = ENERGY;
     	instance.nodes.get(0).parts.get(0).enabled = true;
+    	instance.transform.setToTranslation(position);
     	body.setActivationState(Collision.DISABLE_DEACTIVATION);
+    	weapon.body.setAngularFactor(new Vector3(0,1,0));
     	state = STATE_ALIVE;
     }
     
@@ -205,7 +216,7 @@ public class Babo extends GameObject {
     	}
     	
     	if( state == STATE_DEAD && TimeUtils.millis() - lastTimeDead > timeBeforeAppear ) {
-    		appear();
+    		state = STATE_APPEAR;
     	}
     }
     

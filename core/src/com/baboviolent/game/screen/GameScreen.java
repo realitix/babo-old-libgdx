@@ -64,29 +64,21 @@ public class GameScreen implements Screen {
 		light.set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f);
 		environment.add(light);
 		modelBatch = new ModelBatch();
-
+		
+		// Gestion des préférences
+		Preferences prefs = Gdx.app.getPreferences("com.baboviolent.game");
+        prefs.putString("username", Utils.getRandomUsername());
+        
 		// Initialisation du mode
 		mode = new DeathMatchMode("test");
 		mode.init();
 
 		// Initialisation du controller
-		controller = new DesktopController(this, mode.getPlayer());
+		controller = new DesktopController(mode);
 		Gdx.input.setInputProcessor(controller);
 		
 		// On créé le contact listener de bullet
 		bulletContactListener = new BulletContactListener(mode.getBabos());
-    }
-    
-    public void mouseMoved(int screenX, int screenY) {
-    	mode.mouseMoved(screenX, screenY);
-    }
-    
-    public void mouseClicked(int screenX, int screenY) {
-    	mode.mouseClicked(screenX, screenY);
-    }
-    
-    public void mouseReleased(int screenX, int screenY) {
-    	mode.mouseReleased(screenX, screenY);
     }
 	
 	@Override
