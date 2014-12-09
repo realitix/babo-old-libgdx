@@ -104,6 +104,9 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile "org.json:json:20140107"
+        
+        compile fileTree(dir: 'libs', include: '*.jar')
     }
 }
 
