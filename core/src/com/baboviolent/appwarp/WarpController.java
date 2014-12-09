@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import org.json.JSONObject;
 
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
 import com.shephertz.app42.gaming.multiplayer.client.Constants;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
@@ -16,7 +17,7 @@ public class WarpController {
     
     // TYPES
     public static final String TYPE_ACTION = "a";
-    public static final String TYPE_POSITION = "b";
+    public static final String TYPE_SYNCHRONIZATION = "b";
     
     // ACTIONS
     public static final String ACTION_DIRECTION = "a";
@@ -24,6 +25,9 @@ public class WarpController {
     public static final String ACTION_STOP_TARGET = "d";
     public static final String ACTION_SHOOT = "e";
     public static final String ACTION_STOP_SHOOT = "f";
+    
+    // SYNCHRONIZATIONS
+    public static final String SYNCHRONIZATION_POSITION = "a";
 
 	private static WarpController instance;
 	
@@ -97,8 +101,24 @@ public class WarpController {
 		}
 	}
 	
-	public void sendActionGameUpdate(String type, String value){
-			sendGameUpdate(TYPE_ACTION+SEPARATOR+type+SEPARATOR+value);
+	/***********
+	 * HELPER
+	 */
+	
+	/**
+	 * Fonctions d'envoies
+	 */
+	public void sendPosition(Vector3 position){
+		String positionStr = position.x+":"+position.y+":"+position.z;
+		sendSynchronization(SYNCHRONIZATION_POSITION, positionStr);
+	}
+	
+	public void sendAction(String type, String value){
+		sendGameUpdate(TYPE_ACTION+SEPARATOR+type+SEPARATOR+value);
+	}
+	
+	public void sendSynchronization(String type, String value){
+		sendGameUpdate(TYPE_SYNCHRONIZATION+SEPARATOR+type+SEPARATOR+value);
 	}
 	
 	public void sendGameUpdate(String msg){
@@ -106,6 +126,35 @@ public class WarpController {
 			warpClient.sendUDPUpdatePeers((localUser+SEPARATOR+msg).getBytes());
 		}
 	}
+	
+	/**
+	 * Fonctions de receptions
+	 */
+	public void onGameUpdateReceived(String message){
+        String[] datas = message.split(SEPARATOR);
+		String username = datas[0];
+		String type = datas[1];
+		String action = datas[2];
+		String value = datas[3];
+		
+		if( !localUser.equals(username) ) {
+		    if( type.equals(TYPE_ACTION) ) {
+		    	if( action.equals(ACTION_DIRECTION) ) {
+		    		warpListener.onDirectionReceived(username, Float.parseFloat(value));
+		    	}
+		    }
+		    else if( type.equals(TYPE_SYNCHRONIZATION) ) {
+		    	if( action.equals(SYNCHRONIZATION_POSITION) ) {
+		    		String[] ps = value.split(":");
+		    		warpListener.onPositionReceived(username, new Vector3(
+		    				Float.parseFloat(ps[0]),
+		    				Float.parseFloat(ps[1]), 
+		    				Float.parseFloat(ps[2])));
+		    	}
+		    }
+		}
+	}
+	
 	
 	public void updateResult(int code, String msg){
 		if(isConnected){
@@ -194,19 +243,7 @@ public class WarpController {
 		log("onSendChatDone: "+status);
 	}
 	
-	public void onGameUpdateReceived(String message){
-        String[] datas = message.split(SEPARATOR);
-		String userName = datas[0];
-		String type = datas[1];
-		String action = datas[2];
-		String value = datas[3];
-		
-		if( !localUser.equals(userName) ) {
-		    if( type.equals(TYPE_ACTION) ) {
-			    warpListener.onActionGameUpdateReceived(action, value, userName);
-		    }
-		}
-	}
+	
 	
 	public void onResultUpdateReceived(String userName, int code){
 		if(localUser.equals(userName)==false){

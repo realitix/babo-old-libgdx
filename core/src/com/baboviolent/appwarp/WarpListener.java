@@ -1,5 +1,7 @@
 package com.baboviolent.appwarp;
 
+import com.badlogic.gdx.math.Vector3;
+
 public interface WarpListener {
 	
 	public void onWaitingStarted(String message);
@@ -10,5 +12,7 @@ public interface WarpListener {
 	
 	public void onGameFinished(int code, boolean isRemote);
 	
-	public void onActionGameUpdateReceived(String type, String value, String username);
+	public void onDirectionReceived(String username, float angle);
+	
+	public void onPositionReceived(String username, Vector3 position);
 }

@@ -50,6 +50,7 @@ public class Babo extends GameObject {
 	private Weapon weapon;
 	private int energy;
 	private boolean shooting = false;
+	private boolean moving = false;
 	private final ObjectMap<String, PoolParticle> particules; // Particule émise lorsqu'on est touché par une balle
 	private Array<AnimationController> explodingControllers = new Array<AnimationController>();
 	private int state;
@@ -152,6 +153,10 @@ public class Babo extends GameObject {
     	return energy;
     }
     
+    public boolean isMoving() {
+    	return moving;
+    }
+    
     public Babo hit(int power) {
     	ParticleEffect effect = particules.get("blood").obtain();
     	effect.init();
@@ -231,6 +236,12 @@ public class Babo extends GameObject {
     private void updateMovement() {
     	float s1 = 10000000;
     	float s2 = 200000000;
+    	
+    	if( instance.body.getAngularVelocity().isZero() && direction.isZero() ) {
+    		moving = false;
+    		return;
+    	}
+    	moving = true;
     	
     	// velocity_factor est ma direction
     	btRigidBody b = instance.body;
