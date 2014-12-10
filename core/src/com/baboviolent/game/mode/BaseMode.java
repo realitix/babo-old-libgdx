@@ -65,7 +65,7 @@ public class BaseMode {
     }
     
     protected Babo initBabo(String username) {
-        Babo babo = new Babo(username, "skin22", particles).translate(generateBaboPosition());
+        Babo babo = new Babo(username, "skin22", particles).teleport(generateBaboPosition());
         world.add(babo);
         babos.add(babo);
         Shotgun shotgun = new Shotgun(world, particles.get("test"));
@@ -76,7 +76,7 @@ public class BaseMode {
     protected void initIa() {
         for( int i = 0; i < nbIa; i++ ) {
             // Creation d'un deuxieme joueur pour tester
-    		Babo b2 = new Babo("toto", "skin22", particles).translate(new Vector3(800, 20, 1000));
+    		Babo b2 = new Babo("toto", "skin22", particles).teleport(new Vector3(800, 20, 1000));
             world.add(b2);
             babos.add(b2);
             Shotgun shotgun2 = new Shotgun(world, particles.get("test"));
