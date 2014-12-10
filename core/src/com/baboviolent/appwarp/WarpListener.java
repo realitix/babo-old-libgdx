@@ -15,4 +15,8 @@ public interface WarpListener {
 	public void onDirectionReceived(String username, float angle);
 	
 	public void onPositionReceived(String username, Vector3 position);
+	
+	public void onTargetReceived(String username, Vector3 target);
+	
+	public void onShootReceived(String username, boolean shoot);
 }

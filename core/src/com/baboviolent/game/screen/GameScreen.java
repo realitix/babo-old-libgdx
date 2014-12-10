@@ -75,9 +75,13 @@ public class GameScreen implements Screen {
         prefs.putString("username", Utils.getRandomUsername());
         
 		// Initialisation du mode
-		//mode = new DeathMatchMode("test");
-		mode = new DeathMatchMultiplayerMode("test");
-		//mode.init();
+        if( type == TYPE_SOLO ) {
+        	mode = new DeathMatchMode("test");
+        }
+        else if ( type == TYPE_MULTIPLAYER ) {
+        	mode = new DeathMatchMultiplayerMode("test");
+        }
+        mode.init();
 
 		// Initialisation du controller
 		controller = new DesktopController(mode);

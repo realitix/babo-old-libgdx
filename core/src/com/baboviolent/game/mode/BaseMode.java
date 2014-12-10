@@ -55,7 +55,7 @@ public class BaseMode {
 		initPlayer();
         
         // Initialisation de l'intelligence artificielle
-        //initIa();
+        initIa();
     }
     
     protected void initPlayer() {
@@ -117,18 +117,22 @@ public class BaseMode {
     }
     
     public void update() {
+    	player.setTarget(getTarget());
+    	
         camera.update();
 		world.update();
-		player.update(Utils.getPositionFromMouse(tmpV, camera));
+		
 		updateBabos();
 		updateParticleSystem();
     }
     
+    protected Vector3 getTarget() {
+    	return Utils.getPositionFromMouse(tmpV, camera);
+    }
+    
     protected void updateBabos() {
     	for(int i = 0; i < babos.size; i++) {
-    		if( babos.get(i) != player ) {
-    			babos.get(i).update();
-    		}
+    		babos.get(i).update();
     		
     		if( babos.get(i).getState() == Babo.STATE_APPEAR ) {
     			babos.get(i).appear(generateBaboPosition());

@@ -2,6 +2,7 @@ package com.baboviolent.appwarp;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+
 import org.json.JSONObject;
 
 import com.badlogic.gdx.math.Vector3;
@@ -15,19 +16,13 @@ import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 public class WarpController {
     public static final String SEPARATOR = "#";
     
-    // TYPES
-    public static final String TYPE_ACTION = "a";
-    public static final String TYPE_SYNCHRONIZATION = "b";
-    
-    // ACTIONS
+    // TYPES ACTIONS
     public static final String ACTION_DIRECTION = "a";
     public static final String ACTION_TARGET = "c";
     public static final String ACTION_STOP_TARGET = "d";
     public static final String ACTION_SHOOT = "e";
     public static final String ACTION_STOP_SHOOT = "f";
-    
-    // SYNCHRONIZATIONS
-    public static final String SYNCHRONIZATION_POSITION = "a";
+    public static final String ACTION_POSITION = "g";
 
 	private static WarpController instance;
 	
@@ -108,17 +103,24 @@ public class WarpController {
 	/**
 	 * Fonctions d'envoies
 	 */
+	public void sendDirection(float angle){
+		sendAction(ACTION_DIRECTION, Float.toString(angle));
+	}
+	
 	public void sendPosition(Vector3 position){
-		String positionStr = position.x+":"+position.y+":"+position.z;
-		sendSynchronization(SYNCHRONIZATION_POSITION, positionStr);
+		sendAction(ACTION_POSITION, vector3ToString(position));
+	}
+	
+	public void sendTarget(Vector3 target){
+		sendAction(ACTION_TARGET, vector3ToString(target));
+	}
+	
+	public void sendShoot(boolean shoot){
+		sendAction(ACTION_SHOOT, (shoot)?"1":"0");
 	}
 	
 	public void sendAction(String type, String value){
-		sendGameUpdate(TYPE_ACTION+SEPARATOR+type+SEPARATOR+value);
-	}
-	
-	public void sendSynchronization(String type, String value){
-		sendGameUpdate(TYPE_SYNCHRONIZATION+SEPARATOR+type+SEPARATOR+value);
+		sendGameUpdate(type+SEPARATOR+value);
 	}
 	
 	public void sendGameUpdate(String msg){
@@ -133,27 +135,37 @@ public class WarpController {
 	public void onGameUpdateReceived(String message){
         String[] datas = message.split(SEPARATOR);
 		String username = datas[0];
-		String type = datas[1];
-		String action = datas[2];
-		String value = datas[3];
+		String action = datas[1];
+		String value = datas[2];
 		
 		if( !localUser.equals(username) ) {
-		    if( type.equals(TYPE_ACTION) ) {
-		    	if( action.equals(ACTION_DIRECTION) ) {
-		    		warpListener.onDirectionReceived(username, Float.parseFloat(value));
-		    	}
+	    	if( action.equals(ACTION_DIRECTION) ) {
+	    		warpListener.onDirectionReceived(username, Float.parseFloat(value));
+	    	}
+	    	else if( action.equals(ACTION_TARGET) ) {
+	    		warpListener.onTargetReceived(username, stringToVector3(value));
+	    	}
+	    	else if( action.equals(ACTION_POSITION) ) {
+	    		warpListener.onPositionReceived(username, stringToVector3(value));
 		    }
-		    else if( type.equals(TYPE_SYNCHRONIZATION) ) {
-		    	if( action.equals(SYNCHRONIZATION_POSITION) ) {
-		    		String[] ps = value.split(":");
-		    		warpListener.onPositionReceived(username, new Vector3(
-		    				Float.parseFloat(ps[0]),
-		    				Float.parseFloat(ps[1]), 
-		    				Float.parseFloat(ps[2])));
-		    	}
+	    	else if( action.equals(ACTION_SHOOT) ) {
+	    		warpListener.onShootReceived(username, (value.equals("1")) ? true : false);
 		    }
 		}
 	}
+	
+	private String vector3ToString(Vector3 v) {
+		return v.x+":"+v.y+":"+v.z;
+	}
+	
+	private Vector3 stringToVector3(String s) {
+		String[] ps = s.split(":");
+		return new Vector3(
+				Float.parseFloat(ps[0]),
+				Float.parseFloat(ps[1]), 
+				Float.parseFloat(ps[2]));
+	}
+	
 	
 	
 	public void updateResult(int code, String msg){

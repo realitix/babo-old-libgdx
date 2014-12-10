@@ -66,9 +66,9 @@ public class Babo extends GameObject {
 	    target = new Vector3();
 	    state = STATE_ALIVE;
 	    energy = ENERGY;
-        friction = 5f;
-        rollingFriction = 7f;
-        linearDamping = 0;
+        friction = 100f;
+        rollingFriction = 150f;
+        linearDamping = 0.8f;
         angularDamping = 0.9f;
         restitution = 0.5f;
         mass = 2000;
@@ -202,11 +202,6 @@ public class Babo extends GameObject {
     	body.setActivationState(Collision.DISABLE_DEACTIVATION);
     	weapon.body.setAngularFactor(new Vector3(0,1,0));
     	state = STATE_ALIVE;
-    }
-    
-    public void update(Vector3 target) {
-    	this.target.set(target);
-    	update();
     }
     
     public void update() {

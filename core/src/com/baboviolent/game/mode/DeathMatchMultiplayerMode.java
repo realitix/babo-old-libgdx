@@ -10,27 +10,40 @@ import com.badlogic.gdx.math.Vector3;
 public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpListener {
 	private WarpController wc;
 	private boolean playerPositionSent = false;
+	private Vector3 lastTarget;
 	
 	public DeathMatchMultiplayerMode(final String mapName) {
 		super(mapName);
-		System.out.println("test to string "+new Vector3(2, 3, 4));
+		lastTarget = new Vector3();
 		nbIa = 0;
+    }
+	
+	public void init() {
 		super.init();
 		wc = WarpController.getInstance();
 		wc.setListener(this);
 		wc.startApp(player.getUsername());
-    }
+	}
     
     public void onSetPlayerDirection(Vector3 direction) {
     	super.onSetPlayerDirection(direction);
     	
-    	String angle = "-1"; // Pas de déplacement
+    	float angle = -1f; // Pas de déplacement
     	if( !direction.isZero() ) {
-	    	angle = Float.toString(new Vector2(direction.x, direction.z).angle());
+	    	angle = new Vector2(direction.x, direction.z).angle();
     	}
     	
-    	System.out.println("Envoie. Angle: "+angle);
-        wc.sendAction(WarpController.ACTION_DIRECTION, angle);
+        wc.sendDirection(angle);
+    }
+    
+    public void onMouseClicked(int screenX, int screenY) {
+    	super.onMouseClicked(screenX, screenY);
+    	wc.sendShoot(true);
+    }
+    
+    public void onMouseReleased(int screenX, int screenY) {
+    	super.onMouseReleased(screenX, screenY);
+    	wc.sendShoot(false);
     }
     
     protected Babo initBabo(String username) {
@@ -40,6 +53,7 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
     public void update() {
     	super.update();
     	updatePlayerStopMoving();
+    	updatePlayerTarget();
     }
     
     /**
@@ -54,6 +68,19 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
     	
     	if( player.isMoving() ) {
     		playerPositionSent = false;
+    	}
+    }
+    
+    /**
+     * Quand le joueur change sa cible (Bouge la souris)
+     * On envoie l'info
+     */
+    private void updatePlayerTarget() {
+    	Vector3 currentTarget = super.getTarget();
+    	if( !lastTarget.equals(currentTarget) ) {
+    		System.out.println("Envoie du mouvement");
+    		lastTarget.set(currentTarget);
+    		wc.sendTarget(currentTarget);
     	}
     }
 
@@ -79,8 +106,6 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
 			    }
 			}
 		});
-		
-	    
 	}
 	
 	@Override
@@ -107,6 +132,29 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
 		for( int i = 0; i < babos.size; i++ ) {
 			if( babos.get(i).getUsername().equals(username) ) {
 				babos.get(i).getInstance().transform.setToTranslation(position);
+			}
+		}
+	}
+	
+	@Override
+	public void onTargetReceived(String username, Vector3 target) {
+		for( int i = 0; i < babos.size; i++ ) {
+			if( babos.get(i).getUsername().equals(username) ) {
+				babos.get(i).setTarget(target);
+			}
+		}
+	}
+
+	@Override
+	public void onShootReceived(String username, boolean shoot) {
+		for( int i = 0; i < babos.size; i++ ) {
+			if( babos.get(i).getUsername().equals(username) ) {
+				if( shoot ) {
+					babos.get(i).shoot();
+				}
+				else {
+					babos.get(i).stopShoot();
+				}
 			}
 		}
 	}
