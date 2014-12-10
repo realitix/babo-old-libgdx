@@ -48,6 +48,9 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class GameScreen implements Screen {
+	public final static int TYPE_SOLO = 1;
+	public final static int TYPE_MULTIPLAYER = 2;
+	
 	final private BaboViolentGame game;
 	private Environment environment;
 	private DirectionalLight light;
@@ -56,7 +59,7 @@ public class GameScreen implements Screen {
 	private DesktopController controller;
 	private BulletContactListener bulletContactListener;
 	
-	public GameScreen(final BaboViolentGame g) {
+	public GameScreen(final BaboViolentGame g, int type) {
 		Bullet.init();
 		game = g;
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());

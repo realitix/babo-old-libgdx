@@ -9,7 +9,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
 		config.title = "BaboViolent";
-		config.width = 1000;
+		config.width = 800;
 		config.height = 600;
 		/*config.width = 1920;
 		config.height = 1080;
