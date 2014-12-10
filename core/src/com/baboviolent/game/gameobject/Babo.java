@@ -232,7 +232,7 @@ public class Babo extends GameObject {
     	float s1 = 10000000;
     	float s2 = 200000000;
     	
-    	if( instance.body.getAngularVelocity().isZero() && direction.isZero() ) {
+    	if( instance.body.getAngularVelocity().len() < 1 && direction.isZero() ) {
     		moving = false;
     		return;
     	}
