@@ -131,7 +131,7 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
 		for( int i = 0; i < babos.size; i++ ) {
 			if( babos.get(i).getUsername().equals(username) ) {
 				System.out.println("Mis a jour de la position");
-				babos.get(i).getInstance().transform.setToTranslation(position);
+				babos.get(i).teleport(position);
 			}
 		}
 	}

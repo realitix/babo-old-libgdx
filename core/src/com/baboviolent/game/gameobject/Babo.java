@@ -278,7 +278,8 @@ public class Babo extends GameObject {
 		b.applyTorque(new Vector3(torque.z, torque.y, torque.x));
     }
     
-    public Babo translate(Vector3 v) {
+    public Babo teleport(Vector3 v) {
+    	instance.body.setWorldTransform(instance.body.getWorldTransform().setToTranslation(v));
     	return this;
     }
 }
