@@ -166,8 +166,6 @@ public class WarpController {
 				Float.parseFloat(ps[2]));
 	}
 	
-	
-	
 	public void updateResult(int code, String msg){
 		if(isConnected){
 			STATE = COMPLETED;

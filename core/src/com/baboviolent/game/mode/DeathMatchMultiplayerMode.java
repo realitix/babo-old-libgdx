@@ -78,7 +78,6 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
     private void updatePlayerTarget() {
     	Vector3 currentTarget = super.getTarget();
     	if( !lastTarget.equals(currentTarget) ) {
-    		System.out.println("Envoie du mouvement");
     		lastTarget.set(currentTarget);
     		wc.sendTarget(currentTarget);
     	}
@@ -131,6 +130,7 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
 	public void onPositionReceived(String username, Vector3 position) {
 		for( int i = 0; i < babos.size; i++ ) {
 			if( babos.get(i).getUsername().equals(username) ) {
+				System.out.println("Mis a jour de la position");
 				babos.get(i).getInstance().transform.setToTranslation(position);
 			}
 		}
