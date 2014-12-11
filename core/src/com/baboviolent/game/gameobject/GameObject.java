@@ -105,12 +105,6 @@ public class GameObject {
     	}
     	currentAngle = (360 - currentAngle + 180) %360;
     	
-    	/*if(testImpulse) {
-    		instance.body.applyTorqueImpulse(new Vector3(0, -500, 0));
-    		testImpulse = false;
-    		
-    	}*/
-    	
     	/**
     	 * Si on est dirigé vers la cible, on stoppe le mouvement
     	 */
