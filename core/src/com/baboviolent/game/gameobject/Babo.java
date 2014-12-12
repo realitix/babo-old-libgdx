@@ -120,7 +120,7 @@ public class Babo extends GameObject {
     }
     
     public Babo setTarget(Vector3 f) {
-        target.set(f.x, f.y, f.z);
+    	target.set(f.x, f.y, f.z);
         return this;
     }
     

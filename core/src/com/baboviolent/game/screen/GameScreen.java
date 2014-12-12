@@ -7,6 +7,7 @@ import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.camera.ChaseCamera;
 import com.baboviolent.game.camera.ChaseCamera2;
+import com.baboviolent.game.controller.BaboController;
 import com.baboviolent.game.controller.DesktopController;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.weapon.Shotgun;
@@ -56,7 +57,7 @@ public class GameScreen implements Screen {
 	private DirectionalLight light;
 	private ModelBatch modelBatch;
 	private BaseMode mode;
-	private DesktopController controller;
+	private BaboController controller;
 	private BulletContactListener bulletContactListener;
 	
 	public GameScreen(final BaboViolentGame g, int type) {
@@ -84,8 +85,7 @@ public class GameScreen implements Screen {
         mode.init();
 
 		// Initialisation du controller
-		controller = new DesktopController(mode);
-		Gdx.input.setInputProcessor(controller);
+		controller = new BaboController(mode);
 		
 		// On créé le contact listener de bullet
 		bulletContactListener = new BulletContactListener(mode.getBabos());
@@ -102,7 +102,11 @@ public class GameScreen implements Screen {
 		mode.getWorld().render(modelBatch, environment);
 		modelBatch.render(mode.getParticleSystem());
 		
-		modelBatch.end();		
+		modelBatch.end();
+		
+		// La mise a jour du controleur doit etre apres le rendu
+		// car affichage des touchpad
+		controller.update();
 	}
 
 	@Override

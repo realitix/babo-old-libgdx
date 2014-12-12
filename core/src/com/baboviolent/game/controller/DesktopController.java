@@ -1,12 +1,15 @@
 package com.baboviolent.game.controller;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.Utils;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.mode.BaseMode;
 import com.baboviolent.game.screen.GameScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject;
@@ -17,11 +20,16 @@ import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController;
  * On utilise pas mousemoved car la target doit etre mis a jour meme quand la souris
  * ne bouge pas mais que babo bouge
  */ 
-public class DesktopController extends BaseController {
+public class DesktopController extends BaseController implements InputProcessor {
 	
 	public DesktopController(final BaseMode mode) {
 		super(mode);
     }
+	
+	@Override
+	public Vector3 getTarget(Camera camera) {
+		return Utils.getPositionFromMouse(target, camera, Gdx.input.getX(), Gdx.input.getY());
+	}
 	
     @Override
     public boolean keyDown(int keycode) {
@@ -73,4 +81,28 @@ public class DesktopController extends BaseController {
     	mode.onMouseReleased(screenX, screenY);
     	return false;
     }
+
+	@Override
+	public boolean keyTyped(char character) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
