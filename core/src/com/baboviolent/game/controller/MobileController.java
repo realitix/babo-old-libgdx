@@ -25,6 +25,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  */ 
 public class MobileController extends BaseController {
 	
+	public static final int TARGET_DISTANCE = 1000;
+	
 	private Stage stage;
 	private Touchpad left;
 	private Touchpad right;
@@ -60,10 +62,19 @@ public class MobileController extends BaseController {
         	direction.set(left.getKnobPercentX(), 0, left.getKnobPercentY());
         	mode.onSetPlayerDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
         }
+        else {
+        	direction.set(0, 0, 0);
+        	mode.onSetPlayerDirection(direction);
+        }
         
         // RIGHT
         if( right.isTouched() && (right.getKnobPercentX() != 0 || right.getKnobPercentY() != 0)) {
-        	
+        	target.set(mode.getPlayer().getPosition());
+        	target.add(-right.getKnobPercentX() * TARGET_DISTANCE, 0, right.getKnobPercentY() * TARGET_DISTANCE);
+        	mode.onStartShoot();
+        }
+        else {
+        	mode.onStopShoot();
         }
 	}
 	

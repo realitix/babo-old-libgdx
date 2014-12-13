@@ -128,6 +128,10 @@ public class Babo extends GameObject {
         return target.cpy();
     }
     
+    public Vector3 getPosition() {
+        return instance.body.getCenterOfMassPosition();
+    }
+    
     public String getUsername() {
         return username;
     }
@@ -221,9 +225,11 @@ public class Babo extends GameObject {
     }
     
     private void updateWeapon() {
-    	weapon.lookAt(target);
-    	if( shooting ) {
-    		weapon.shoot(target);
+    	if( target != null ) {
+	    	weapon.lookAt(target);
+	    	if( shooting ) {
+	    		weapon.shoot(target);
+	    	}
     	}
     }
     

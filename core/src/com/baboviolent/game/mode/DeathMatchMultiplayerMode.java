@@ -36,13 +36,15 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
         wc.sendDirection(angle);
     }
     
-    public void onMouseClicked(int screenX, int screenY) {
-    	super.onMouseClicked(screenX, screenY);
+    @Override
+    public void onStartShoot() {
+    	super.onStartShoot();
     	wc.sendShoot(true);
     }
     
-    public void onMouseReleased(int screenX, int screenY) {
-    	super.onMouseReleased(screenX, screenY);
+    @Override
+    public void onStopShoot() {
+    	super.onStopShoot();
     	wc.sendShoot(false);
     }
     

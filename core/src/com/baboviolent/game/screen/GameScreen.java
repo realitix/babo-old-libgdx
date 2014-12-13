@@ -57,7 +57,6 @@ public class GameScreen implements Screen {
 	private DirectionalLight light;
 	private ModelBatch modelBatch;
 	private BaseMode mode;
-	private BaboController controller;
 	private BulletContactListener bulletContactListener;
 	
 	public GameScreen(final BaboViolentGame g, int type) {
@@ -83,9 +82,6 @@ public class GameScreen implements Screen {
         	mode = new DeathMatchMultiplayerMode("test");
         }
         mode.init();
-
-		// Initialisation du controller
-		controller = new BaboController(mode);
 		
 		// On créé le contact listener de bullet
 		bulletContactListener = new BulletContactListener(mode.getBabos());
@@ -106,7 +102,7 @@ public class GameScreen implements Screen {
 		
 		// La mise a jour du controleur doit etre apres le rendu
 		// car affichage des touchpad
-		controller.update();
+		mode.getController().update();
 	}
 
 	@Override

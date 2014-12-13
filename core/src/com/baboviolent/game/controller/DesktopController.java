@@ -72,13 +72,13 @@ public class DesktopController extends BaseController implements InputProcessor 
     
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-    	mode.onMouseClicked(screenX, screenY);
+    	mode.onStartShoot();
     	return false;
     }
     
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-    	mode.onMouseReleased(screenX, screenY);
+    	mode.onStopShoot();
     	return false;
     }
 

@@ -2,6 +2,7 @@ package com.baboviolent.game.controller;
 
 import com.baboviolent.game.mode.BaseMode;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 
 public class BaboController {
@@ -29,5 +30,9 @@ public class BaboController {
 	
 	public void update() {
 		controller.update();
+	}
+	
+	public Vector3 getTarget(Camera camera) {
+		return controller.getTarget(camera);
 	}
 }

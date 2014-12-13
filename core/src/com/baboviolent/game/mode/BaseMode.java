@@ -4,6 +4,7 @@ import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.camera.ChaseCamera2;
+import com.baboviolent.game.controller.BaboController;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.weapon.Shotgun;
 import com.baboviolent.game.loader.ParticleLoader;
@@ -25,6 +26,7 @@ public class BaseMode {
     protected Babo player;
     protected ObjectMap<String, PoolParticle> particles = new ObjectMap<String, PoolParticle>();
 	protected ParticleSystem particleSystem;
+	private BaboController controller;
 	protected Map map;
 	protected int nbIa = 1;
 	protected Vector3 tmpV = new Vector3();
@@ -50,6 +52,9 @@ public class BaseMode {
 		// Initialisation des particules
 		particleSystem = ParticleLoader.init(camera);
 		particles = ParticleLoader.getParticles();
+		
+		// Initialisation du controller
+		controller = new BaboController(this);
 		
 		// Initialisation du joueur
 		initPlayer();
@@ -88,6 +93,10 @@ public class BaseMode {
         return player;
     }
     
+    public BaboController getController() {
+        return controller;
+    }
+    
     public Array<Babo> getBabos() {
         return babos;
     }
@@ -104,11 +113,11 @@ public class BaseMode {
         return particleSystem;
     }
     
-    public void onMouseClicked(int screenX, int screenY) {
+    public void onStartShoot() {
     	player.shoot();
     }
     
-    public void onMouseReleased(int screenX, int screenY) {
+    public void onStopShoot() {
     	player.stopShoot();
     }
     
@@ -117,7 +126,7 @@ public class BaseMode {
     }
     
     public void update() {
-    	player.setTarget(getTarget());
+    	player.setTarget(controller.getTarget(camera));
     	
         camera.update();
 		world.update();
