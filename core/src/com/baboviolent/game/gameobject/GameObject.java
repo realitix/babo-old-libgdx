@@ -16,7 +16,8 @@ public class GameObject {
     public static final int TYPE_BABO = 2;
     public static final int TYPE_AMMO = 3;
     
-
+    protected static int idIncrement = 1;
+    protected int id = idIncrement++;
 	protected String name;
 	protected int type;
     protected float friction;
@@ -52,7 +53,7 @@ public class GameObject {
         btRigidBody body = initBody(shape);
         
         if( type == TYPE_WEAPON ) {
-            // On limite la rotation à l'axe y
+            // On limite la rotation a l'axe y
             body.setAngularFactor(new Vector3(0,1,0));
         }
         
@@ -69,15 +70,23 @@ public class GameObject {
         ci.setAngularDamping(angularDamping);
         ci.setRestitution(restitution);
         body = new btRigidBody(ci);
-        
+        body.setUserValue(id);
      	// On enleve le constructioninfo
      	ci.dispose();
         
      	return body;
     }
     
+    public int getId() {
+        return id;
+    }
+    
     public BulletInstance getInstance() {
         return instance;
+    }
+    
+    public int getType() {
+        return type;
     }
     
     public GameObject translate(Vector3 v) {

@@ -84,7 +84,7 @@ public class GameScreen implements Screen {
         mode.init();
 		
 		// On créé le contact listener de bullet
-		bulletContactListener = new BulletContactListener(mode.getBabos());
+		bulletContactListener = new BulletContactListener();
     }
 	
 	@Override

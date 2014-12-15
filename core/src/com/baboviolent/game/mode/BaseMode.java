@@ -1,6 +1,7 @@
 package com.baboviolent.game.mode;
 
 import com.baboviolent.game.Utils;
+import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.camera.ChaseCamera2;
@@ -73,8 +74,9 @@ public class BaseMode {
         Babo babo = new Babo(username, "skin22", particles).teleport(generateBaboPosition());
         world.add(babo);
         babos.add(babo);
-        Shotgun shotgun = new Shotgun(world, particles.get("test"));
+        Shotgun shotgun = new Shotgun(babo, world, particles.get("test"));
         world.attachWeaponToBabo(babo, shotgun);
+        BulletContactListener.addObject(babo);
         return babo;
     }
     
@@ -84,7 +86,7 @@ public class BaseMode {
     		Babo b2 = new Babo("toto", "skin22", particles).teleport(new Vector3(800, 20, 1000));
             world.add(b2);
             babos.add(b2);
-            Shotgun shotgun2 = new Shotgun(world, particles.get("test"));
+            Shotgun shotgun2 = new Shotgun(b2, world, particles.get("test"));
             world.attachWeaponToBabo(b2, shotgun2);
         }
     }
@@ -146,12 +148,16 @@ public class BaseMode {
     		if( babos.get(i).getState() == Babo.STATE_APPEAR ) {
     			babos.get(i).appear(generateBaboPosition());
     		}
+    		
+    		if( babos.get(i).getState() == Babo.STATE_EXPLODE ) {
+    			babos.get(i).getLastShooter().addScore(1);
+    		}
     	}
     }
     
     /**
-     * Génère la position du nouveau babo
-     * Algorythme: le plus loin
+     * Genere la position du nouveau babo
+     * Algorithme: le plus loin
      * Pour chaque cellule de type sol
      * On additionne la distance de tous les babos et on prend la plus faible
      */ 

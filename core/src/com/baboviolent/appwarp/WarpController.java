@@ -23,6 +23,7 @@ public class WarpController {
     public static final String ACTION_SHOOT = "e";
     public static final String ACTION_STOP_SHOOT = "f";
     public static final String ACTION_POSITION = "g";
+    public static final String ACTION_DEAD = "h";
 
 	private static WarpController instance;
 	
@@ -119,6 +120,10 @@ public class WarpController {
 		sendAction(ACTION_SHOOT, (shoot)?"1":"0");
 	}
 	
+	public void sendDead(String killer){
+		sendAction(ACTION_DEAD, killer);
+	}
+	
 	public void sendAction(String type, String value){
 		sendGameUpdate(type+SEPARATOR+value);
 	}
@@ -150,6 +155,9 @@ public class WarpController {
 		    }
 	    	else if( action.equals(ACTION_SHOOT) ) {
 	    		warpListener.onShootReceived(username, (value.equals("1")) ? true : false);
+		    }
+	    	else if( action.equals(ACTION_DEAD) ) {
+	    		warpListener.onDeadReceived(username, value);
 		    }
 		}
 	}

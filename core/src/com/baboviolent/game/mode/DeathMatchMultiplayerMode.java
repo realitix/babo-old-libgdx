@@ -160,4 +160,13 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
 			}
 		}
 	}
+	
+	@Override
+	public void onDeadReceived(String username, String killer) {
+		for( int i = 0; i < babos.size; i++ ) {
+			if( babos.get(i).getUsername().equals(username) ) {
+				babos.get(i).explode();
+			}
+		}
+	}
 }

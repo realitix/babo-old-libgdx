@@ -19,4 +19,6 @@ public interface WarpListener {
 	public void onTargetReceived(String username, Vector3 target);
 	
 	public void onShootReceived(String username, boolean shoot);
+	
+	public void onDeadReceived(String username, String killer);
 }

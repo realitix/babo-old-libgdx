@@ -31,10 +31,14 @@ public class MobileController extends BaseController {
 	private Touchpad left;
 	private Touchpad right;
 	private Vector3 direction;
+	private Vector3 lastPosition;
+	private Vector3 currentPosition;
 	
 	public MobileController(final BaseMode mode) {
 		super(mode);
 		direction = new Vector3();
+		lastPosition = new Vector3();
+		currentPosition = new Vector3();
 		ScreenViewport v = new ScreenViewport();
 		stage = new Stage(v);
 		int width = v.getScreenWidth();
@@ -74,8 +78,12 @@ public class MobileController extends BaseController {
         	mode.onStartShoot();
         }
         else {
+        	currentPosition.set(mode.getPlayer().getPosition()).sub(lastPosition);
+        	target.add(currentPosition);
         	mode.onStopShoot();
         }
+        
+        lastPosition.set(mode.getPlayer().getPosition());
 	}
 	
 	public Stage getStage() {

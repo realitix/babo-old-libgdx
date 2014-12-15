@@ -35,12 +35,11 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class Babo extends GameObject {
 	public static final int STATE_ALIVE = 1;
-	public static final int STATE_DEAD = 2;
-	public static final int STATE_APPEAR = 3; // Attend la réapparition
+	public static final int STATE_EXPLODE = 2;
+	public static final int STATE_DEAD = 3;
+	public static final int STATE_APPEAR = 4; // Attend la reapparition
 	public static final int ENERGY = 100;
 	
-    private static int idIncrement = 1;
-    private int id = idIncrement++;
     private long timeBeforeAppear;
     private long lastTimeDead;
 	private String skin;
@@ -52,8 +51,9 @@ public class Babo extends GameObject {
 	private boolean shooting = false;
 	private boolean moving = false;
 	private final ObjectMap<String, PoolParticle> particules; // Particule émise lorsqu'on est touché par une balle
-	private Array<AnimationController> explodingControllers = new Array<AnimationController>();
 	private int state;
+	private int score;
+	private Babo lastShooter; // Dernier babo ayant touch� ce babo
 	
 	public Babo(String username, String skin, final ObjectMap<String, PoolParticle> particules) {
 		this.particules = particules;
@@ -82,7 +82,7 @@ public class Babo extends GameObject {
         float d = BaboViolentGame.BABO_DIAMETER;
         Material material = TextureLoader.getMaterial(skin, TextureLoader.TYPE_SKIN);
         Model model =  new ModelBuilder().createSphere(
-        	d, d, d, 10, 10,
+        	d, d, d, 16, 16,
         	material,
         	Usage.Position | Usage.Normal | Usage.TextureCoordinates);
         
@@ -94,7 +94,7 @@ public class Babo extends GameObject {
         
         // Detection de la collision entre les balles et les babos
         body.setUserValue(id);
-        body.setContactCallbackFlag(BulletContactListener.PLAYER_FLAG);
+        body.setContactCallbackFlag(BulletContactListener.BABO_FLAG);
         
         // création de l'instance
         instance = new BulletInstance(model, body);
@@ -102,6 +102,11 @@ public class Babo extends GameObject {
     
     public Babo shoot() {
     	shooting = true;
+        return this;
+    }
+    
+    public Babo addScore(int add) {
+    	score += add;
         return this;
     }
     
@@ -136,6 +141,15 @@ public class Babo extends GameObject {
         return username;
     }
     
+    public Babo setLastShooter(Babo babo) {
+        lastShooter = babo;
+        return this;
+    }
+    
+    public Babo getLastShooter() {
+        return lastShooter;
+    }
+    
     public Babo setWeapon(Weapon weapon) {
         this.weapon = weapon;
         return this;
@@ -143,10 +157,6 @@ public class Babo extends GameObject {
     
     public Weapon getWeapon() {
         return weapon;
-    }
-    
-    public int getId() {
-        return id;
     }
     
     public int getState() {
@@ -174,12 +184,12 @@ public class Babo extends GameObject {
     }
     
     public void explode() {
-    	state = STATE_DEAD;
+    	state = STATE_EXPLODE;
     	lastTimeDead = TimeUtils.millis();
     	
     	// On cache l'instance pour ensuite faire apparaitre l'instance d'explosion
     	instance.nodes.get(0).parts.get(0).enabled = false;
-    	// Désactive le body physic
+    	// Desactive le body physic
         body.setActivationState(Collision.DISABLE_SIMULATION);
         
         // On génère beacoup de particules
@@ -209,12 +219,16 @@ public class Babo extends GameObject {
     }
     
     public void update() {
-    	checkEnergy();
+    	updateState();
     	updateWeapon();
     	updateMovement();
     }
     
-    public void checkEnergy() {
+    private void updateState() {
+    	if( state == STATE_EXPLODE ) {
+    		state = STATE_DEAD;
+    	}
+    	
     	if( energy <= 0 && state == STATE_ALIVE ) {
     		explode();
     	}

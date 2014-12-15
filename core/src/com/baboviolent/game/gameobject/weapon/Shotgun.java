@@ -2,8 +2,10 @@ package com.baboviolent.game.gameobject.weapon;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Utils;
+import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
 import com.baboviolent.game.gameobject.ammo.SmallCalibre;
 import com.baboviolent.game.loader.TextureLoader;
@@ -32,13 +34,9 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class Shotgun extends Weapon {
 	
-	private int test = 1;
-	
-	public Shotgun(final BulletWorld world, final PoolParticle particule) {
-		super(world, particule);
+	public Shotgun(final Babo babo, final BulletWorld world, final PoolParticle particule) {
+		super(babo, world, particule);
 		name = "Shotgun";
-		type = GameObject.TYPE_WEAPON;
-		ammo = new SmallCalibre();
 		impulse = 50000;
 		frequency = 100;
 		
@@ -75,6 +73,7 @@ public class Shotgun extends Weapon {
 
     	for( int i = 0; i < nbAmmos; i++ ) {
 			// Initialise la balle
+    		SmallCalibre ammo = new SmallCalibre(this);
 			BulletInstance a = ammo.getInstance();
 			Matrix4 matrixAmmo = tmpM.cpy().trn(rotation.transform(tmpV3.set(1,0,0)).scl(30));
 			a.body.setCenterOfMassTransform(matrixAmmo);
@@ -100,6 +99,9 @@ public class Shotgun extends Weapon {
 	        
 	        // On incremente l'angle
 	    	rotateQuaternion(rotation, angle);
+	    	
+	    	// On ajoute la balle au contact listener
+	    	BulletContactListener.addObject(ammo);
 		}
     	
     	// On creer la force inverse

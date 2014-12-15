@@ -5,6 +5,7 @@ import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.gameobject.GameObject;
+import com.baboviolent.game.gameobject.weapon.Weapon;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
@@ -20,17 +21,30 @@ import com.badlogic.gdx.utils.TimeUtils;
 public class Ammo extends GameObject {
 	protected long expireTime; // temps avant expiration en millisecondes
 	protected int power;
+	protected final Weapon weapon;
 	
-	public Ammo() {
+	public Ammo(final Weapon w) {
 		super();
+		type = GameObject.TYPE_AMMO;
+		weapon = w;
 	}
 	
 	protected void init() {
 	    super.initModel();
 	    shape = Utils.convexHullShapeFromModel(model);
+	    initInstance();
 	}
 	
-	public BulletInstance getInstance() {
+	public Weapon getWeapon() {
+		return weapon;
+	}
+	
+	public int getPower() {
+		return power;
+	}
+	
+	@Override
+	public void initInstance() {
 		body = initBody(shape);
 		
 		// Empeche la balle de traverser les murs
@@ -41,10 +55,8 @@ public class Ammo extends GameObject {
         
         // Permet de detecter les contacts de la balle avec les babos
      	body.setCollisionFlags(body.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_CUSTOM_MATERIAL_CALLBACK);
-     	body.setContactCallbackFilter(BulletContactListener.PLAYER_FLAG);
-     	
-     	body.setUserValue(power);
+     	body.setContactCallbackFilter(BulletContactListener.BABO_FLAG);
 		
-        return new BulletInstance(model, body).setExpire(TimeUtils.millis() + expireTime);
+        instance = new BulletInstance(model, body).setExpire(TimeUtils.millis() + expireTime);
 	}
 }

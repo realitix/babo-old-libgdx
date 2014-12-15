@@ -3,6 +3,7 @@ package com.baboviolent.game.gameobject.weapon;
 import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
 import com.baboviolent.game.gameobject.ammo.Ammo;
 import com.baboviolent.game.loader.BaboModelLoader;
@@ -18,15 +19,21 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 public class Weapon extends GameObject {
 	protected final BulletWorld world;
 	protected final PoolParticle particule;
-	protected Ammo ammo;
+	protected final Babo babo; // Babo tenant l'arme
 	protected float impulse; // Puissance de la balle
 	protected float frequency; // Temps en millisecond entre deux tirs
 	protected long lastShoot;
 	
-	public Weapon(final BulletWorld world, final PoolParticle particule) {
+	public Weapon(final Babo b, final BulletWorld w, final PoolParticle p) {
 		super();
-		this.world = world;
-		this.particule = particule;
+		type = GameObject.TYPE_WEAPON;
+		babo = b;
+		world = w;
+		particule = p;
+	}
+	
+	public Babo getBabo() {
+		return babo;
 	}
 	
 	public void shoot(Vector3 target) {

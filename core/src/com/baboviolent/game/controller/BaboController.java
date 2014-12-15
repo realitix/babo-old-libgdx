@@ -22,10 +22,6 @@ public class BaboController {
 				break;
 			default:
 		}
-		
-		// @TODO A supprimer
-		controller = new MobileController(mode);
-		Gdx.input.setInputProcessor(((MobileController)controller).getStage());
 	}
 	
 	public void update() {
