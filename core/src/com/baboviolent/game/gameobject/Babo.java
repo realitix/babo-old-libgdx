@@ -5,6 +5,7 @@ import java.util.Random;
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
+import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.gameobject.weapon.Weapon;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.TextureLoader;
@@ -54,11 +55,13 @@ public class Babo extends GameObject {
 	private int state;
 	private int score;
 	private Babo lastShooter; // Dernier babo ayant touchÈ ce babo
+	private final BulletWorld world;
 	
-	public Babo(String username, String skin, final ObjectMap<String, PoolParticle> particules) {
+	public Babo(String username, String skin, final ObjectMap<String, PoolParticle> particules, final BulletWorld world) {
 		this.particules = particules;
 	    this.skin = skin;
 	    this.username = username;
+	    this.world = world;
 	    name = "Babo";
 	    type = GameObject.TYPE_BABO;
 	    timeBeforeAppear = 5000;
@@ -96,79 +99,8 @@ public class Babo extends GameObject {
         body.setUserValue(id);
         body.setContactCallbackFlag(BulletContactListener.BABO_FLAG);
         
-        // cr√©ation de l'instance
+        // Creation de l'instance
         instance = new BulletInstance(model, body);
-    }
-    
-    public Babo shoot() {
-    	shooting = true;
-        return this;
-    }
-    
-    public Babo addScore(int add) {
-    	score += add;
-        return this;
-    }
-    
-    public Babo stopShoot() {
-    	shooting = false;
-        return this;
-    }
-    
-    public Babo setDirection(Vector3 f) {
-        direction.set(f.x, f.y, f.z);
-        return this;
-    }
-    
-    public Vector3 getDirection() {
-        return direction.cpy();
-    }
-    
-    public Babo setTarget(Vector3 f) {
-    	target.set(f.x, f.y, f.z);
-        return this;
-    }
-    
-    public Vector3 getTarget() {
-        return target.cpy();
-    }
-    
-    public Vector3 getPosition() {
-        return instance.body.getCenterOfMassPosition();
-    }
-    
-    public String getUsername() {
-        return username;
-    }
-    
-    public Babo setLastShooter(Babo babo) {
-        lastShooter = babo;
-        return this;
-    }
-    
-    public Babo getLastShooter() {
-        return lastShooter;
-    }
-    
-    public Babo setWeapon(Weapon weapon) {
-        this.weapon = weapon;
-        return this;
-    }
-    
-    public Weapon getWeapon() {
-        return weapon;
-    }
-    
-    public int getState() {
-    	return state;
-    }
-    
-    public int getEnergy() {
-    	return energy;
-    }
-    
-    public boolean isMoving() {
-    	return moving;
     }
     
     public Babo hit(int power) {
@@ -192,7 +124,7 @@ public class Babo extends GameObject {
     	// Desactive le body physic
         body.setActivationState(Collision.DISABLE_SIMULATION);
         
-        // On g√©n√®re beacoup de particules
+        // On genere beacoup de particules
         ParticleEffect effect = particules.get("blood2").obtain();
     	effect.init();
     	effect.reset();
@@ -200,28 +132,45 @@ public class Babo extends GameObject {
         effect.setTransform(this.instance.transform);
         ParticleSystem.get().add(effect);
         
+        // On dÈtache l'arme
+        world.detachWeaponToBabo(this, weapon);
+        
         // On ejecte l'arme
         Random rand = new Random();
-        int max = 3000000;
-        int min = 0;
-        weapon.body.setAngularFactor(new Vector3(1,1,1));
-        weapon.body.applyCentralImpulse(new Vector3(rand.nextInt((max - min) + 1) + min, rand.nextInt((max - min) + 1) + min, rand.nextInt((max - min) + 1) + min));
+        int max = 100;
+        int max2 = 10;
+        weapon.body.applyImpulse(
+        	new Vector3(
+        		rand.nextInt(max  + 1) - max/2,
+        		rand.nextInt(max + 1),
+        		rand.nextInt(max + 1) - max/2
+        	),
+        	new Vector3(
+    			rand.nextInt(max2  + 1) - max2/2,
+        		rand.nextInt(max2 + 1) - max2/2,
+        		rand.nextInt(max2 + 1) - max2/2
+        	)
+        );
     }
     
     // On reactive tout
     public void appear(Vector3 position) {
     	energy = ENERGY;
     	instance.nodes.get(0).parts.get(0).enabled = true;
-    	instance.transform.setToTranslation(position);
+    	this.teleport(position);
     	body.setActivationState(Collision.DISABLE_DEACTIVATION);
-    	weapon.body.setAngularFactor(new Vector3(0,1,0));
     	state = STATE_ALIVE;
+    	
+    	// On rattache l'arme
+    	world.attachWeaponToBabo(this, weapon);
     }
     
     public void update() {
     	updateState();
-    	updateWeapon();
-    	updateMovement();
+    	if( state == STATE_ALIVE ) {
+    		updateWeapon();
+    		updateMovement();
+    	}
     }
     
     private void updateState() {
@@ -301,5 +250,76 @@ public class Babo extends GameObject {
     public Babo teleport(Vector3 v) {
     	instance.body.setWorldTransform(instance.body.getWorldTransform().setToTranslation(v));
     	return this;
+    }
+    
+    public Babo shoot() {
+    	shooting = true;
+        return this;
+    }
+    
+    public Babo addScore(int add) {
+    	score += add;
+        return this;
+    }
+    
+    public Babo stopShoot() {
+    	shooting = false;
+        return this;
+    }
+    
+    public Babo setDirection(Vector3 f) {
+        direction.set(f.x, f.y, f.z);
+        return this;
+    }
+    
+    public Vector3 getDirection() {
+        return direction.cpy();
+    }
+    
+    public Babo setTarget(Vector3 f) {
+    	target.set(f.x, f.y, f.z);
+        return this;
+    }
+    
+    public Vector3 getTarget() {
+        return target.cpy();
+    }
+    
+    public Vector3 getPosition() {
+        return instance.body.getCenterOfMassPosition();
+    }
+    
+    public String getUsername() {
+        return username;
+    }
+    
+    public Babo setLastShooter(Babo babo) {
+        lastShooter = babo;
+        return this;
+    }
+    
+    public Babo getLastShooter() {
+        return lastShooter;
+    }
+    
+    public Babo setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+        return this;
+    }
+    
+    public Weapon getWeapon() {
+        return weapon;
+    }
+    
+    public int getState() {
+    	return state;
+    }
+    
+    public int getEnergy() {
+    	return energy;
+    }
+    
+    public boolean isMoving() {
+    	return moving;
     }
 }

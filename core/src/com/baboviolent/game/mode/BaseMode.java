@@ -68,14 +68,16 @@ public class BaseMode {
         Babo player = initBabo(Gdx.app.getPreferences("com.baboviolent.game").getString("username"));
         this.player = player;
         camera.init(this.player);
+        player.appear(generateBaboPosition());
     }
     
     protected Babo initBabo(String username) {
-        Babo babo = new Babo(username, "skin22", particles).teleport(generateBaboPosition());
+        Babo babo = new Babo(username, "skin22", particles, world);
         world.add(babo);
         babos.add(babo);
         Shotgun shotgun = new Shotgun(babo, world, particles.get("test"));
-        world.attachWeaponToBabo(babo, shotgun);
+        world.add(shotgun);
+        babo.setWeapon(shotgun);
         BulletContactListener.addObject(babo);
         return babo;
     }
@@ -83,11 +85,11 @@ public class BaseMode {
     protected void initIa() {
         for( int i = 0; i < nbIa; i++ ) {
             // Creation d'un deuxieme joueur pour tester
-    		Babo b2 = new Babo("toto", "skin22", particles).teleport(new Vector3(800, 20, 1000));
+    		/*Babo b2 = new Babo("toto", "skin22", particles).teleport(new Vector3(800, 20, 1000));
             world.add(b2);
             babos.add(b2);
             Shotgun shotgun2 = new Shotgun(b2, world, particles.get("test"));
-            world.attachWeaponToBabo(b2, shotgun2);
+            world.attachWeaponToBabo(b2, shotgun2);*/
         }
     }
     

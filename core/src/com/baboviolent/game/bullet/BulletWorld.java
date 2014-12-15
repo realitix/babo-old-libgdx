@@ -91,8 +91,10 @@ public class BulletWorld implements Disposable {
 	}
 	
 	public void attachWeaponToBabo(Babo babo, Weapon weapon) {
+		weapon.getInstance().body.setCenterOfMassTransform(new Matrix4());
+		weapon.getInstance().body.setAngularFactor(new Vector3(0,1,0));
+		weapon.getInstance().body.clearForces();
 	    weapon.translate(babo.getInstance().body.getCenterOfMassPosition());
-		add(weapon);
 		
 	    // Respectivement pour le 2 le vecteur 1 est le point sur le body 1
 	    btPoint2PointConstraint constraint = new btPoint2PointConstraint(
@@ -102,11 +104,26 @@ public class BulletWorld implements Disposable {
 			new Vector3(0,0,0));
 	    constraints.add(constraint);
 	    
-		// Le deuxieme argument désactive les collisions entre babo et l'arme
+		// Le deuxieme argument desactive les collisions entre babo et l'arme
 		world.addConstraint(constraint, true);
+	}
+	
+	public void detachWeaponToBabo(Babo babo, Weapon weapon) {		
+		btTypedConstraint constraintToRemove = null;
+		for( int i = 0; i < constraints.size; i++ ) {
+	    	if( 
+	    		constraints.get(i).getRigidBodyA().equals(weapon.getInstance().body) ||
+	    		constraints.get(i).getRigidBodyB().equals(weapon.getInstance().body)
+	    	) {
+	    		constraintToRemove = constraints.get(i);
+	    	}
+	    }
 		
-		// On ajoute le weapon dans le babo
-		babo.setWeapon(weapon);
+		if( constraintToRemove != null ) {
+			weapon.getInstance().body.setAngularFactor(new Vector3(1,1,1));
+			world.removeConstraint(constraintToRemove);
+			constraints.removeValue(constraintToRemove, true);
+		}
 	}
 	
 	/*
