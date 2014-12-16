@@ -54,18 +54,18 @@ public class BaboAi extends Babo implements Steerable<Vector3> {
 		
 		// Update position and linear velocity
 		if (!steeringOutput.linear.isZero()) {
-			this.setDirection(steeringOutput.linear);
-			//body.applyCentralForce(steeringOutput.linear.scl(deltaTime));
-			//anyAccelerations = true;
+			System.out.println(steeringOutput.linear);
+			tmpV3.set(-steeringOutput.linear.x, 0, steeringOutput.linear.z).nor();
+			this.setDirection(tmpV3);
 		}
 
 		// Update orientation and angular velocity
-		if (steeringOutput.angular != 0) {
+		/*if (steeringOutput.angular != 0) {
 			tmpV2.set(1, 0);
 			tmpV2.rotate(steeringOutput.angular);
 			this.setTarget(tmpV3.set(tmpV2.x, 0, tmpV2.y));
 			//body.applyTorque(tmpVector3.set(0, steeringOutput.angular * deltaTime, 0));
-		}
+		}*/
 	}
 
 	public BaboAi setSteeringBehavior (SteeringBehavior<Vector3> steeringBehavior) {
@@ -129,6 +129,11 @@ public class BaboAi extends Babo implements Steerable<Vector3> {
 	@Override
 	public float getBoundingRadius() {
 		return 1;
+	}
+	
+	@Override
+	public Vector3 getPosition() {
+		return super.getPosition();
 	}
 
 	@Override

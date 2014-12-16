@@ -185,24 +185,25 @@ public class BaseMode {
      * Genere la position du nouveau babo
      * Algorithme: le plus loin
      * Pour chaque cellule de type sol
-     * On additionne la distance de tous les babos et on prend la plus faible
+     * On additionne la distance de tous les babos et on prend la plus eleve
      */ 
     protected Vector3 generateBaboPosition() {
     	Vector3 position = new Vector3();
     	Vector3 bp = new Vector3();
-    	float min = 999999999;
+    	float max = 0;
     	for( int i = 0; i < map.getCells().size; i++ ) {
     	    if( map.getCells().get(i).getType().equals(Map.TYPE_GROUND) ) {
     	        Vector3 cp = map.getCells().get(i).getPosition();
     	        float sumTmp = 0;
         	    for( int j = 0; j < babos.size; j++ ) {
         	        if( babos.get(j).getState() == Babo.STATE_ALIVE ) {
-        	            babos.get(j).getInstance().transform.getTranslation(bp);
+        	            bp = babos.get(j).getPosition();
         	            sumTmp += Vector3.dst(cp.x, cp.y, cp.z, bp.x, bp.y, bp.z);
         	        }
         	    }
         	    
-        	    if( sumTmp < min ) {
+        	    if( sumTmp > max ) {
+        	    	max = sumTmp;
         	        position.set(cp);
         	    }
     	    }
