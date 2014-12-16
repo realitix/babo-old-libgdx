@@ -136,21 +136,7 @@ public class Babo extends GameObject {
         world.detachWeaponToBabo(this, weapon);
         
         // On ejecte l'arme
-        Random rand = new Random();
-        int max = 100;
-        int max2 = 10;
-        weapon.body.applyImpulse(
-        	new Vector3(
-        		rand.nextInt(max  + 1) - max/2,
-        		rand.nextInt(max + 1),
-        		rand.nextInt(max + 1) - max/2
-        	),
-        	new Vector3(
-    			rand.nextInt(max2  + 1) - max2/2,
-        		rand.nextInt(max2 + 1) - max2/2,
-        		rand.nextInt(max2 + 1) - max2/2
-        	)
-        );
+        weapon.eject();
     }
     
     // On reactive tout

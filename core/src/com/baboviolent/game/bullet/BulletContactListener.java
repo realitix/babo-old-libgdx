@@ -44,8 +44,5 @@ public class BulletContactListener extends ContactListener {
 				.setLastShooter(ammo.getWeapon().getBabo())
 				.hit(ammo.getPower());
 		}
-		
-		// @TODO a supprimer
-		babo.setLastShooter(babo).hit(100);
 	}
 }

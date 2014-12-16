@@ -110,7 +110,7 @@ public class Map {
 			}
 		}
 		
-		// On créé l'instance
+		// On cree l'instance
         btRigidBody.btRigidBodyConstructionInfo constructionInfo = 
             new btRigidBody.btRigidBodyConstructionInfo(0, null, shape);
             
@@ -186,7 +186,8 @@ public class Map {
 	 * Charge la map
 	 **/
 	static public Map load(String mapname) {
-		FileHandle file = Gdx.files.external(mapname+".json");
+		//FileHandle file = Gdx.files.external(mapname+".json");
+		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
 		String jsonMap = file.readString();
 		Json json = new Json();
 		Map map = json.fromJson(Map.class, jsonMap);

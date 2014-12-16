@@ -36,7 +36,7 @@ public class BulletWorld implements Disposable {
 	private final ObjectMap<String, BulletInstance.Constructor> constructors = new ObjectMap<String, BulletInstance.Constructor>();
 	protected final Array<BulletInstance> instances = new Array<BulletInstance>();
 	protected final Array<BulletInstance> instancesToExpire = new Array<BulletInstance>();
-	private Array<btTypedConstraint> constraints = new Array<btTypedConstraint>();
+	private final ObjectMap<String, btTypedConstraint> constraints = new ObjectMap<String, btTypedConstraint>();
 	public final btCollisionConfiguration collisionConfiguration;
 	public final btCollisionDispatcher dispatcher;
 	public final btBroadphaseInterface broadphase;
@@ -102,27 +102,22 @@ public class BulletWorld implements Disposable {
 	        weapon.getInstance().body,
 			new Vector3(0,0,0),
 			new Vector3(0,0,0));
-	    constraints.add(constraint);
+	    
+	    constraints.put(Integer.toString(weapon.getId()), constraint);
 	    
 		// Le deuxieme argument desactive les collisions entre babo et l'arme
 		world.addConstraint(constraint, true);
 	}
 	
-	public void detachWeaponToBabo(Babo babo, Weapon weapon) {		
-		btTypedConstraint constraintToRemove = null;
-		for( int i = 0; i < constraints.size; i++ ) {
-	    	if( 
-	    		constraints.get(i).getRigidBodyA().equals(weapon.getInstance().body) ||
-	    		constraints.get(i).getRigidBodyB().equals(weapon.getInstance().body)
-	    	) {
-	    		constraintToRemove = constraints.get(i);
-	    	}
-	    }
-		
+	public void detachWeaponToBabo(Babo babo, Weapon weapon) {
+		String id = Integer.toString(weapon.getId());
+		btTypedConstraint constraintToRemove = constraints.get(id, null);
+
 		if( constraintToRemove != null ) {
 			weapon.getInstance().body.setAngularFactor(new Vector3(1,1,1));
 			world.removeConstraint(constraintToRemove);
-			constraints.removeValue(constraintToRemove, true);
+			constraints.remove(id);
+			constraintToRemove.dispose();
 		}
 	}
 	

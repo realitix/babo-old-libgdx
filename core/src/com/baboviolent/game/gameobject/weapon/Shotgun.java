@@ -38,14 +38,15 @@ public class Shotgun extends Weapon {
 		super(babo, world, particule);
 		name = "Shotgun";
 		impulse = 50000;
+		rotateImpulse = 200000;
 		frequency = 100;
 		
-	    friction = 0;
-        rollingFriction = 0;
-        linearDamping = 0;
-        angularDamping = 0;
-        restitution = 0;
-        mass = 1;
+	    friction = 0.1f;
+        rollingFriction = 0.1f;
+        linearDamping = 0.1f;
+        angularDamping = 0.1f;
+        restitution = 0.1f;
+        mass = 10;
         
         super.initInstance();
 	}
