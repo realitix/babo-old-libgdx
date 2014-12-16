@@ -1,6 +1,7 @@
 package com.baboviolent.game.mode;
 
 import com.baboviolent.game.Utils;
+import com.baboviolent.game.ai.BaboAi;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
@@ -12,6 +13,7 @@ import com.baboviolent.game.loader.ParticleLoader;
 import com.baboviolent.game.map.Map;
 import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.steer.behaviors.Seek;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
@@ -83,6 +85,28 @@ public class BaseMode {
     }
     
     protected void initIa() {
+    	// @TODO seulement des tests
+    	BaboAi ai1 = new BaboAi("ai1", "skin22", particles, world);
+    	BaboAi ai2 = new BaboAi("ai2", "skin22", particles, world);
+    	world.add(ai1);
+    	world.add(ai2);
+        babos.add(ai1);
+        babos.add(ai2);
+        Shotgun shotgun1 = new Shotgun(ai1, world, particles.get("test"));
+        Shotgun shotgun2 = new Shotgun(ai2, world, particles.get("test"));
+        world.add(shotgun1);
+        world.add(shotgun2);
+        ai1.setWeapon(shotgun1);
+        ai2.setWeapon(shotgun2);
+        BulletContactListener.addObject(ai1);
+        BulletContactListener.addObject(ai2);
+        
+        Seek<Vector3> seekSB = new Seek<Vector3>(ai1, ai2);
+		ai1.setSteeringBehavior(seekSB);
+		
+		ai1.appear(generateBaboPosition());
+		ai2.appear(generateBaboPosition());
+		
         for( int i = 0; i < nbIa; i++ ) {
             // Creation d'un deuxieme joueur pour tester
     		/*Babo b2 = new Babo("toto", "skin22", particles).teleport(new Vector3(800, 20, 1000));

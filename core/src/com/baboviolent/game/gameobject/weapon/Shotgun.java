@@ -39,7 +39,7 @@ public class Shotgun extends Weapon {
 		name = "Shotgun";
 		impulse = 50000;
 		rotateImpulse = 200000;
-		frequency = 100;
+		frequency = 1000;
 		
 	    friction = 0.1f;
         rollingFriction = 0.1f;

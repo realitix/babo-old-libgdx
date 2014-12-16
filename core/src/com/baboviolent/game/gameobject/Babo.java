@@ -46,7 +46,7 @@ public class Babo extends GameObject {
 	private String skin;
 	private String username;
 	private Vector3 direction;
-	private Vector3 target;
+	protected Vector3 target;
 	private Weapon weapon;
 	private int energy;
 	private boolean shooting = false;
