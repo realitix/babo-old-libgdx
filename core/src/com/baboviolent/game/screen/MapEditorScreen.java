@@ -89,14 +89,14 @@ public class MapEditorScreen implements Screen {
         cameraController.scrollFactor = -0.1f;
         cameraController.translateUnits = 3000f;
         
-        // Ajout du contrôle
+        // Ajout du controle
         Gdx.input.setInputProcessor(new InputMultiplexer(
         	menu.getStage(),
         	cameraController,
         	new EditorInputAdapter(this)        	
         ));
         
-        // Création d'une map
+        // Creation d'une map
         map = new Map()
         	.setVersion(1)
         	.setAuthor("Test")

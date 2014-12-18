@@ -272,7 +272,7 @@ public class Babo extends GameObject {
     }
     
     public Vector3 getPosition() {
-        return instance.body.getCenterOfMassPosition();
+        return instance.body.getCenterOfMassPosition().cpy();
     }
     
     public String getUsername() {

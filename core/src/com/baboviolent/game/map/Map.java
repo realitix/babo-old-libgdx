@@ -61,6 +61,7 @@ public class Map {
 	public static final String TYPE_GROUND = "type_ground";
 	public static final String TYPE_WALL = "type_wall";
 	public static final String TYPE_OBJECT = "type_object";
+	public static final String TYPE_EMPTY = "type_empty";
 	
 	private String name;
 	private String author;
@@ -131,7 +132,7 @@ public class Map {
 		// @TODO Pouvoir vider les textures une fois le modèle détruit
 	    ObjectMap<String, Material> materials = TextureLoader.getMaterialsFromMap(map);
 	    
-	    // Création du mesh cellule
+	    // Creation du mesh cellule
 	    float s = BaboViolentGame.SIZE_MAP_CELL;
 		MeshBuilder meshBuilder = new MeshBuilder();
 		meshBuilder.begin(Usage.Position | Usage.Normal | Usage.TextureCoordinates, GL20.GL_TRIANGLES);
@@ -151,7 +152,7 @@ public class Map {
 		meshBuilder.box(0, s/2, 0, s, s, s);
 		meshBuilder.end();
 		
-		// Création du model avec un modelbuilder et ajout de toutes les cellules
+		// Creation du model avec un modelbuilder et ajout de toutes les cellules
 		ModelBuilder modelBuilder = new ModelBuilder();
         modelBuilder.begin();
         

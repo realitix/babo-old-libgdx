@@ -7,12 +7,16 @@ public class Cell {
 	private String type;
 	private String textureName;
 	
+	public Cell() {
+		position = new Vector3();
+	}
+	
 	public Vector3 getPosition() {
-		return position;
+		return position.cpy();
 	}
 	
 	public Cell setPosition(Vector3 position) {
-		this.position = position;
+		this.position.set(position);
 		return this;
 	}
 	

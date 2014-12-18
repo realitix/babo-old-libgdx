@@ -1,7 +1,10 @@
 package com.baboviolent.game.mode;
 
 import com.baboviolent.game.Utils;
-import com.baboviolent.game.ai.BaboAi;
+import com.baboviolent.game.ai.AiBabo;
+import com.baboviolent.game.ai.bullet.BulletRaycastCollisionDetector;
+import com.baboviolent.game.ai.manager.AiManager;
+import com.baboviolent.game.ai.pfa.tiled.flat.BaboPathGenerator;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
@@ -13,10 +16,22 @@ import com.baboviolent.game.loader.ParticleLoader;
 import com.baboviolent.game.map.Map;
 import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
+import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
+import com.badlogic.gdx.ai.steer.behaviors.RaycastObstacleAvoidance;
 import com.badlogic.gdx.ai.steer.behaviors.Seek;
+import com.badlogic.gdx.ai.steer.behaviors.Wander;
+import com.badlogic.gdx.ai.steer.limiters.LinearAccelerationLimiter;
+import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
+import com.badlogic.gdx.ai.steer.utils.paths.LinePath.LinePathParam;
+import com.badlogic.gdx.ai.steer.utils.rays.CentralRayWithWhiskersConfiguration;
+import com.badlogic.gdx.ai.steer.utils.rays.ParallelSideRayConfiguration;
+import com.badlogic.gdx.ai.steer.utils.rays.SingleRayConfiguration;
+import com.badlogic.gdx.ai.utils.RaycastCollisionDetector;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -31,7 +46,7 @@ public class BaseMode {
 	protected ParticleSystem particleSystem;
 	private BaboController controller;
 	protected Map map;
-	protected int nbIa = 1;
+	protected int nbIa;
 	protected Vector3 tmpV = new Vector3();
     
     public BaseMode(final String mapName) {
@@ -49,7 +64,7 @@ public class BaseMode {
 		// Initialisation de la map
 		world.add(Map.loadInstance(map));
 		
-		// Initialisation de la caméra
+		// Initialisation de la camera
 		camera = new ChaseCamera2();
 		
 		// Initialisation des particules
@@ -63,6 +78,7 @@ public class BaseMode {
 		initPlayer();
         
         // Initialisation de l'intelligence artificielle
+		nbIa = 2;
         initIa();
     }
     
@@ -85,36 +101,18 @@ public class BaseMode {
     }
     
     protected void initIa() {
-    	// @TODO seulement des tests
-    	BaboAi ai1 = new BaboAi("ai1", "skin22", particles, world);
-    	BaboAi ai2 = new BaboAi("ai2", "skin22", particles, world);
-    	world.add(ai1);
-    	world.add(ai2);
-        babos.add(ai1);
-        babos.add(ai2);
-        Shotgun shotgun1 = new Shotgun(ai1, world, particles.get("test"));
-        Shotgun shotgun2 = new Shotgun(ai2, world, particles.get("test"));
-        world.add(shotgun1);
-        world.add(shotgun2);
-        ai1.setWeapon(shotgun1);
-        ai2.setWeapon(shotgun2);
-        BulletContactListener.addObject(ai1);
-        BulletContactListener.addObject(ai2);
-        
-        Seek<Vector3> seekSB = new Seek<Vector3>(ai1, ai2);
-		ai1.setSteeringBehavior(seekSB);
-		
-		ai1.appear(generateBaboPosition());
-		ai2.appear(generateBaboPosition());
-		
-        for( int i = 0; i < nbIa; i++ ) {
-            // Creation d'un deuxieme joueur pour tester
-    		/*Babo b2 = new Babo("toto", "skin22", particles).teleport(new Vector3(800, 20, 1000));
-            world.add(b2);
-            babos.add(b2);
-            Shotgun shotgun2 = new Shotgun(b2, world, particles.get("test"));
-            world.attachWeaponToBabo(b2, shotgun2);*/
-        }
+    	BaboPathGenerator pathGenerator = new BaboPathGenerator(map);
+    	
+    	for( int i = 0; i < nbIa; i++) {
+    		AiBabo ai = new AiBabo("ai1", "skin22", particles, world, babos, pathGenerator);
+    		world.add(ai);
+    		babos.add(ai);
+    		Shotgun shotgun = new Shotgun(ai, world, particles.get("test"));
+    		world.add(shotgun);
+    		ai.setWeapon(shotgun);
+    		BulletContactListener.addObject(ai);
+    		ai.appear(generateBaboPosition());
+    	}
     }
     
     public Babo getPlayer() {

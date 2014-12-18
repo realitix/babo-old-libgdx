@@ -83,9 +83,10 @@ public class GameScreen implements Screen {
         }
         mode.init();
 		
-		// On créé le contact listener de bullet
+		// On cree le contact listener de bullet
 		bulletContactListener = new BulletContactListener();
-    }
+		
+	}
 	
 	@Override
 	public void render(float delta) {
