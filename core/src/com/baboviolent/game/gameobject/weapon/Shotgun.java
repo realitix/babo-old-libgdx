@@ -71,7 +71,8 @@ public class Shotgun extends Weapon {
 
 		// Initialise la rotation
 		rotateQuaternion(rotation, -nbAmmos/2*angle + 0.5f*angle);
-
+        
+        // Envoie les particules
     	for( int i = 0; i < nbAmmos; i++ ) {
 			// Initialise la balle
     		SmallCalibre ammo = new SmallCalibre(this);
@@ -85,18 +86,6 @@ public class Shotgun extends Weapon {
 			tmpV3.nor().scl(impulse);
 	    	a.body.applyCentralImpulse(tmpV3);
 			//a.body.applyCentralImpulse(tmpV3.set(1,0,0).mul(rotation).nor().scl(impulse));
-	    	
-	    	// Envoie la particule
-	    	ParticleEffect effect = particule.obtain();
-	    	effect.init();
-	    	effect.reset();
-	        effect.start();
-	        effect.setTransform(tmpM);
-	        DynamicsInfluencer influencer = effect.getControllers().get(0).findInfluencer(DynamicsInfluencer.class);
-	        PolarAcceleration modifier = (PolarAcceleration) influencer.velocities.get(0);
-	        modifier.thetaValue.setHigh(getAngleFromQuaternion(rotation));
-	
-	        ParticleSystem.get().add(effect);
 	        
 	        // On incremente l'angle
 	    	rotateQuaternion(rotation, angle);
@@ -104,6 +93,19 @@ public class Shotgun extends Weapon {
 	    	// On ajoute la balle au contact listener
 	    	BulletContactListener.addObject(ammo);
 		}
+    	
+    	// Envoie la particule
+    	ParticleEffect effect = particule.obtain();
+    	effect.init();
+    	effect.reset();
+        effect.start();
+        effect.setTransform(tmpM);
+        DynamicsInfluencer influencer = effect.getControllers().get(0).findInfluencer(DynamicsInfluencer.class);
+        PolarAcceleration modifier = (PolarAcceleration) influencer.velocities.get(0);
+        float rotate = getAngleFromQuaternion(tmpQ);
+        modifier.thetaValue.setHighMin((-10 + rotate));
+        modifier.thetaValue.setHighMax((10 + rotate));
+        ParticleSystem.get().add(effect);
     	
     	// On creer la force inverse
     	//instance.body.applyCentralImpulse(tmpV3.scl(-100));

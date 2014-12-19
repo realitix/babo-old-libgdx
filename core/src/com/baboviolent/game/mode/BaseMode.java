@@ -92,7 +92,7 @@ public class BaseMode {
         Babo babo = new Babo(username, "skin22", particles, world);
         world.add(babo);
         babos.add(babo);
-        Shotgun shotgun = new Shotgun(babo, world, particles.get("test"));
+        Shotgun shotgun = new Shotgun(babo, world, particles.get("smoke1"));
         world.add(shotgun);
         babo.setWeapon(shotgun);
         BulletContactListener.addObject(babo);
