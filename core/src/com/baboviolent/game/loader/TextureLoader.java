@@ -77,7 +77,7 @@ public class TextureLoader {
 	    for( int i = 0; i < toLoad.size; i++ ) {
 		    textures.put(
 		            toLoad.get(i),
-		            new Texture(new FileHandle(p+toLoad.get(i)+".png")));
+		            new Texture(Gdx.files.internal(p+toLoad.get(i)+".png")));
 	    }
 	    
 	    return textures;

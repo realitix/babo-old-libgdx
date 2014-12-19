@@ -91,5 +91,11 @@ public class NotificationListener implements NotifyListener {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void onNextTurnRequest(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

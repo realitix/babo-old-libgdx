@@ -78,7 +78,6 @@ public class BaseMode {
 		initPlayer();
         
         // Initialisation de l'intelligence artificielle
-		nbIa = 2;
         initIa();
     }
     
@@ -101,7 +100,10 @@ public class BaseMode {
     }
     
     protected void initIa() {
-    	BaboPathGenerator pathGenerator = new BaboPathGenerator(map);
+    	BaboPathGenerator pathGenerator = null;
+    	if( nbIa > 0 ) {
+    		pathGenerator = new BaboPathGenerator(map);
+    	}
     	
     	for( int i = 0; i < nbIa; i++) {
     		AiBabo ai = new AiBabo("ai1", "skin22", particles, world, babos, pathGenerator);
