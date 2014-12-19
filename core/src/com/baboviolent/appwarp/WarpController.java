@@ -91,6 +91,7 @@ public class WarpController {
 	private void initAppwarp(){
 		try {
 			WarpClient.initialize(apiKey, secretKey);
+			WarpClient.enableTrace(true);
 			warpClient = WarpClient.getInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -130,7 +131,12 @@ public class WarpController {
 	
 	public void sendGameUpdate(String msg){
 		if(isConnected){
-			warpClient.sendUDPUpdatePeers((localUser+SEPARATOR+msg).getBytes());
+			if( isUDPEnabled ) {
+				warpClient.sendUDPUpdatePeers((localUser+SEPARATOR+msg).getBytes());
+			}
+			else {
+				warpClient.sendUpdatePeers((localUser+SEPARATOR+msg).getBytes());
+			}
 		}
 	}
 	

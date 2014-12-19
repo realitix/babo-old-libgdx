@@ -13,6 +13,7 @@ public class ConnectionListener implements ConnectionRequestListener {
 		this.controller = controller;
 	}
 	
+	@Override
 	public void onConnectDone(ConnectEvent e) {
 		if(e.getResult() == WarpResponseResultCode.SUCCESS){
 			controller.onConnectDone(true);
@@ -21,7 +22,8 @@ public class ConnectionListener implements ConnectionRequestListener {
 			controller.onConnectDone(false);
 		}
 	}
-
+	
+	@Override
 	public void onDisconnectDone(ConnectEvent e) {
 		
 	}
@@ -30,6 +32,9 @@ public class ConnectionListener implements ConnectionRequestListener {
 	public void onInitUDPDone (byte result) {
 		if(result == WarpResponseResultCode.SUCCESS){
 			controller.isUDPEnabled = true;
+		}
+		else {
+			Gdx.app.error("Babo", "UDP non disponible, on passe en TCP");
 		}
 	}
 
