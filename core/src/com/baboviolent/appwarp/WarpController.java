@@ -191,7 +191,6 @@ public class WarpController {
 	}
 	
 	public void onConnectDone(boolean status){
-		log("onConnectDone: "+status);
 		if(status){
 			warpClient.initUDP();
 			warpClient.joinRoomInRange(1, 1, false);

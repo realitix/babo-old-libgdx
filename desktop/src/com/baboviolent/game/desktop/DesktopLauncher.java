@@ -11,9 +11,9 @@ public class DesktopLauncher {
 		config.title = "BaboViolent";
 		config.width = 800;
 		config.height = 600;
-		/*config.width = 1920;
-		config.height = 1080;
-		config.fullscreen = true;*/
+		/*config.width = 1024;
+		config.height = 768;*/
+		//config.fullscreen = true;
 		
 		new LwjglApplication(new BaboViolentGame(), config);
 	}
