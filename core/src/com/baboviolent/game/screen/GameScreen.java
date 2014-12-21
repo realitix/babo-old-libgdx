@@ -73,6 +73,7 @@ public class GameScreen implements Screen {
 		// Gestion des préférences
 		Preferences prefs = Gdx.app.getPreferences("com.baboviolent.game");
         prefs.putString("username", Utils.getRandomUsername());
+        prefs.flush();
         
 		// Initialisation du mode
         if( type == TYPE_SOLO ) {

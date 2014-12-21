@@ -1,5 +1,6 @@
 package com.baboviolent.game;
 
+import com.baboviolent.game.screen.GameScreen;
 import com.baboviolent.game.screen.MainMenuScreen;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
@@ -30,7 +31,6 @@ public class BaboViolentGame extends Game {
 	public void create () {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
-		
 		
 		this.setScreen(new MainMenuScreen(this));
 	}

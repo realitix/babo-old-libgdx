@@ -5,6 +5,7 @@ import java.util.Hashtable;
 
 import org.json.JSONObject;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Json;
 import com.shephertz.app42.gaming.multiplayer.client.Constants;
@@ -91,7 +92,7 @@ public class WarpController {
 	private void initAppwarp(){
 		try {
 			WarpClient.initialize(apiKey, secretKey);
-			WarpClient.enableTrace(true);
+			
 			warpClient = WarpClient.getInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
