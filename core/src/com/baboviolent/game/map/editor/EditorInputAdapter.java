@@ -20,8 +20,7 @@ public class EditorInputAdapter extends InputAdapter {
     
     public boolean mouseMoved(int screenX, int screenY) {
         editorScreen.mouseMove(screenX, screenY);
-        //editorScreen.moveCurrentModelInstance(screenX, screenY);
-        return true;
+        return false;
     }
     
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
@@ -30,6 +29,6 @@ public class EditorInputAdapter extends InputAdapter {
     	}
     	
     	editorScreen.mouseClick(screenX, screenY);
-    	return true;
+    	return false;
     }
 }

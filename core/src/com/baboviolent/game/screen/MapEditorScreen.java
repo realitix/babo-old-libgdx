@@ -9,6 +9,7 @@ import com.baboviolent.game.map.Map;
 import com.baboviolent.game.map.MapObject;
 import com.baboviolent.game.map.editor.EditorInputAdapter;
 import com.baboviolent.game.map.editor.Menu;
+import com.baboviolent.game.map.editor.ui.UI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputMultiplexer;
@@ -48,7 +49,6 @@ public class MapEditorScreen implements Screen {
 	private CameraInputController cameraController;
 	private ObjectMap<String, Model> models;
 	private Array<ModelInstance> instances;
-	private Menu menu;
 	private String currentType;
 	private String currentObjectType; // Type d'objet à créer sélectionné
 	private String currentCellTexture; // Type de sol à créer sélectionné
@@ -56,6 +56,8 @@ public class MapEditorScreen implements Screen {
 	private ModelInstance currentModelInstance; // Permet de suivre le curseur de la souris
 	private ModelBatch modelBatch;
 	private Map map;
+	private InputMultiplexer plex;
+	private UI ui;
 	
 	public MapEditorScreen(final BaboViolentGame g) {
 		game = g;        
@@ -79,9 +81,8 @@ public class MapEditorScreen implements Screen {
         models.putAll(BaboModelLoader.getModels(Menu.modelsToLoad));
         
         // Chargement du menu
-        menu = new Menu(this);
         
-        // Contrôle de la camera
+        // Controle de la camera
         cameraController = new CameraInputController(camera);
         cameraController.autoUpdate = true;
         cameraController.rotateButton = Buttons.MIDDLE;
@@ -89,20 +90,25 @@ public class MapEditorScreen implements Screen {
         cameraController.scrollFactor = -0.1f;
         cameraController.translateUnits = 3000f;
         
-        // Ajout du controle
-        Gdx.input.setInputProcessor(new InputMultiplexer(
-        	menu.getStage(),
-        	cameraController,
-        	new EditorInputAdapter(this)        	
-        ));
-        
+		// Ajout de l'UI
+		ui = new UI( this, true );
+		
+		// Ajout du controle
+		InputMultiplexer im = new InputMultiplexer();
+		im.addProcessor( ui.getStage() );
+		im.addProcessor( new EditorInputAdapter(this) );
+		
+		im.addProcessor( cameraController );
+		
+        Gdx.input.setInputProcessor(im);
+		
         // Creation d'une map
         map = new Map()
         	.setVersion(1)
         	.setAuthor("Test")
         	.setName("Name");
         
-        // Création des flèche indiquant les directions
+        // Creation des fleches indiquant les directions
         initGrid();
     }
     
@@ -126,8 +132,11 @@ public class MapEditorScreen implements Screen {
     	
     	currentCellTexture = type;
     	currentModel = models.get(type);
-    	currentType = Map.TYPE_GROUND;
-    	currentModelInstance = new ModelInstance(currentModel);
+    	
+    	if( currentModel != null ) {
+    		currentType = Map.TYPE_GROUND;
+        	currentModelInstance = new ModelInstance(currentModel);
+    	}
     }
     
     /**
@@ -140,8 +149,11 @@ public class MapEditorScreen implements Screen {
     	
     	currentCellTexture = type;
     	currentModel = models.get(type);
-    	currentType = Map.TYPE_WALL;
-    	currentModelInstance = new ModelInstance(currentModel);
+    	
+    	if( currentModel != null ) {
+    		currentType = Map.TYPE_WALL;
+        	currentModelInstance = new ModelInstance(currentModel);
+    	}
     }
     
     /**
@@ -149,6 +161,10 @@ public class MapEditorScreen implements Screen {
      */ 
     public void selectObject(String type) {
     	if( type == currentObjectType && currentType == Map.TYPE_OBJECT ) {
+    		return;
+    	}
+    	
+    	if( currentModel == null ) {
     		return;
     	}
     	
@@ -172,6 +188,7 @@ public class MapEditorScreen implements Screen {
      */ 
     public void mouseMove(int screenX, int screenY) {
         moveCurrentModelInstance(screenX, screenY);
+        ui.mouseMoved(screenX, screenY);
     }
     
     /**
@@ -343,14 +360,19 @@ public class MapEditorScreen implements Screen {
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 	    //Gdx.gl.glClearColor(0, 0, 0, 1);
 		
-		cameraController.update();
+		update();
 		
 	    modelBatch.begin(camera);
 		modelBatch.render(instances, environment);
 		if( currentModelInstance != null) modelBatch.render(currentModelInstance, environment);
 		modelBatch.end();
 		
-		menu.render();
+		ui.draw();
+	}
+	
+	private void update() {
+		ui.update( Gdx.graphics.getDeltaTime() );
+		cameraController.update();
 	}
 
 	@Override

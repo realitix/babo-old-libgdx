@@ -1,0 +1,297 @@
+package com.baboviolent.game.map.editor.ui;
+
+import com.baboviolent.game.loader.TextureLoader;
+import com.baboviolent.game.screen.MapEditorScreen;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Interpolation;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.Value;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.utils.Array;
+
+/**
+ * Implements the UI creation and event handling.
+ *
+ * Notes on the panel animator: some very simple expedients help in determining whenever the
+ * user is voluntarily leaving the panel area to make it to hide itself or it's just due to
+ * the fact combobox widgets are higher than the panel, thus the user *needs* to move out of
+ * the panel to make a selection: the latter case is being tracked by
+ */
+public final class UI {
+	private Stage stage;
+	private final MapEditorScreen screen;
+
+	// panel animator
+	private boolean comboBoxFlag, panelShown, usePanelAnimator;
+	private TopPanelAnimator panelAnimator;
+	private String[] styles;
+	private String selectedStyle = new String();
+	
+	private String[] types = {"Ground 1", "Ground 2", "Wall"};
+	private String selectedType = new String(types[0]);
+	
+	private static final boolean DebugUI = false;
+	private Array<SelectBox<String>> selectBoxes = new Array<SelectBox<String>>();
+	private final TextField textfield;
+	
+	public UI( final MapEditorScreen screen, boolean panelAutoShow ) {
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		this.screen = screen;
+
+		ResourceFactory.initSkin();
+		ResourceFactory.DebugUI = DebugUI;
+		
+		textfield = ResourceFactory.newTextField("");
+
+		comboBoxFlag = false;
+		usePanelAnimator = panelAutoShow;
+		initStyles();
+		stage = new Stage();
+		if( DebugUI ) {
+			stage.setDebugAll( true );
+		}
+
+		// panel background
+		NinePatch np = new NinePatch( ResourceFactory.newTexture( "brushed.png", false ), 0, 0, 0, 0 );
+		np.setColor( new Color( 0.3f, 0.3f, 0.3f, 1f ) );
+		NinePatchDrawable npBack = new NinePatchDrawable( np );
+
+		// build the top panel and add all of its widgets
+		Table topPanel = buildTopPanel( npBack, width, height );
+		topPanel.add( buildStylesWidget() );
+		topPanel.add( buildTypesWidget() );
+		topPanel.add( buildSaveWidget() );
+		
+
+		// compute the panel's opened/closed position
+		final float yWhenShown = height - topPanel.getHeight() + 13;
+		final float yWhenHidden = height - 60 + 13;
+				
+		if( usePanelAnimator ) {
+			panelShown = false;
+			panelAnimator = new TopPanelAnimator( topPanel, new Rectangle( 10, 5, width - 20, 60 ), yWhenShown, yWhenHidden );
+			topPanel.setY( yWhenHidden );
+			topPanel.setColor( 1f, 1f, 1f, 0.5f );
+		} else {
+			panelShown = true;
+			topPanel.setY( yWhenShown );
+		}
+
+		// UI is quite ready at this point, just add the containers to the stage
+		stage.addActor( topPanel );
+
+		// perform some processing on the SelectBox widgets
+		for( int i = 0; i < selectBoxes.size; i++ ) {
+			// fire a change event on selected SelectBoxes to
+			// update the default selection and initialize accordingly
+			selectBoxes.get( i ).fire( new ChangeListener.ChangeEvent() );
+
+			if( usePanelAnimator ) {
+				// track clicks on the comboboxes, this imply the widget is
+				// opening giving the user some choices
+				selectBoxes.get( i ).addListener( new ClickListener() {
+					@Override
+					public void clicked( InputEvent event, float x, float y ) {
+						comboBoxFlag = true;
+						panelAnimator.suspend();
+					}
+				} );
+
+				// track changes, user performed a selection
+				selectBoxes.get( i ).addListener( new ChangeListener() {
+					@Override
+					public void changed( ChangeEvent event, Actor actor ) {
+						comboBoxFlag = false;
+					}
+				} );
+			}
+		}
+
+		// finally, track clicks on the stage, whenever the user cancel an
+		// opened combobox selection by clicking away it will cause the widgets
+		// to close (no ChangeListener will be notified)
+		stage.addListener( new ClickListener() {
+			@Override
+			public void clicked( InputEvent event, float x, float y ) {
+				if( !comboBoxFlag ) {
+					panelAnimator.resume();
+				}
+
+				comboBoxFlag = false;
+			}
+		} );
+	}
+
+	private Table buildTopPanel( NinePatchDrawable back, float width, float height ) {
+
+		Table p = ResourceFactory.newTable();
+		p.setSize( width, height/5 );
+		p.defaults().pad( 5, 25, 5, 0 ).align( Align.top );
+		p.left();
+		p.setBackground( back );
+
+		return p;
+	}
+	
+	private void initStyles() {
+		Array<String> s = TextureLoader.listTextureFolder(TextureLoader.TYPE_WALL);
+		styles = new String[s.size + 1];
+		styles[0] = "Clear";
+		for( int i = 0; i < s.size; i++ ) {
+			styles[i+1] = s.get(i);
+		}
+		
+		selectedStyle = styles[0];
+	}
+
+	private Table buildStylesWidget() {
+
+		final SelectBox<String> sbStyles = ResourceFactory.newSelectBox( styles, new ChangeListener() {
+			@Override
+			public void changed( ChangeEvent event, Actor actor ) {
+				@SuppressWarnings( "unchecked" )
+				SelectBox<String> source = (SelectBox<String>)actor;
+				selectedStyle = source.toString();
+				if( selectedStyle.equals("Clear") ) {
+					screen.selectEraser();
+					return;
+				}
+				
+				if( selectedType.equals("Wall") ) {
+					screen.selectWall(selectedStyle);
+				}
+				else {
+					screen.selectGround(selectedStyle);
+				}
+			}
+		} );
+		
+		sbStyles.setSelectedIndex( 0 );
+		selectBoxes.add( sbStyles );
+		Table t = ResourceFactory.newTable();
+		t.add( ResourceFactory.newLabel( "Style " ) );
+		t.add( sbStyles );
+		
+		return t;
+	}
+	
+	private Table buildTypesWidget() {
+		
+		final SelectBox<String> sbTypes = ResourceFactory.newSelectBox( types, new ChangeListener() {
+			@Override
+			public void changed( ChangeEvent event, Actor actor ) {
+				@SuppressWarnings( "unchecked" )
+				SelectBox<String> source = (SelectBox<String>)actor;
+				selectedType = source.toString();
+				if( selectedStyle.equals("Clear") ) {
+					screen.selectEraser();
+					return;
+				}
+				
+				if( selectedType.equals("Wall") ) {
+					screen.selectWall(selectedStyle);
+				}
+				else {
+					screen.selectGround(selectedStyle);
+				}
+			}
+		} );
+
+		sbTypes.setSelectedIndex( 0 );
+		selectBoxes.add( sbTypes );
+
+		Table t = ResourceFactory.newTable();
+		t.add( ResourceFactory.newLabel( "Type " ) );
+		t.add( sbTypes );
+		return t;
+	}
+	
+	private TextButton buildSaveWidget() {
+		
+		final TextButton tb = ResourceFactory.newButton( "Save", new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				textfield.setText("Map Name");
+				Dialog d = new Dialog("Save", ResourceFactory.UISkin) {
+					protected void result(java.lang.Object object) {
+						if( object.equals(true) ) {
+							screen.saveMap(textfield.getText());
+						}
+					}
+				};
+				d.setPosition(ResourceFactory.width/2 - d.getWidth() / 2, ResourceFactory.height/2 - d.getHeight()/2);
+				d.button("Ok", true);
+				d.button("Cancel", false);
+				d.getContentTable().add(textfield);
+				stage.addActor(d);
+			}
+		} );
+
+		return tb;
+	}
+	
+	private TextButton buildLoadWidget() {
+		
+		final TextButton tb = ResourceFactory.newButton( "Load", new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				textfield.setText("Map Name");
+				Dialog d = new Dialog("Save", ResourceFactory.UISkin) {
+					protected void result(java.lang.Object object) {
+						if( object.equals(true) ) {
+							screen.loadMap(textfield.getText());
+						}
+					}
+				};
+				d.setPosition(ResourceFactory.width/2 - d.getWidth() / 2, ResourceFactory.height/2 - d.getHeight()/2);
+				d.button("Ok", true);
+				d.button("Cancel", false);
+				d.getContentTable().add(textfield);
+				stage.addActor(d);
+			}
+		} );
+
+		return tb;
+	}
+
+	public void update( float deltaTimeSecs ) {
+		stage.act( deltaTimeSecs );
+		if( usePanelAnimator ) {
+			panelAnimator.update();
+		}
+	}
+
+	public void draw() {
+		stage.draw();
+	}
+
+	public void mouseMoved( int x, int y ) {
+		if( usePanelAnimator ) {
+			panelAnimator.mouseMoved( x, y );
+		}
+	}
+	
+	public Stage getStage() {
+		return stage;
+	}
+}
