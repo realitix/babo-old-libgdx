@@ -96,7 +96,7 @@ public class MapEditorScreen implements Screen {
 		// Ajout du controle
 		InputMultiplexer im = new InputMultiplexer();
 		im.addProcessor( ui.getStage() );
-		im.addProcessor( new EditorInputAdapter(this) );
+		//im.addProcessor( new EditorInputAdapter(this) );
 		
 		im.addProcessor( cameraController );
 		
@@ -132,7 +132,7 @@ public class MapEditorScreen implements Screen {
     	
     	currentCellTexture = type;
     	currentModel = models.get(type);
-    	
+    	System.out.println("Select Ground "+type);
     	if( currentModel != null ) {
     		currentType = Map.TYPE_GROUND;
         	currentModelInstance = new ModelInstance(currentModel);

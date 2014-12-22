@@ -1,15 +1,18 @@
 package com.baboviolent.game.map.editor.ui;
 
 import com.baboviolent.game.loader.TextureLoader;
+import com.baboviolent.game.map.Map;
 import com.baboviolent.game.screen.MapEditorScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -39,7 +42,7 @@ import com.badlogic.gdx.utils.Array;
  * the panel to make a selection: the latter case is being tracked by
  */
 public final class UI {
-	private Stage stage;
+	private UiStage stage;
 	private final MapEditorScreen screen;
 
 	// panel animator
@@ -68,7 +71,7 @@ public final class UI {
 		comboBoxFlag = false;
 		usePanelAnimator = panelAutoShow;
 		initStyles();
-		stage = new Stage();
+		stage = new UiStage(screen);
 		if( DebugUI ) {
 			stage.setDebugAll( true );
 		}
@@ -173,18 +176,19 @@ public final class UI {
 			public void changed( ChangeEvent event, Actor actor ) {
 				@SuppressWarnings( "unchecked" )
 				SelectBox<String> source = (SelectBox<String>)actor;
-				selectedStyle = source.toString();
+				
+				selectedStyle = source.getSelected();
 				if( selectedStyle.equals("Clear") ) {
 					screen.selectEraser();
 					return;
 				}
 				
-				if( selectedType.equals("Wall") ) {
+				if( selectedType.equals("Wall") )
 					screen.selectWall(selectedStyle);
-				}
-				else {
-					screen.selectGround(selectedStyle);
-				}
+				if( selectedType.equals("Ground 1") )
+					screen.selectGround(selectedStyle+"_1");
+				if( selectedType.equals("Ground 2") )
+					screen.selectGround(selectedStyle+"_2");
 			}
 		} );
 		
@@ -204,18 +208,18 @@ public final class UI {
 			public void changed( ChangeEvent event, Actor actor ) {
 				@SuppressWarnings( "unchecked" )
 				SelectBox<String> source = (SelectBox<String>)actor;
-				selectedType = source.toString();
+				selectedType = source.getSelected();;
 				if( selectedStyle.equals("Clear") ) {
 					screen.selectEraser();
 					return;
 				}
 				
-				if( selectedType.equals("Wall") ) {
+				if( selectedType.equals("Wall") )
 					screen.selectWall(selectedStyle);
-				}
-				else {
-					screen.selectGround(selectedStyle);
-				}
+				if( selectedType.equals("Ground 1") )
+					screen.selectGround(selectedStyle+"_1");
+				if( selectedType.equals("Ground 2") )
+					screen.selectGround(selectedStyle+"_2");
 			}
 		} );
 
@@ -294,4 +298,32 @@ public final class UI {
 	public Stage getStage() {
 		return stage;
 	}
+	
+	public class UiStage extends Stage {
+    	final MapEditorScreen s;
+		public UiStage(final MapEditorScreen s) {
+			super();
+			this.s = s;
+    	}
+		
+		public boolean mouseMoved(int screenX, int screenY) {
+	        s.mouseMove(screenX, screenY);
+	        return super.mouseMoved(screenX, screenY);
+	    }
+		
+		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+			super.touchUp(screenX, screenY, pointer, button);
+	    	Vector2 v = screenToStageCoordinates(new Vector2(screenX, screenY));
+	    	if(hit(v.x, v.y, false) != null) {
+	    		return true;
+	    	}
+	    	
+			if(button != Buttons.LEFT) {
+	    		return false;
+	    	}
+	    	
+	    	s.mouseClick(screenX, screenY);
+	    	return true;
+	    }
+    }
 }
