@@ -301,29 +301,65 @@ public final class UI {
 	
 	public class UiStage extends Stage {
     	final MapEditorScreen s;
+    	private Vector2 lastTouchDown = new Vector2();
+    	public float maxTouchdistance = 20;
+    	
 		public UiStage(final MapEditorScreen s) {
 			super();
 			this.s = s;
     	}
 		
+		@Override
 		public boolean mouseMoved(int screenX, int screenY) {
+			super.mouseMoved(screenX, screenY);
 	        s.mouseMove(screenX, screenY);
-	        return super.mouseMoved(screenX, screenY);
+	        return false;
+	        //return super.mouseMoved(screenX, screenY);
 	    }
 		
+		@Override
+		public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+			super.touchDown(screenX, screenY, pointer, button);
+			
+			if(button == Buttons.LEFT) {
+	    		lastTouchDown.set(screenX, screenY);
+	    	}
+			
+			return false;
+	    	//return super.touchDown(screenX, screenY, pointer, button);
+	    }
+		
+		@Override
+		public boolean touchDragged (int screenX, int screenY, int pointer) {
+			//super.touchDragged(screenX, screenY, pointer);
+			return false;
+		}
+		
+		@Override
+		public boolean scrolled(int amount) {
+			return false;
+		}
+		
+		@Override
 		public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 			super.touchUp(screenX, screenY, pointer, button);
 	    	Vector2 v = screenToStageCoordinates(new Vector2(screenX, screenY));
 	    	if(hit(v.x, v.y, false) != null) {
-	    		return true;
-	    	}
-	    	
-			if(button != Buttons.LEFT) {
 	    		return false;
 	    	}
 	    	
+	    	// On ne compte que le bouton gauche
+			if(button != Buttons.LEFT) {
+	    		return false;
+	    	}
+			
+			// On ne clique pas si le relachement est loin de l'appuie
+			if(lastTouchDown.dst(screenX, screenY) > maxTouchdistance ) {
+				return false;
+			}
+	    	
 	    	s.mouseClick(screenX, screenY);
-	    	return true;
+	    	return false;
 	    }
     }
 }

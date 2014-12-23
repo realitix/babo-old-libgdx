@@ -84,10 +84,10 @@ public class MapEditorScreen implements Screen {
         
         // Controle de la camera
         cameraController = new CameraInputController(camera);
-        cameraController.autoUpdate = true;
-        cameraController.rotateButton = Buttons.MIDDLE;
-        cameraController.forwardButton = -10; // On désactive le forward
-        cameraController.scrollFactor = -0.1f;
+        //cameraController.autoUpdate = true;
+        //cameraController.rotateButton = Buttons.LEFT;
+        //cameraController.forwardButton = -10; // On desactive le forward
+        //cameraController.scrollFactor = -0.1f;
         cameraController.translateUnits = 3000f;
         
 		// Ajout de l'UI
@@ -291,11 +291,12 @@ public class MapEditorScreen implements Screen {
     
     private Vector3 positionToCell(Vector3 position) {
     	float s = BaboViolentGame.SIZE_MAP_CELL;
-        position.x = s * Math.round(position.x/s);
-        position.z = s * Math.round(position.z/s);
+    	position.x -= s/2;
+		position.z -= s/2;
+        position.x = s * Math.round(position.x/s) + s/2;
+        position.z = s * Math.round(position.z/s) + s/2;
         position.y = 0;
-		position.x -= BaboViolentGame.SIZE_MAP_CELL/2;
-		position.z -= BaboViolentGame.SIZE_MAP_CELL/2;
+		
     	return position;
     }
 	
