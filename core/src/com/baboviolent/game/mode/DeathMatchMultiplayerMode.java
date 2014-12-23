@@ -6,11 +6,13 @@ import com.baboviolent.game.gameobject.Babo;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpListener {
 	private WarpController wc;
-	private boolean playerPositionSent = false;
 	private Vector3 lastTarget;
+	private long lastSynchronization = 0;
+	private final long synchronizationInterval = 1000;
 	
 	public DeathMatchMultiplayerMode(final String mapName) {
 		super(mapName);
@@ -27,13 +29,7 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
     
     public void onSetPlayerDirection(Vector3 direction) {
     	super.onSetPlayerDirection(direction);
-    	
-    	float angle = -1f; // Pas de dÃ©placement
-    	if( !direction.isZero() ) {
-	    	angle = new Vector2(direction.x, direction.z).angle();
-    	}
-    	
-        wc.sendDirection(angle);
+        wc.sendDirection(direction);
     }
     
     @Override
@@ -48,28 +44,29 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
     	wc.sendShoot(false);
     }
     
+    @Override
     protected Babo initBabo(String username) {
-    	return super.initBabo(username);
+    	return super.initBabo(username).setManualDeath(true);
     }
     
     public void update() {
     	super.update();
-    	updatePlayerStopMoving();
+    	updateSynchonization();
     	updatePlayerTarget();
     }
     
     /**
-     * Quand le joueur ne bouge plus, on envoie sa position aux autres pour se synchronizer
+     * On envoie les données de synchro regulirement
      */
-    private void updatePlayerStopMoving() {
-    	if( !player.isMoving() && !playerPositionSent ) {
-    		System.out.println("Envoie de la position");
-    		wc.sendPosition(player.getInstance().transform.getTranslation(tmpV));
-    		playerPositionSent = true;
-    	}
-    	
-    	if( player.isMoving() ) {
-    		playerPositionSent = false;
+    private void updateSynchonization() {
+    	if( TimeUtils.millis() - lastSynchronization > synchronizationInterval ) {
+    		lastSynchronization = TimeUtils.millis();
+    		Vector3 position = player.getPosition();
+    		Vector3 target = player.getTarget();
+    		Vector3 direction = player.getDirection();
+    		Vector3 velocity = player.getLinearVelocity();
+    		boolean shoot = player.getShoot();
+    		wc.sendSynchronization(position, target, direction, velocity, shoot);
     	}
     }
     
@@ -84,6 +81,15 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
     		wc.sendTarget(currentTarget);
     	}
     }
+    
+    private Babo getBaboFromUsername(String username) {
+    	for( int i = 0; i < babos.size; i++ ) {
+			if( babos.get(i).getUsername().equals(username) ) {
+				return babos.get(i);
+			}
+    	}
+    	return null;
+    }
 
     @Override
     public void onWaitingStarted(String message) {
@@ -92,7 +98,7 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
 	
     @Override
 	public void onError(String message) {
-	    
+	    System.out.println("Erreur AppWarp: "+message);
 	}
 	
 	@Override
@@ -115,58 +121,37 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
 	}
 
 	@Override
-	public void onDirectionReceived(String username, float angle) {
-		for( int i = 0; i < babos.size; i++ ) {
-			if( babos.get(i).getUsername().equals(username) ) {
-				Vector2 tmp = new Vector2(1, 0).rotate(angle).nor();
-				Vector3 dir = new Vector3(tmp.x, 0, tmp.y);
-				if( angle < 0 ) {
-					dir.set(0, 0, 0);
-				}
-				babos.get(i).setDirection(dir);
-			}
-		}
+	public void onDirectionReceived(String username, Vector3 direction) {
+		getBaboFromUsername(username).setDirection(direction);
 	}
 
 	@Override
 	public void onPositionReceived(String username, Vector3 position) {
-		for( int i = 0; i < babos.size; i++ ) {
-			if( babos.get(i).getUsername().equals(username) ) {
-				System.out.println("Mis a jour de la position");
-				babos.get(i).teleport(position);
-			}
-		}
+		getBaboFromUsername(username).teleport(position);
 	}
 	
 	@Override
 	public void onTargetReceived(String username, Vector3 target) {
-		for( int i = 0; i < babos.size; i++ ) {
-			if( babos.get(i).getUsername().equals(username) ) {
-				babos.get(i).setTarget(target);
-			}
-		}
+		getBaboFromUsername(username).setTarget(target);
 	}
 
 	@Override
 	public void onShootReceived(String username, boolean shoot) {
-		for( int i = 0; i < babos.size; i++ ) {
-			if( babos.get(i).getUsername().equals(username) ) {
-				if( shoot ) {
-					babos.get(i).shoot();
-				}
-				else {
-					babos.get(i).stopShoot();
-				}
-			}
-		}
+		getBaboFromUsername(username).setShoot(shoot);
 	}
 	
 	@Override
 	public void onDeadReceived(String username, String killer) {
-		for( int i = 0; i < babos.size; i++ ) {
-			if( babos.get(i).getUsername().equals(username) ) {
-				babos.get(i).explode();
-			}
-		}
+		getBaboFromUsername(username).explode();
+	}
+
+	@Override
+	public void onSynchronizationReceived(String username, Vector3 position, Vector3 target, Vector3 direction, Vector3 velocity, boolean shoot) {
+		getBaboFromUsername(username)
+			.teleport(position)
+			.setTarget(target)
+			.setDirection(direction)
+			.setLinearVelocity(velocity)
+			.setShoot(shoot);
 	}
 }

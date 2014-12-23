@@ -25,6 +25,7 @@ public class WarpController {
     public static final String ACTION_STOP_SHOOT = "f";
     public static final String ACTION_POSITION = "g";
     public static final String ACTION_DEAD = "h";
+    public static final String ACTION_SYNCHRONIZATION = "i";
 
 	private static WarpController instance;
 	
@@ -106,8 +107,12 @@ public class WarpController {
 	/**
 	 * Fonctions d'envoies
 	 */
-	public void sendDirection(float angle){
-		sendAction(ACTION_DIRECTION, Float.toString(angle));
+	public void sendSynchronization(Vector3 position, Vector3 target, Vector3 direction, Vector3 velocity, boolean shoot){
+		sendAction(ACTION_SYNCHRONIZATION, synchronizationToString(position, target, direction, velocity, shoot));
+	}
+	
+	public void sendDirection(Vector3 direction){
+		sendAction(ACTION_DIRECTION, vector3ToString(direction));
 	}
 	
 	public void sendPosition(Vector3 position){
@@ -152,7 +157,7 @@ public class WarpController {
 		
 		if( !localUser.equals(username) ) {
 	    	if( action.equals(ACTION_DIRECTION) ) {
-	    		warpListener.onDirectionReceived(username, Float.parseFloat(value));
+	    		warpListener.onDirectionReceived(username, stringToVector3(value));
 	    	}
 	    	else if( action.equals(ACTION_TARGET) ) {
 	    		warpListener.onTargetReceived(username, stringToVector3(value));
@@ -166,7 +171,36 @@ public class WarpController {
 	    	else if( action.equals(ACTION_DEAD) ) {
 	    		warpListener.onDeadReceived(username, value);
 		    }
+	    	else if( action.equals(ACTION_SYNCHRONIZATION) ) {
+	    		Vector3 position = new Vector3();
+	    		Vector3 target = new Vector3();
+	    		Vector3 direction = new Vector3();
+	    		Vector3 velocity = new Vector3();
+	    		boolean shoot;
+	    		shoot = stringToSynchronization(value, position, target, direction, velocity);
+	    		warpListener.onSynchronizationReceived(username, position, target, direction, velocity, shoot);
+		    }
 		}
+	}
+	
+	private String synchronizationToString(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, boolean b) {
+		String result = "";
+		String s = "!";
+		result += vector3ToString(v1)+s;
+		result += vector3ToString(v2)+s;
+		result += vector3ToString(v3)+s;
+		result += vector3ToString(v4)+s;
+		result += (b)?"1":"0";
+		return result;
+	}
+	
+	private boolean stringToSynchronization(String s, Vector3 position, Vector3 target, Vector3 direction, Vector3 velocity) {
+		String[] ps = s.split("!");
+		position.set(stringToVector3(ps[0]));
+		target.set(stringToVector3(ps[1]));
+		direction.set(stringToVector3(ps[2]));
+		velocity.set(stringToVector3(ps[3]));
+		return (ps[4].equals("1")) ? true : false;
 	}
 	
 	private String vector3ToString(Vector3 v) {

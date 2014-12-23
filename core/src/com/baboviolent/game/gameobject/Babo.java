@@ -54,6 +54,7 @@ public class Babo extends GameObject {
 	private final ObjectMap<String, PoolParticle> particules; // Particule Ã©mise lorsqu'on est touchÃ© par une balle
 	private int state;
 	private int score;
+	private boolean manualDeath; // Si true, babo ne perd pas d'énergie, bien pour multijoueur
 	private Babo lastShooter; // Dernier babo ayant touché ce babo
 	private final BulletWorld world;
 	
@@ -69,6 +70,7 @@ public class Babo extends GameObject {
 	    target = new Vector3();
 	    state = STATE_ALIVE;
 	    energy = ENERGY;
+	    manualDeath = false;
         friction = 100f;
         rollingFriction = 150f;
         linearDamping = 0.8f;
@@ -111,7 +113,9 @@ public class Babo extends GameObject {
         effect.setTransform(this.instance.transform);
         ParticleSystem.get().add(effect);
         
-    	energy -= power;
+        if( !manualDeath ) {
+        	energy -= power;
+        }
     	return this;
     }
     
@@ -243,13 +247,22 @@ public class Babo extends GameObject {
         return this;
     }
     
-    public Babo addScore(int add) {
-    	score += add;
+    public Babo stopShoot() {
+    	shooting = false;
         return this;
     }
     
-    public Babo stopShoot() {
-    	shooting = false;
+    public boolean getShoot() {
+        return shooting;
+    }
+    
+    public Babo setShoot(boolean shoot) {
+        shooting = shoot;
+        return this;
+    }
+    
+    public Babo addScore(int add) {
+    	score += add;
         return this;
     }
     
@@ -260,6 +273,15 @@ public class Babo extends GameObject {
     
     public Vector3 getDirection() {
         return direction.cpy();
+    }
+    
+    public Babo setManualDeath(boolean d) {
+        manualDeath = d;
+        return this;
+    }
+    
+    public boolean getManualDeath() {
+        return manualDeath;
     }
     
     public Babo setTarget(Vector3 f) {
@@ -308,4 +330,14 @@ public class Babo extends GameObject {
     public boolean isMoving() {
     	return moving;
     }
+    
+    public Vector3 getLinearVelocity() {
+		tmpV3.set(this.body.getLinearVelocity()).y = 0;
+		return tmpV3.cpy();
+	}
+    
+    public Babo setLinearVelocity(Vector3 velocity) {
+    	this.body.setLinearVelocity(velocity.cpy());
+		return this;
+	}
 }
