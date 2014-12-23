@@ -1,4 +1,4 @@
-package com.baboviolent.game.map.editor.ui;
+package com.baboviolent.game.map.editor;
 
 /**************************************************************************
  * *

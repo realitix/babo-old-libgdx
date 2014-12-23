@@ -22,6 +22,7 @@ public class BaboViolentGame extends Game {
     static public String PATH_EDITOR = "data/editor/";
     static public String PATH_MAPS = "data/maps/";
     static public String BABO_MODEL_NAME = "babo";
+    static public String EXTENSION_MAP = "babomap";
     static public final float SIZE_MAP_CELL = 200;
     static public final float BABO_DIAMETER = 100;
     static public final float BABO_SPEED = 10;

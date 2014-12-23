@@ -7,9 +7,7 @@ import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.map.Cell;
 import com.baboviolent.game.map.Map;
 import com.baboviolent.game.map.MapObject;
-import com.baboviolent.game.map.editor.EditorInputAdapter;
-import com.baboviolent.game.map.editor.Menu;
-import com.baboviolent.game.map.editor.ui.UI;
+import com.baboviolent.game.map.editor.UI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputMultiplexer;
@@ -40,7 +38,9 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
-public class MapEditorScreen implements Screen {	
+public class MapEditorScreen implements Screen {
+	public static final Array<String> modelsToLoad = new Array<String>(new String[]{"flagpod"});
+	
 	private final BaboViolentGame game;
 	private Environment environment;
 	private DirectionalLight light;
@@ -56,7 +56,6 @@ public class MapEditorScreen implements Screen {
 	private ModelInstance currentModelInstance; // Permet de suivre le curseur de la souris
 	private ModelBatch modelBatch;
 	private Map map;
-	private InputMultiplexer plex;
 	private UI ui;
 	
 	public MapEditorScreen(final BaboViolentGame g) {
@@ -78,9 +77,7 @@ public class MapEditorScreen implements Screen {
         // Chargement des textures
         models = TextureLoader.getModels(TextureLoader.TYPE_GROUND);
         models.putAll(TextureLoader.getModels(TextureLoader.TYPE_WALL));
-        models.putAll(BaboModelLoader.getModels(Menu.modelsToLoad));
-        
-        // Chargement du menu
+        models.putAll(BaboModelLoader.getModels(modelsToLoad));
         
         // Controle de la camera
         cameraController = new CameraInputController(camera);
@@ -96,10 +93,7 @@ public class MapEditorScreen implements Screen {
 		// Ajout du controle
 		InputMultiplexer im = new InputMultiplexer();
 		im.addProcessor( ui.getStage() );
-		//im.addProcessor( new EditorInputAdapter(this) );
-		
 		im.addProcessor( cameraController );
-		
         Gdx.input.setInputProcessor(im);
 		
         // Creation d'une map
@@ -123,7 +117,7 @@ public class MapEditorScreen implements Screen {
 	}
 	
     /**
-     * Sélectionne le sol
+     * Selectionne le sol
      */ 
     public void selectGround(String type) {
     	if( type == currentCellTexture && currentType == Map.TYPE_GROUND ) {
@@ -140,7 +134,7 @@ public class MapEditorScreen implements Screen {
     }
     
     /**
-     * Sélectionne le mur
+     * Selectionne le mur
      */ 
     public void selectWall(String type) {
     	if( type == currentCellTexture && currentType == Map.TYPE_WALL ) {
@@ -157,7 +151,7 @@ public class MapEditorScreen implements Screen {
     }
     
     /**
-     * Sélectionne un objet
+     * Selectionne un objet
      */ 
     public void selectObject(String type) {
     	if( type == currentObjectType && currentType == Map.TYPE_OBJECT ) {
@@ -175,7 +169,7 @@ public class MapEditorScreen implements Screen {
     }
     
     /**
-     * Sélectionne la gomme pour effacer les cellules
+     * Selectionne la gomme pour effacer les cellules
      */ 
     public void selectEraser() {
     	currentType = Map.TYPE_ERASER;
@@ -184,7 +178,7 @@ public class MapEditorScreen implements Screen {
     }
     
     /**
-     * Déplacement de la souris
+     * Deplacement de la souris
      */ 
     public void mouseMove(int screenX, int screenY) {
         moveCurrentModelInstance(screenX, screenY);
@@ -208,7 +202,7 @@ public class MapEditorScreen implements Screen {
     }
     
     /**
-     * Déplace l'instance du sol afin de suivre la souris'
+     * Deplace l'instance du sol afin de suivre la souris
      */ 
     public void moveCurrentModelInstance(int screenX, int screenY) {
     	if(currentModelInstance != null) {
@@ -234,7 +228,7 @@ public class MapEditorScreen implements Screen {
     }
     
     /**
-     * Créer une nouvelle instance du model en paramètre et l'ajoute à la map
+     * Cree une nouvelle instance du model en parametre et l'ajoute a�la map
      */ 
     public void createCell(int screenX, int screenY) {
     	Vector3 position = positionToCell(getPositionFromMouse(screenX, screenY));
@@ -253,7 +247,7 @@ public class MapEditorScreen implements Screen {
     }
     
     /**
-     * Supprime l'objet ou la cellule à l'emplacement
+     * Supprime l'objet ou la cellule a l'emplacement
      */ 
     public void deleteObject(int screenX, int screenY) {
     	Vector3 position = new Vector3();
@@ -329,7 +323,7 @@ public class MapEditorScreen implements Screen {
     }
     
     /**
-     * Charge la map en paramètre
+     * Charge la map en parametre
      */ 
     public void loadMap(String mapName) {
     	clearMap();

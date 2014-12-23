@@ -1,5 +1,6 @@
-package com.baboviolent.game.map.editor.ui;
+package com.baboviolent.game.map.editor;
 
+import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.map.Map;
 import com.baboviolent.game.screen.MapEditorScreen;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Buttons;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -57,6 +59,8 @@ public final class UI {
 	private static final boolean DebugUI = false;
 	private Array<SelectBox<String>> selectBoxes = new Array<SelectBox<String>>();
 	private final TextField textfield;
+	private SelectBox<String> selectBox;
+	private String loadMapName;
 	
 	public UI( final MapEditorScreen screen, boolean panelAutoShow ) {
 		float width = Gdx.graphics.getWidth();
@@ -67,6 +71,7 @@ public final class UI {
 		ResourceFactory.DebugUI = DebugUI;
 		
 		textfield = ResourceFactory.newTextField("");
+		selectBox = null;
 
 		comboBoxFlag = false;
 		usePanelAnimator = panelAutoShow;
@@ -86,6 +91,7 @@ public final class UI {
 		topPanel.add( buildStylesWidget() );
 		topPanel.add( buildTypesWidget() );
 		topPanel.add( buildSaveWidget() );
+		topPanel.add( buildLoadWidget() );
 		
 
 		// compute the panel's opened/closed position
@@ -236,7 +242,7 @@ public final class UI {
 		
 		final TextButton tb = ResourceFactory.newButton( "Save", new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				textfield.setText("Map Name");
+				textfield.setText("");
 				Dialog d = new Dialog("Save", ResourceFactory.UISkin) {
 					protected void result(java.lang.Object object) {
 						if( object.equals(true) ) {
@@ -244,10 +250,14 @@ public final class UI {
 						}
 					}
 				};
-				d.setPosition(ResourceFactory.width/2 - d.getWidth() / 2, ResourceFactory.height/2 - d.getHeight()/2);
+				d.setWidth((float) (ResourceFactory.width/1.5));
+				d.text(ResourceFactory.newLabel( Gdx.files.getExternalStoragePath() ));
+				
 				d.button("Ok", true);
 				d.button("Cancel", false);
+				d.getContentTable().row();
 				d.getContentTable().add(textfield);
+				d.setPosition(ResourceFactory.width/2 - d.getWidth() / 2, ResourceFactory.height/2 - d.getHeight()/2);
 				stage.addActor(d);
 			}
 		} );
@@ -256,26 +266,51 @@ public final class UI {
 	}
 	
 	private TextButton buildLoadWidget() {
+		selectBox = ResourceFactory.newSelectBox( loadMapName(), new ChangeListener() {
+			@Override
+			public void changed( ChangeEvent event, Actor actor ) {
+				@SuppressWarnings( "unchecked" )
+				SelectBox<String> source = (SelectBox<String>)actor;
+				loadMapName = source.getSelected();
+			}
+		} );
 		
 		final TextButton tb = ResourceFactory.newButton( "Load", new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				textfield.setText("Map Name");
-				Dialog d = new Dialog("Save", ResourceFactory.UISkin) {
+				Dialog d = new Dialog("Load", ResourceFactory.UISkin) {
 					protected void result(java.lang.Object object) {
 						if( object.equals(true) ) {
-							screen.loadMap(textfield.getText());
+							screen.loadMap(loadMapName);
 						}
 					}
 				};
-				d.setPosition(ResourceFactory.width/2 - d.getWidth() / 2, ResourceFactory.height/2 - d.getHeight()/2);
+				d.setWidth((float) (ResourceFactory.width/1.5));
+				
 				d.button("Ok", true);
 				d.button("Cancel", false);
-				d.getContentTable().add(textfield);
+				d.getContentTable().add(selectBox);
+				d.setPosition(ResourceFactory.width/2 - d.getWidth() / 2, ResourceFactory.height/2 - d.getHeight()/2);
 				stage.addActor(d);
 			}
 		} );
 
 		return tb;
+	}
+	
+	private String[] loadMapName() {
+		Array<String> maps = new Array<String>();	    
+	    FileHandle[] files = Gdx.files.external("").list();
+        for(FileHandle file: files) {
+        	if( file.extension().equals(BaboViolentGame.EXTENSION_MAP) ) {
+        		maps.add(file.nameWithoutExtension());
+        	}
+        }
+       String[] result = new String[maps.size];
+       for(int i = 0; i < maps.size; i++) {
+    	   result[i] = maps.get(i);
+       }
+       
+       return result;
 	}
 
 	public void update( float deltaTimeSecs ) {
@@ -314,7 +349,6 @@ public final class UI {
 			super.mouseMoved(screenX, screenY);
 	        s.mouseMove(screenX, screenY);
 	        return false;
-	        //return super.mouseMoved(screenX, screenY);
 	    }
 		
 		@Override
@@ -326,12 +360,10 @@ public final class UI {
 	    	}
 			
 			return false;
-	    	//return super.touchDown(screenX, screenY, pointer, button);
 	    }
 		
 		@Override
 		public boolean touchDragged (int screenX, int screenY, int pointer) {
-			//super.touchDragged(screenX, screenY, pointer);
 			return false;
 		}
 		

@@ -1,7 +1,6 @@
 package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
-import com.baboviolent.game.map.editor.EditorInputAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;

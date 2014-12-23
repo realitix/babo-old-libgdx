@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.baboviolent.game.map.editor.ui;
+package com.baboviolent.game.map.editor;
 
 import com.badlogic.gdx.utils.TimeUtils;
 

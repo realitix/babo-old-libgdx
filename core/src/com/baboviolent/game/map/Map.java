@@ -71,27 +71,27 @@ public class Map {
 	
 	
 	/**
-	 * Créer une instance à partir du nom de la map
+	 * Cree une instance a partir du nom de la map
 	*/
 	static public BulletInstance loadInstance (String mapname) {
         return Map.loadInstance(Map.loadModel(mapname));
 	}
 	
 	/**
-	 * Créer une instance à partir d'une map'
+	 * Cree une instance a partir d'une map
 	*/
 	static public BulletInstance loadInstance (Map map) {
         return Map.loadInstance(Map.loadModel(map));
 	}
 	
 	/**
-	 * Créer une instance à partir d'un modèle'
-	 * Pour le shape, on va faire un Shape composé
-	 * On créer un rectangle de la taille de la map pour le sol
+	 * Cree une instance a partir d'un modele
+	 * Pour le shape, on va faire un Shape compose
+	 * On cree un rectangle de la taille de la map pour le sol
 	 * et un cube pour chaque mur
 	*/
 	static public BulletInstance loadInstance (Model model) {
-        // On créé le shape composé
+        // On cree le shape compose
 		btCompoundShape shape = new btCompoundShape();
 		
 		// On ajoute le sol
@@ -185,10 +185,13 @@ public class Map {
 	
 	/**
 	 * Charge la map
+	 * On cherche d'abord en internal puis en external si non trouv�
 	 **/
 	static public Map load(String mapname) {
-		//FileHandle file = Gdx.files.external(mapname+".json");
-		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
+		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+"."+BaboViolentGame.EXTENSION_MAP);
+		if( !file.exists() ) {
+			file = Gdx.files.external(mapname+"."+BaboViolentGame.EXTENSION_MAP);
+		}
 		String jsonMap = file.readString();
 		Json json = new Json();
 		Map map = json.fromJson(Map.class, jsonMap);
@@ -199,8 +202,7 @@ public class Map {
 	 * Sauvegarde la map
 	 **/
 	public static void save(Map map, String mapname) {
-		//FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+".json");
-		FileHandle file = Gdx.files.external(mapname+".json");
+		FileHandle file = Gdx.files.external(mapname+"."+BaboViolentGame.EXTENSION_MAP);
 		Json json = new Json();
 		json.setOutputType(OutputType.json);
 		json.toJson(map, file);

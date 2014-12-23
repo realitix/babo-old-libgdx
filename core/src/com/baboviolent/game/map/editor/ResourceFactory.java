@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.baboviolent.game.map.editor.ui;
+package com.baboviolent.game.map.editor;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.badlogic.gdx.Gdx;
