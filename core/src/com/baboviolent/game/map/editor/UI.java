@@ -107,9 +107,14 @@ public final class UI {
 			panelShown = true;
 			topPanel.setY( yWhenShown );
 		}
+		
+		Table bottomPanel = buildBottomPanel( npBack, width, height );
+		bottomPanel.add( buildInputWidget() );
+		
 
 		// UI is quite ready at this point, just add the containers to the stage
 		stage.addActor( topPanel );
+		stage.addActor( bottomPanel );
 
 		// perform some processing on the SelectBox widgets
 		for( int i = 0; i < selectBoxes.size; i++ ) {
@@ -141,16 +146,18 @@ public final class UI {
 		// finally, track clicks on the stage, whenever the user cancel an
 		// opened combobox selection by clicking away it will cause the widgets
 		// to close (no ChangeListener will be notified)
-		stage.addListener( new ClickListener() {
-			@Override
-			public void clicked( InputEvent event, float x, float y ) {
-				if( !comboBoxFlag ) {
-					panelAnimator.resume();
+		if( usePanelAnimator ) {
+			stage.addListener( new ClickListener() {
+				@Override
+				public void clicked( InputEvent event, float x, float y ) {
+					if( !comboBoxFlag ) {
+						panelAnimator.resume();
+					}
+	
+					comboBoxFlag = false;
 				}
-
-				comboBoxFlag = false;
-			}
-		} );
+			} );
+		}
 	}
 
 	private Table buildTopPanel( NinePatchDrawable back, float width, float height ) {
@@ -294,6 +301,27 @@ public final class UI {
 			}
 		} );
 
+		return tb;
+	}
+	
+	private Table buildBottomPanel( NinePatchDrawable back, float width, float height ) {
+		Table t = ResourceFactory.newTable();
+		t.setSize( width, height/4 );
+		t.defaults().pad( 10, 15, 0, 15 ).align( Align.top ).expandY();
+		t.setY( -98 );
+		t.left();
+		t.setBackground( back );
+
+		return t;
+	}
+
+	
+	private TextButton buildInputWidget() {
+		final TextButton tb = ResourceFactory.newButton( "Input", new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				screen.switchInput();
+			}
+		} );
 		return tb;
 	}
 	

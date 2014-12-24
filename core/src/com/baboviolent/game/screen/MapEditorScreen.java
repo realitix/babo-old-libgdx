@@ -57,6 +57,7 @@ public class MapEditorScreen implements Screen {
 	private ModelBatch modelBatch;
 	private Map map;
 	private UI ui;
+	private boolean rotationInput = true;
 	
 	public MapEditorScreen(final BaboViolentGame g) {
 		game = g;        
@@ -88,7 +89,7 @@ public class MapEditorScreen implements Screen {
         cameraController.translateUnits = 3000f;
         
 		// Ajout de l'UI
-		ui = new UI( this, true );
+		ui = new UI( this, !BaboViolentGame.isMobile() );
 		
 		// Ajout du controle
 		InputMultiplexer im = new InputMultiplexer();
@@ -114,6 +115,22 @@ public class MapEditorScreen implements Screen {
         // X = ROUGE, Y = VERT, Z = BLEU
         instances.add(new ModelInstance(mb.createXYZCoordinates( s*5, new Material(), Usage.Position | Usage.ColorUnpacked )));
         instances.add(new ModelInstance(mb.createLineGrid(gridX, gridZ, s, s, new Material(ColorAttribute.createDiffuse(Color.GRAY)), Usage.Position)));
+	}
+	
+	/**
+	 * Cette fonction permet de switcher entre rotation et dÃ©placement
+	 */
+	public void switchInput() {
+		if( rotationInput ) {
+			cameraController.rotateButton = Buttons.RIGHT;
+			cameraController.translateButton = Buttons.LEFT;
+			rotationInput = false;
+		}
+		else {
+			cameraController.rotateButton = Buttons.LEFT;
+			cameraController.translateButton = Buttons.RIGHT;
+			rotationInput = true;
+		}
 	}
 	
     /**
@@ -228,7 +245,7 @@ public class MapEditorScreen implements Screen {
     }
     
     /**
-     * Cree une nouvelle instance du model en parametre et l'ajoute a la map
+     * Cree une nouvelle instance du model en parametre et l'ajoute aï¿½la map
      */ 
     public void createCell(int screenX, int screenY) {
     	Vector3 position = positionToCell(getPositionFromMouse(screenX, screenY));

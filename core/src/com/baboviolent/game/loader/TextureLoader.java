@@ -31,12 +31,18 @@ public class TextureLoader {
      * Renvoie un tableau contenant le nom de toutes les textures en flnctione du type
      */ 
     static public Array<String> listTextureFolder(String type) {
-    	String p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE+type);
-        Array<String> textures = new Array<String>();	    
-	    FileHandle[] files = Gdx.files.internal(p).list();
-        for(FileHandle file: files) {
-            textures.add(file.nameWithoutExtension());
-        }
+    	Array<String> textures = new Array<String>();
+    	
+    	for( int i = 0; i < Constant.themes.length; i++) {
+    		if(type.equals(TYPE_WALL)) {
+        		textures.add(Constant.themes[i]);
+        	}
+    		if(type.equals(TYPE_GROUND)) {
+    			textures.add(Constant.themes[i]+"_1");
+    			textures.add(Constant.themes[i]+"_2");
+    		}
+    	}
+
         textures.sort();
         
         return textures;
@@ -70,7 +76,7 @@ public class TextureLoader {
      * Charge toutes les textures passées en paramètre
      */ 
     static public ObjectMap<String, Texture> getTextures(Array<String> toLoad, String type) {
-    	String p = BaboViolentGame.path(BaboViolentGame.PATH_TEXTURE+type);
+    	String p = BaboViolentGame.PATH_TEXTURE+type;
 	    ObjectMap<String, Texture> textures = new ObjectMap<String, Texture>();
 	    
 	    // On charge les textures

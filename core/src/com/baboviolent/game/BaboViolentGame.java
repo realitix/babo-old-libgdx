@@ -1,5 +1,7 @@
 package com.baboviolent.game;
 
+import com.baboviolent.game.controller.DesktopController;
+import com.baboviolent.game.controller.MobileController;
 import com.baboviolent.game.screen.GameScreen;
 import com.baboviolent.game.screen.MainMenuScreen;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -46,19 +48,14 @@ public class BaboViolentGame extends Game {
         batch.dispose();
     }
 	
-	/**
-	 * Renvoie le chemin en fonction de la plateforme
-	 * @param path
-	 * @return path
-	 */
-	public static String path(String path) {
+	static public boolean isMobile() {
 		switch(Gdx.app.getType()) {
-			case Desktop:
-				return DESKTOP_PREFIX+path;
+			case Android:
+			case iOS:
+				return true;
 			default:
-				break;
 		}
 		
-		return path;
+		return false;
 	}
 }

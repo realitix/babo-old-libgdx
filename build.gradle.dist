@@ -1,10 +1,12 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:0.13+'
         classpath 'org.robovm:robovm-gradle-plugin:1.0.0-alpha-04'
+        classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.5'
     }
 }
 
@@ -89,6 +91,21 @@ project(":ios") {
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
         natives "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-ios"
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-ios"
+    }
+}
+
+project(":html") {
+    apply plugin: "gwt"
+    apply plugin: "war"
+
+
+    dependencies {
+        compile project(":core")
+        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion:sources"
+        compile "com.badlogicgames.gdx:gdx-backend-gwt:$gdxVersion:sources"
+        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion:sources"
+        compile "com.badlogicgames.gdx:gdx-box2d-gwt:$gdxVersion:sources"
     }
 }
 

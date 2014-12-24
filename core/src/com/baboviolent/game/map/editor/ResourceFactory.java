@@ -47,7 +47,7 @@ public final class ResourceFactory {
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
 		
-		String p = BaboViolentGame.path(BaboViolentGame.PATH_EDITOR);
+		String p = BaboViolentGame.PATH_EDITOR;
 		String size = new String();
 		size = "40";
 		
@@ -69,7 +69,7 @@ public final class ResourceFactory {
 			return t;
 		}
 
-		t = new Texture( Gdx.files.internal( BaboViolentGame.path(BaboViolentGame.PATH_EDITOR) + name ), Format.RGBA8888, mipMap );
+		t = new Texture( Gdx.files.internal( BaboViolentGame.PATH_EDITOR + name ), Format.RGBA8888, mipMap );
 
 		if( mipMap ) {
 			t.setFilter( TextureFilter.MipMapLinearNearest, TextureFilter.Nearest );

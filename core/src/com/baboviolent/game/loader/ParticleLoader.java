@@ -31,13 +31,14 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class ParticleLoader {
+	public static final String PARTICLE_EXTENSION = ".pfx";
+	
     /**
      * Initialise le système de particule
      */ 
     static public ParticleSystem init(Camera c) {
 	    ParticleSystem particleSystem = ParticleSystem.get();
 		BillboardParticleBatch b = new BillboardParticleBatch();
-	    //PointSpriteParticleBatch b = new PointSpriteParticleBatch();
 		b.setCamera(c);
 		particleSystem.add(b);
 		return particleSystem;
@@ -47,14 +48,12 @@ public class ParticleLoader {
      * Renvoie un tableau contenant le nom de toutes les particules
      */ 
     static public Array<String> listParticleFolder() {
-    	String p = BaboViolentGame.path(BaboViolentGame.PATH_PARTICLES);
-        Array<String> particles = new Array<String>();	    
-	    FileHandle[] files = Gdx.files.internal(p).list();
-        for(FileHandle file: files) {
-        	if( file.extension().equals("pfx") ) {
-        		particles.add(file.nameWithoutExtension());
-        	}
-        }
+    	Array<String> particles = new Array<String>();
+    	
+    	for( int i = 0; i < Constant.particles.length; i++) {
+    		particles.add(Constant.particles[i]);
+    	}
+    	particles.sort();
         
         return particles;
     }
@@ -70,7 +69,7 @@ public class ParticleLoader {
      * Charge toutes les particules passées en paramètre
      */ 
     static public ObjectMap<String, PoolParticle> getParticles(Array<String> toLoad) {
-    	String p = BaboViolentGame.path(BaboViolentGame.PATH_PARTICLES);
+    	String p = BaboViolentGame.PATH_PARTICLES;
     	AssetManager manager = new AssetManager();
 	    ObjectMap<String, PoolParticle> particles = new ObjectMap<String, PoolParticle>();
         ParticleEffectLoader.ParticleEffectLoadParameter loadParam = new ParticleEffectLoader.ParticleEffectLoadParameter(ParticleSystem.get().getBatches());
@@ -79,9 +78,9 @@ public class ParticleLoader {
 	    
 	    // On charge les particules
 	    for( int i = 0; i < toLoad.size; i++ ) {
-	        manager.load(p+toLoad.get(i)+".pfx", ParticleEffect.class, loadParam);
+	        manager.load(p+toLoad.get(i)+PARTICLE_EXTENSION, ParticleEffect.class, loadParam);
 		    manager.finishLoading();
-		    ParticleEffect effect = manager.get(p+toLoad.get(i)+".pfx");
+		    ParticleEffect effect = manager.get(p+toLoad.get(i)+PARTICLE_EXTENSION);
 		    particles.put(toLoad.get(i), new PoolParticle(effect));
 	    }
 	    

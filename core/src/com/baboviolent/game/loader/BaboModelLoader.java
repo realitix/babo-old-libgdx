@@ -26,11 +26,13 @@ public class BaboModelLoader {
      * Renvoie un tableau contenant le nom de tous les modèles
      */ 
     static public Array<String> listModelFolder() {
-        Array<String> models = new Array<String>();	    
-	    FileHandle[] files = Gdx.files.internal(BaboViolentGame.path(BaboViolentGame.PATH_MODELS)).list();
-        for(FileHandle file: files) {
-            models.add(file.nameWithoutExtension());
-        }
+    	Array<String> models = new Array<String>();	
+    	
+    	for( int i = 0; i < Constant.models.length; i++) {
+    		models.add(Constant.models[i]);
+    	}
+    	
+    	models.sort();
         
         return models;
     }
@@ -109,7 +111,7 @@ public class BaboModelLoader {
      */ 
     static public ObjectMap<String, ModelData> getModelDatas(Array<String> toLoad) {
     	ModelLoader loader = new G3dModelLoader(new JsonReader());
-        String p = BaboViolentGame.path(BaboViolentGame.PATH_MODELS);
+        String p = BaboViolentGame.PATH_MODELS;
 	    ObjectMap<String, ModelData> models = new ObjectMap<String, ModelData>();
 	    
 	    // On charge les modèles
