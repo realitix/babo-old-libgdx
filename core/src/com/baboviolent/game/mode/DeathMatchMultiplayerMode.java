@@ -56,7 +56,7 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
     }
     
     /**
-     * On envoie les données de synchro regulirement
+     * On envoie les donnees de synchro regulirement
      */
     private void updateSynchonization() {
     	if( TimeUtils.millis() - lastSynchronization > synchronizationInterval ) {

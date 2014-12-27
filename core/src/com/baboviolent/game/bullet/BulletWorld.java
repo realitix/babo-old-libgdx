@@ -4,6 +4,7 @@ import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
 import com.baboviolent.game.gameobject.weapon.Weapon;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -33,7 +34,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class BulletWorld implements Disposable {
 	public static final int GRAVITY_START = 1000;
-	private final ObjectMap<String, BulletInstance.Constructor> constructors = new ObjectMap<String, BulletInstance.Constructor>();
 	protected final Array<BulletInstance> instances = new Array<BulletInstance>();
 	protected final Array<BulletInstance> instancesToExpire = new Array<BulletInstance>();
 	private final ObjectMap<String, btTypedConstraint> constraints = new ObjectMap<String, btTypedConstraint>();
@@ -45,6 +45,7 @@ public class BulletWorld implements Disposable {
 	public final Vector3 gravity;
 	public int maxSubSteps = 5;
 	public float fixedTimeStep = 1f / 60f;
+	private Camera camera = null;
 
 	public BulletWorld (final Vector3 gravity) {
 		collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -60,22 +61,11 @@ public class BulletWorld implements Disposable {
 		this(new Vector3(0, -GRAVITY_START, 0));
 	}
 	
-	public void addConstructor (final String name, final BulletInstance.Constructor constructor) {
-		constructors.put(name, constructor);
-	}
-
-	public BulletInstance.Constructor getConstructor (final String name) {
-		return constructors.get(name);
-	}
-
-	public BulletInstance add (final String type, float x, float y, float z) {
-		BulletInstance instance = constructors.get(type).construct();
-		instance.transform.setToTranslation(x, y, z);
-		add(instance);
-		return instance;
-	}
-	
 	public BulletInstance add (final BulletInstance instance) {
+		if( camera != null ) {
+			instance.setCamera(camera);
+		}
+		
 		instances.add(instance);
 		world.addRigidBody(instance.body);
 		
@@ -88,6 +78,10 @@ public class BulletWorld implements Disposable {
 	
 	public BulletInstance add (final GameObject go) {
 		return add(go.getInstance());
+	}
+	
+	public void setCamera(Camera camera) {
+		this.camera = camera;
 	}
 	
 	public void attachWeaponToBabo(Babo babo, Weapon weapon) {
@@ -131,6 +125,14 @@ public class BulletWorld implements Disposable {
 	}
 
 	public void render (final ModelBatch modelBatch, final Environment environment) {
+		/*for( int i = 0; i < instances.size; i++) {
+			if( instances.get(i).userData != null && instances.get(i).userData.equals("map") ) {
+				
+			}
+			else {
+				modelBatch.render(instances.get(i), environment);
+			}
+		}*/
 		modelBatch.render(instances, environment);
 	}
 
@@ -156,10 +158,6 @@ public class BulletWorld implements Disposable {
 		for (int i = 0; i < instances.size; i++)
 			instances.get(i).dispose();
 		instances.clear();
-
-		for (BulletInstance.Constructor constructor : constructors.values())
-			constructor.dispose();
-		constructors.clear();
 
 		world.dispose();
 		if (solver != null) solver.dispose();

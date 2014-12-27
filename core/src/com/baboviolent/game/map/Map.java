@@ -115,7 +115,10 @@ public class Map {
         btRigidBody.btRigidBodyConstructionInfo constructionInfo = 
             new btRigidBody.btRigidBodyConstructionInfo(0, null, shape);
             
-        return new BulletInstance(model, constructionInfo);
+        BulletInstance instance = new BulletInstance(model, constructionInfo);
+        instance.userData = "map";
+        instance.setRadius(BaboViolentGame.SIZE_MAP_CELL);
+        return instance;
 	}
 	
 	/**
@@ -185,7 +188,7 @@ public class Map {
 	
 	/**
 	 * Charge la map
-	 * On cherche d'abord en internal puis en external si non trouvé
+	 * On cherche d'abord en internal puis en external si non trouvï¿½
 	 **/
 	static public Map load(String mapname) {
 		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+"."+BaboViolentGame.EXTENSION_MAP);

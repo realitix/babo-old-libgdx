@@ -58,14 +58,15 @@ public class BaseMode {
     }
     
     public void init() {
+    	// Initialisation de la camera
+    	camera = new ChaseCamera2();
+    			
         // Initialisation du monde
 		world = new BulletWorld();
+		world.setCamera(camera);
 		
 		// Initialisation de la map
 		world.add(Map.loadInstance(map));
-		
-		// Initialisation de la camera
-		camera = new ChaseCamera2();
 		
 		// Initialisation des particules
 		particleSystem = ParticleLoader.init(camera);

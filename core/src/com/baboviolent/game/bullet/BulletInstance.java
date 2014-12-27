@@ -1,24 +1,37 @@
 package com.baboviolent.game.bullet;
 
+import com.baboviolent.game.BaboViolentGame;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.physics.bullet.collision.btBvhTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.linearmath.btMotionState;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.Pool;
 
 public class BulletInstance extends ModelInstance implements Disposable {
+	public static final int DISTANCE_FRUSTRUM = 5000000;
 	public BulletInstance.MotionState motionState;
 	public btRigidBody body;
 	private long expire; // Moment de l'expiration en milliseconde
+	private Camera camera = null;
+	private Vector3 tmp = new Vector3();
+	private float radius;
+	private Vector3 center;
 	
 	public BulletInstance (Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
 		super(model);
@@ -30,6 +43,7 @@ public class BulletInstance extends ModelInstance implements Disposable {
 		motionState = new BulletInstance.MotionState(this.transform);
 		this.body = body;
 		this.body.setMotionState(motionState);
+		init();
 	}
 	
     public BulletInstance (Model model, String node, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
@@ -42,6 +56,27 @@ public class BulletInstance extends ModelInstance implements Disposable {
 		body = new btRigidBody(constructionInfo);
 		body.setMotionState(motionState);
 		constructionInfo.dispose();
+		init();
+    }
+    
+    public void init() {
+    	BoundingBox bounds = new BoundingBox();
+    	center = new Vector3();
+    	Vector3 dimensions = new Vector3();
+    	calculateBoundingBox(bounds);
+    	bounds.getCenter(center);
+    	bounds.getDimensions(dimensions);
+    	radius = dimensions.len() / 2f;
+    }
+    
+    public BulletInstance setCamera(Camera camera) {
+    	this.camera = camera;
+    	return this;
+    }
+    
+    public BulletInstance setRadius(float radius) {
+    	this.radius = radius;
+    	return this;
     }
     
     public BulletInstance setExpire(long e) {
@@ -52,6 +87,31 @@ public class BulletInstance extends ModelInstance implements Disposable {
     public long getExpire() {
         return expire;
     }
+    
+    /**
+     * On surcharge afin de n'afficher que les objets visibles a la camera (optimisation)
+     */
+    @Override
+    protected void getRenderables (Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
+    	if( camera == null ) {
+    		super.getRenderables(node, renderables, pool);
+    	}
+    	else {
+    		// Si c'est la map, on calcul la distance a chaque node
+    		if( this.userData != null && this.userData.equals("map") ) tmp.set(node.translation);
+    		else this.transform.getTranslation(tmp).add(center);
+    		
+    		if (camera.frustum.sphereInFrustum(tmp, radius) && node.parts.size > 0) {
+        		for (NodePart nodePart : node.parts) {
+        			if (nodePart.enabled) renderables.add(getRenderable(pool.obtain(), node, nodePart));
+        		}
+        	}
+        	
+        	for (Node child : node.children) {
+        		getRenderables(child, renderables, pool);
+        	}
+    	}
+	}
 
 	@Override
 	public void dispose () {
@@ -79,35 +139,6 @@ public class BulletInstance extends ModelInstance implements Disposable {
 		@Override
 		public void setWorldTransform (final Matrix4 worldTrans) {
 			transform.set(worldTrans);
-		}
-	}
-	
-	static public class Constructor implements Disposable {
-		private Model model;
-		private btCollisionShape shape;
-		private btRigidBody.btRigidBodyConstructionInfo constructionInfo;
-
-		public Constructor (Model model, btCollisionShape shape, float mass) {
-			this.model = model;
-			this.shape = shape;
-			
-			Vector3 localInertia = new Vector3();
-			if (mass > 0f)
-				shape.calculateLocalInertia(mass, localInertia);
-			else
-				localInertia.set(0, 0, 0);
-			this.constructionInfo = new btRigidBody.btRigidBodyConstructionInfo(mass, null, shape, localInertia);
-		}
-
-		public BulletInstance construct () {
-			return new BulletInstance(model, constructionInfo);
-		}
-
-		@Override
-		public void dispose () {
-			model.dispose();
-			shape.dispose();
-			constructionInfo.dispose();
 		}
 	}
 }
