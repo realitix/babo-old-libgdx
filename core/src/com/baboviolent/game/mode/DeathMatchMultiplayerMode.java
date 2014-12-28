@@ -44,8 +44,7 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
     	wc.sendShoot(false);
     }
     
-    @Override
-    protected Babo initBabo(String username) {
+    private Babo initEnnemy(String username) {
     	return super.initBabo(username).setManualDeath(true);
     }
     
@@ -82,6 +81,14 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
     	}
     }
     
+    @Override
+    protected void updateBabos() {
+    	super.updateBabos();
+    	if( player.getState() == Babo.STATE_EXPLODE ) {
+    		wc.sendDead(player.getLastShooter().getUsername());
+    	}
+    }
+    
     private Babo getBaboFromUsername(String username) {
     	for( int i = 0; i < babos.size; i++ ) {
 			if( babos.get(i).getUsername().equals(username) ) {
@@ -108,7 +115,7 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
 			public void run () {
 				for( String username:usernames ) {
 			    	if( !username.equals(player.getUsername()) ) {
-			    		initBabo(username);
+			    		initEnnemy(username).appear(new Vector3());
 			    	}
 			    }
 			}
