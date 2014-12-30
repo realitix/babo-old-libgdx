@@ -6,22 +6,32 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MainMenuScreen implements Screen {
 	final BaboViolentGame game;
-    PerspectiveCamera camera;
+    private PerspectiveCamera camera;
     private Stage stage;
-
+    
     public MainMenuScreen(final BaboViolentGame g) {
         game = g;
         camera = new PerspectiveCamera();
@@ -30,49 +40,77 @@ public class MainMenuScreen implements Screen {
  		SpriteBatch batch = new SpriteBatch();
  		
  		// Create stage
- 		stage = new Stage(new ScreenViewport(), batch);
+ 		int width = 1920;
+ 		int height = 1080;
+ 		stage = new Stage(new FillViewport(width, height), batch);
  		
- 		// Create table layout
+ 		// Creation de deux groupes, un pour l'image de fond, l'autre pour les boutons
+ 		Group background = new Group();
+ 		background.setBounds(0, 0, width, height);
+ 		Group foreground = new Group();
+ 		foreground.setBounds(0, 0, width, height);
+ 		stage.addActor(background);
+ 		stage.addActor(foreground);
+ 		
+ 		// Background
+ 		background.addActor(new Image(new Texture(Gdx.files.internal("data/menu/main_menu/background.jpg"))));
+ 		
+ 		
+ 		// Foreground
  		Table table = new Table();
         table.setFillParent(true);
-        stage.addActor(table);
-        table.left().top();
-        table.setDebug(true);
-         
-		// Menu classique
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		 
-		// Boutons
-		TextButton soloWidget = new TextButton("Solo", skin);
-		TextButton multiplayerWidget = new TextButton("Multi", skin);
-		TextButton editorWidget = new TextButton("Editeur", skin);
-         
-        // Listener
-        soloWidget.addListener(
-     		new ClickListener() {
-     			public void clicked (InputEvent event, float x, float y) {
-     				game.setScreen(new GameScreen(game, GameScreen.TYPE_SOLO));
-     			}
-     	});
+ 		table.center();
+        //table.setDebug(true);
         
-        multiplayerWidget.addListener(
-     		new ClickListener() {
-     			public void clicked (InputEvent event, float x, float y) {
-     				game.setScreen(new GameScreen(game, GameScreen.TYPE_MULTIPLAYER));
-     			}
-     	});
+        // Solo
+        ImageButton soloButton = new ImageButton(
+        		new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("data/menu/main_menu/button_solo.png")))),
+        		new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("data/menu/main_menu/button_solo_hover.png")))),
+        		new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("data/menu/main_menu/button_solo_checked.png"))))
+        		);
         
+        soloButton.addListener(
+         		new ClickListener() {
+         			public void clicked (InputEvent event, float x, float y) {
+         				game.setScreen(new GameScreen(game, GameScreen.TYPE_SOLO));
+         			}
+         	});
+        table.add(soloButton).center().padBottom(50);
+        table.row();
         
-        editorWidget.addListener(
-     		new ClickListener() {
-     			public void clicked (InputEvent event, float x, float y) {
-     				game.setScreen(new MapEditorScreen(game));
-     			}
-     	});
+        // Multi
+        ImageButton multiButton = new ImageButton(
+        		new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("data/menu/main_menu/button_multi.png")))),
+        		new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("data/menu/main_menu/button_multi_hover.png")))),
+        		new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("data/menu/main_menu/button_multi_checked.png"))))
+        		);
         
-        table.add(soloWidget);
-        table.add(multiplayerWidget);
-        table.add(editorWidget);
+        multiButton.addListener(
+         		new ClickListener() {
+         			public void clicked (InputEvent event, float x, float y) {
+         				game.setScreen(new GameScreen(game, GameScreen.TYPE_MULTIPLAYER));
+         			}
+         	});
+        table.add(multiButton).center().padBottom(50);
+        table.row();
+        
+        // Editeur
+        ImageButton optionsButton = new ImageButton(
+        		new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("data/menu/main_menu/button_options.png")))),
+        		new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("data/menu/main_menu/button_options_hover.png")))),
+        		new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("data/menu/main_menu/button_options_checked.png"))))
+        		);
+        
+        optionsButton.addListener(
+         		new ClickListener() {
+         			public void clicked (InputEvent event, float x, float y) {
+         				game.setScreen(new MapEditorScreen(game));
+         			}
+         	});
+
+        table.add(optionsButton).center();        
+        
+        foreground.addActor(table);
         
         Gdx.input.setInputProcessor(stage);
          
@@ -80,7 +118,7 @@ public class MainMenuScreen implements Screen {
     
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+    	Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         stage.act(Gdx.graphics.getDeltaTime());        
@@ -89,6 +127,7 @@ public class MainMenuScreen implements Screen {
     
 	@Override
 	public void resize(int width, int height) {
+		stage.getViewport().update(width, height, true);
 	}
 	 
 	@Override

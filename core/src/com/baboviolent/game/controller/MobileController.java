@@ -30,6 +30,7 @@ public class MobileController extends BaseController {
 	private Stage stage;
 	private Touchpad left;
 	private Touchpad right;
+	private Vector2 v2;
 	private Vector3 direction;
 	private Vector3 lastPosition;
 	private Vector3 currentPosition;
@@ -39,6 +40,7 @@ public class MobileController extends BaseController {
 		direction = new Vector3();
 		lastPosition = new Vector3();
 		currentPosition = new Vector3();
+		v2 = new Vector2();
 		ScreenViewport v = new ScreenViewport();
 		stage = new Stage(v);
 		int width = v.getScreenWidth();
@@ -63,10 +65,12 @@ public class MobileController extends BaseController {
         
         // LEFT
         if( left.isTouched() && (left.getKnobPercentX() != 0 || left.getKnobPercentY() != 0)) {
-        	direction.set(left.getKnobPercentX(), 0, left.getKnobPercentY());
+        	v2.set(left.getKnobPercentX(), left.getKnobPercentY());
+        	v2.setAngle(roundAngle(v2.angle()));
+        	direction.set(v2.x, 0, v2.y);
         	mode.onSetPlayerDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
         }
-        else {
+        else if( !direction.isZero() ) {
         	direction.set(0, 0, 0);
         	mode.onSetPlayerDirection(direction);
         }
@@ -84,6 +88,23 @@ public class MobileController extends BaseController {
         }
         
         lastPosition.set(mode.getPlayer().getPosition());
+	}
+	
+	/**
+	 * Arrondi a 45 degre
+	 * @param angle
+	 * @return
+	 */
+	private float roundAngle(float angle) {
+		if( angle > 337.5 || angle <= 22.5  ) angle = 0;
+		else if( angle > 22.5 && angle <= 67.5  ) angle = 45;
+		else if( angle > 67.5 && angle <= 112.5  ) angle = 90;
+		else if( angle > 112.5 && angle <= 157.5  ) angle = 135;
+		else if( angle > 157.5 && angle <= 202.5  ) angle = 180;
+		else if( angle > 202.5 && angle <= 247.5  ) angle = 225;
+		else if( angle > 247.5 && angle <= 292.5  ) angle = 270;
+		else if( angle > 292.5 && angle <= 337.5  ) angle = 315;
+		return angle;
 	}
 	
 	public Stage getStage() {
