@@ -73,7 +73,7 @@ public class BaseMode {
 		particles = ParticleLoader.getParticles();
 		
 		// Initialisation du controller
-		controller = new BaboController(this);
+		controller = new BaboController(this, camera);
 		
 		// Initialisation du joueur
 		initPlayer();
@@ -85,8 +85,8 @@ public class BaseMode {
     protected void initPlayer() {
         Babo player = initBabo(Gdx.app.getPreferences("com.baboviolent.game").getString("username"));
         this.player = player;
-        camera.init(this.player);
         player.appear(generateBaboPosition());
+        camera.init(this.player);
     }
     
     protected Babo initBabo(String username) {
@@ -155,7 +155,8 @@ public class BaseMode {
     }
     
     public void update() {
-    	player.setTarget(controller.getTarget(camera));
+    	player.setTarget(controller.getTarget());
+    	camera.setTarget(controller.getTarget());
     	
         camera.update();
 		world.update();

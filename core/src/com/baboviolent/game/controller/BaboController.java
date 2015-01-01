@@ -7,8 +7,10 @@ import com.badlogic.gdx.math.Vector3;
 
 public class BaboController {
 	private BaseController controller;
+	private final Camera camera;
 	
-	public BaboController(final BaseMode mode) {
+	public BaboController(final BaseMode mode, final Camera camera) {
+		this.camera = camera;
 		switch(Gdx.app.getType()) {
 			case Android:
 			case iOS:
@@ -28,7 +30,7 @@ public class BaboController {
 		controller.update();
 	}
 	
-	public Vector3 getTarget(Camera camera) {
+	public Vector3 getTarget() {
 		return controller.getTarget(camera);
 	}
 }

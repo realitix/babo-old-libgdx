@@ -16,7 +16,9 @@ import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.attributes.BlendingAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsInfluencer;
@@ -54,8 +56,8 @@ public class Babo extends GameObject {
 	private final ObjectMap<String, PoolParticle> particules; // Particule Ã©mise lorsqu'on est touchÃ© par une balle
 	private int state;
 	private int score;
-	private boolean manualDeath; // Si true, babo ne perd pas d'énergie, bien pour multijoueur
-	private Babo lastShooter; // Dernier babo ayant touché ce babo
+	private boolean manualDeath; // Si true, babo ne perd pas d'ï¿½nergie, bien pour multijoueur
+	private Babo lastShooter; // Dernier babo ayant touchï¿½ ce babo
 	private final BulletWorld world;
 	
 	public Babo(String username, String skin, final ObjectMap<String, PoolParticle> particules, final BulletWorld world) {
@@ -136,7 +138,7 @@ public class Babo extends GameObject {
         effect.setTransform(this.instance.transform);
         ParticleSystem.get().add(effect);
         
-        // On détache l'arme
+        // On dï¿½tache l'arme
         world.detachWeaponToBabo(this, weapon);
         
         // On ejecte l'arme
