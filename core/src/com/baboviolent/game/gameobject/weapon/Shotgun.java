@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.PolarAcceleration;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
@@ -100,11 +101,11 @@ public class Shotgun extends Weapon {
     	effect.reset();
         effect.start();
         effect.setTransform(tmpM);
-        DynamicsInfluencer influencer = effect.getControllers().get(0).findInfluencer(DynamicsInfluencer.class);
+        /*DynamicsInfluencer influencer = effect.getControllers().get(0).findInfluencer(DynamicsInfluencer.class);
         PolarAcceleration modifier = (PolarAcceleration) influencer.velocities.get(0);
         float rotate = getAngleFromQuaternion(tmpQ);
         modifier.thetaValue.setHighMin((-10 + rotate));
-        modifier.thetaValue.setHighMax((10 + rotate));
+        modifier.thetaValue.setHighMax((10 + rotate));*/
         ParticleSystem.get().add(effect);
     	
     	// On creer la force inverse
@@ -115,7 +116,7 @@ public class Shotgun extends Weapon {
 	}
 	
 	/**
-	 * Si un Quaternion est à l'envers, on le remet dans le bon sens
+	 * Si un Quaternion est ï¿½ l'envers, on le remet dans le bon sens
 	 */
 	private Quaternion validQuaternion(Quaternion q) {
 		Vector3 currentAngleAxis = new Vector3();

@@ -106,7 +106,7 @@ public class GameScreen implements Screen {
 		modelBatch.begin(mode.getCamera());
 		
 		mode.getWorld().render(modelBatch, environment);
-		modelBatch.render(mode.getParticleSystem());
+		modelBatch.render(mode.getParticleSystem(), environment);
 		
 		modelBatch.end();
 		

@@ -40,7 +40,7 @@ public class PoolParticle extends Pool<ParticleEffect> {
     
     /**
      * Met a jour les particules
-     * Si un effet est terminé, on le supprime du particlesystem et on remet dans le pool
+     * Si un effet est termine, on le supprime du particlesystem et on remet dans le pool
      */
     public void update() {
         if( activeEffects.size == 0 )
