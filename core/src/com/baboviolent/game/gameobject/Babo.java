@@ -9,6 +9,7 @@ import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.gameobject.weapon.Weapon;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.TextureLoader;
+import com.baboviolent.game.particle.BaboParticleSystem;
 import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -53,15 +54,15 @@ public class Babo extends GameObject {
 	private int energy;
 	private boolean shooting = false;
 	private boolean moving = false;
-	private final ObjectMap<String, PoolParticle> particules; // Particule émise lorsqu'on est touché par une balle
+	private final BaboParticleSystem particle;
 	private int state;
 	private int score;
 	private boolean manualDeath; // Si true, babo ne perd pas d'�nergie, bien pour multijoueur
 	private Babo lastShooter; // Dernier babo ayant touch� ce babo
 	private final BulletWorld world;
 	
-	public Babo(String username, String skin, final ObjectMap<String, PoolParticle> particules, final BulletWorld world) {
-		this.particules = particules;
+	public Babo(String username, String skin, BaboParticleSystem particle, final BulletWorld world) {
+		this.particle = particle;
 	    this.skin = skin;
 	    this.username = username;
 	    this.world = world;
@@ -108,12 +109,12 @@ public class Babo extends GameObject {
     }
     
     public Babo hit(int power) {
-    	ParticleEffect effect = particules.get("blood").obtain();
+    	/*ParticleEffect effect = particules.get("blood").obtain();
     	effect.init();
     	effect.reset();
         effect.start();
         effect.setTransform(this.instance.transform);
-        ParticleSystem.get().add(effect);
+        ParticleSystem.get().add(effect);*/
         
         if( !manualDeath ) {
         	energy -= power;
@@ -131,12 +132,12 @@ public class Babo extends GameObject {
         body.setActivationState(Collision.DISABLE_SIMULATION);
         
         // On genere beacoup de particules
-        ParticleEffect effect = particules.get("blood2").obtain();
+        /*ParticleEffect effect = particules.get("blood2").obtain();
     	effect.init();
     	effect.reset();
         effect.start();
         effect.setTransform(this.instance.transform);
-        ParticleSystem.get().add(effect);
+        ParticleSystem.get().add(effect);*/
         
         // On d�tache l'arme
         world.detachWeaponToBabo(this, weapon);

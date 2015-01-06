@@ -14,6 +14,7 @@ import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.weapon.Shotgun;
 import com.baboviolent.game.loader.ParticleLoader;
 import com.baboviolent.game.map.Map;
+import com.baboviolent.game.particle.BaboParticleSystem;
 import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
@@ -29,6 +30,8 @@ import com.badlogic.gdx.ai.steer.utils.rays.ParallelSideRayConfiguration;
 import com.badlogic.gdx.ai.steer.utils.rays.SingleRayConfiguration;
 import com.badlogic.gdx.ai.utils.RaycastCollisionDetector;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.math.MathUtils;
@@ -42,9 +45,8 @@ public class BaseMode {
     protected BulletWorld world;
     protected ChaseCamera2 camera;
     protected Babo player;
-    protected ObjectMap<String, PoolParticle> particles = new ObjectMap<String, PoolParticle>();
-	protected ParticleSystem particleSystem;
-	private BaboController controller;
+    protected BaboParticleSystem particleSystem;
+	protected BaboController controller;
 	protected Map map;
 	protected int nbIa;
 	protected Vector3 tmpV = new Vector3();
@@ -69,8 +71,7 @@ public class BaseMode {
 		world.add(Map.loadInstance(map));
 		
 		// Initialisation des particules
-		particleSystem = ParticleLoader.init(camera);
-		particles = ParticleLoader.getParticles();
+		particleSystem = new BaboParticleSystem(camera);
 		
 		// Initialisation du controller
 		controller = new BaboController(this, camera);
@@ -90,10 +91,10 @@ public class BaseMode {
     }
     
     protected Babo initBabo(String username) {
-        Babo babo = new Babo(username, "skin22", particles, world);
+        Babo babo = new Babo(username, "skin22", particleSystem, world);
         world.add(babo);
         babos.add(babo);
-        Shotgun shotgun = new Shotgun(babo, world, particles.get("smoke1"));
+        Shotgun shotgun = new Shotgun(babo, world, particleSystem);
         world.add(shotgun);
         babo.setWeapon(shotgun);
         BulletContactListener.addObject(babo);
@@ -107,10 +108,10 @@ public class BaseMode {
     	}
     	
     	for( int i = 0; i < nbIa; i++) {
-    		AiBabo ai = new AiBabo("ai1", "skin22", particles, world, babos, pathGenerator);
+    		AiBabo ai = new AiBabo("ai1", "skin22", particleSystem, world, babos, pathGenerator);
     		world.add(ai);
     		babos.add(ai);
-    		Shotgun shotgun = new Shotgun(ai, world, particles.get("test"));
+    		Shotgun shotgun = new Shotgun(ai, world, particleSystem);
     		world.add(shotgun);
     		ai.setWeapon(shotgun);
     		BulletContactListener.addObject(ai);
@@ -138,10 +139,6 @@ public class BaseMode {
         return camera;
     }
     
-    public ParticleSystem getParticleSystem() {
-        return particleSystem;
-    }
-    
     public void onStartShoot() {
     	player.shoot();
     }
@@ -154,6 +151,11 @@ public class BaseMode {
         player.setDirection(direction);
     }
     
+    public void render(ModelBatch modelBatch, Environment environment) {
+    	world.render(modelBatch, environment);
+    	particleSystem.render(modelBatch, environment);
+    }
+    
     public void update() {
     	player.setTarget(controller.getTarget());
     	camera.setTarget(controller.getTarget());
@@ -162,7 +164,6 @@ public class BaseMode {
 		world.update();
 		
 		updateBabos();
-		updateParticleSystem();
     }
     
     protected Vector3 getTarget() {
@@ -213,17 +214,6 @@ public class BaseMode {
     	
     	return position;
     }
-    
-    protected void updateParticleSystem() {
-		particleSystem.update();
-		for (ObjectMap.Entry<String, PoolParticle> e : particles.entries()) {
-			e.value.update();
-        }
-        
-        particleSystem.begin();
-		particleSystem.draw();
-		particleSystem.end();
-	}
     
     public void dispose() {
 		world.dispose();

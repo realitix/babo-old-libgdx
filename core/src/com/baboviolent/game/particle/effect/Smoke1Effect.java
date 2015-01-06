@@ -1,5 +1,6 @@
 package com.baboviolent.game.particle.effect;
 
+import com.baboviolent.game.particle.BaboParticleBatch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
@@ -15,248 +16,17 @@ import com.badlogic.gdx.graphics.g3d.particles.values.LineSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.PointSpawnShapeValue;
 import com.badlogic.gdx.utils.Array;
 
-/*
- * {
-    unique: {
-        billboardBatch: {
-            class: com.badlogic.gdx.graphics.g3d.particles.ResourceData$SaveData,
-            data: {
-                cfg: {
-                    class: com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch$Config,
-                    useGPU: true,
-                    mode: ViewPoint
-                }
-            },
-            indices: [
-                0
-            ]
-        }
-    },
-    data: [
-        
-    ],
-    assets: [
-        {
-            filename: "/home/realitix/git/baboviolent/android/assets/data/particles/smoke2.png",
-            type: com.badlogic.gdx.graphics.Texture
-        }
-    ],
-    resource: {
-        class: com.badlogic.gdx.graphics.g3d.particles.ParticleEffect,
-        controllers: [
-            {
-                name: "Billboard Controller",
-                emitter: {
-                    class: com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter,
-                    minParticleCount: 0,
-                    maxParticleCount: 500,
-                    continous: false,
-                    emission: {
-                        active: true,
-                        lowMin: 0,
-                        lowMax: 0,
-                        highMin: 1500,
-                        highMax: 1500,
-                        relative: false,
-                        scaling: [
-                            0.4489796,
-                            1
-                        ],
-                        timeline: [
-                            0,
-                            1
-                        ]
-                    },
-                    delay: {
-                        active: false,
-                        lowMin: 0,
-                        lowMax: 0
-                    },
-                    duration: {
-                        active: true,
-                        lowMin: 200,
-                        lowMax: 200
-                    },
-                    life: {
-                        active: true,
-                        lowMin: 0,
-                        lowMax: 0,
-                        highMin: 500,
-                        highMax: 500,
-                        relative: false,
-                        scaling: [
-                            1,
-                            1
-                        ],
-                        timeline: [
-                            0,
-                            1
-                        ]
-                    },
-                    lifeOffset: {
-                        active: false,
-                        lowMin: 0,
-                        lowMax: 0,
-                        highMin: 0,
-                        highMax: 0,
-                        relative: false,
-                        scaling: [
-                            1
-                        ],
-                        timeline: [
-                            0
-                        ]
-                    }
-                },
-                influencers: [
-                    {
-                        class: com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnInfluencer,
-                        spawnShape: {
-                            class: com.badlogic.gdx.graphics.g3d.particles.values.LineSpawnShapeValue,
-                            active: true,
-                            xOffsetValue: {
-                                active: false,
-                                lowMin: 0,
-                                lowMax: 0
-                            },
-                            yOffsetValue: {
-                                active: false,
-                                lowMin: 0,
-                                lowMax: 0
-                            },
-                            zOffsetValue: {
-                                active: false,
-                                lowMin: 0,
-                                lowMax: 0
-                            },
-                            spawnWidthValue: {
-                                active: true,
-                                lowMin: 50,
-                                lowMax: 50,
-                                highMin: 1000,
-                                highMax: 1000,
-                                relative: false,
-                                scaling: [
-                                    0,
-                                    1,
-                                    1
-                                ],
-                                timeline: [
-                                    0,
-                                    0.5068493,
-                                    1
-                                ]
-                            },
-                            spawnHeightValue: {
-                                active: true,
-                                lowMin: 0,
-                                lowMax: 0,
-                                highMin: 5,
-                                highMax: 5,
-                                relative: false,
-                                scaling: [
-                                    0,
-                                    1
-                                ],
-                                timeline: [
-                                    0,
-                                    1
-                                ]
-                            },
-                            spawnDepthValue: {
-                                active: true,
-                                lowMin: 0,
-                                lowMax: 0,
-                                highMin: 5,
-                                highMax: 5,
-                                relative: false,
-                                scaling: [
-                                    0,
-                                    1
-                                ],
-                                timeline: [
-                                    0,
-                                    1
-                                ]
-                            },
-                            edges: false
-                        }
-                    },
-                    {
-                        class: com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer$Single,
-                        alpha: {
-                            active: true,
-                            lowMin: 0,
-                            lowMax: 0,
-                            highMin: 1,
-                            highMax: 1,
-                            relative: false,
-                            scaling: [
-                                1,
-                                0
-                            ],
-                            timeline: [
-                                0,
-                                0.9884868
-                            ]
-                        },
-                        color: {
-                            active: false,
-                            colors: [
-                                0.56078434,
-                                0.69411767,
-                                0.8784314,
-                                0,
-                                0,
-                                0
-                            ],
-                            timeline: [
-                                0,
-                                1
-                            ]
-                        }
-                    },
-                    {
-                        class: com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsInfluencer,
-                        velocities: [
-                            
-                        ]
-                    },
-                    {
-                        class: com.badlogic.gdx.graphics.g3d.particles.influencers.ScaleInfluencer,
-                        value: {
-                            active: false,
-                            lowMin: 0,
-                            lowMax: 0,
-                            highMin: 30,
-                            highMax: 30,
-                            relative: true,
-                            scaling: [
-                                0,
-                                1
-                            ],
-                            timeline: [
-                                0,
-                                1
-                            ]
-                        }
-                    }
-                ],
-                renderer: {
-                    class: com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardRenderer
-                }
-            }
-        ]
-    }
-}
- */
+
 public class Smoke1Effect extends BaboParticleEffect {
+	public static final String NAME = "smoke1";
 	
-	public Smoke1Effect(BillboardParticleBatch batch, Texture texture) {
-		super(batch, texture);
+	public Smoke1Effect() {
+		super();
+		name = NAME;
+		type = BaboParticleBatch.TYPE1;
 	}
 	
-	protected void configure() {
+	public void configure(BaboParticleBatch batch) {
 		//Emitter
 		RegularEmitter emitter = new RegularEmitter();
 		emitter.setMinParticleCount(0);
@@ -281,6 +51,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 		//Spawn
 		LineSpawnShapeValue spawn = new LineSpawnShapeValue();
 		spawn.setActive(true);
+		spawn.setEdges(false);
 		spawn.xOffsetValue.setActive(false);
 		spawn.yOffsetValue.setActive(false);
 		spawn.zOffsetValue.setActive(false);
@@ -292,52 +63,43 @@ public class Smoke1Effect extends BaboParticleEffect {
 		spawn.getSpawnWidth().setTimeline(new float[] {0, 0.5f, 1});
 		
 		spawn.getSpawnHeight().setActive(true);
-		spawn.getSpawnWidth().setLow(0);
-		spawn.getSpawnWidth().setHigh(5);
-		spawn.getSpawnWidth().setScaling(new float[] {0, 1});
-		spawn.getSpawnWidth().setTimeline(new float[] {0, 1});
+		spawn.getSpawnHeight().setLow(0);
+		spawn.getSpawnHeight().setHigh(5);
+		spawn.getSpawnHeight().setScaling(new float[] {0, 1});
+		spawn.getSpawnHeight().setTimeline(new float[] {0, 1});
 		
-		PointSpawnShapeValue pointSpawnShapeValue = new PointSpawnShapeValue();		
-		pointSpawnShapeValue.xOffsetValue.setLow(0, 1f);
-		pointSpawnShapeValue.xOffsetValue.setActive(true);
-		pointSpawnShapeValue.yOffsetValue.setLow(0, 1f);
-		pointSpawnShapeValue.yOffsetValue.setActive(true);
-		pointSpawnShapeValue.zOffsetValue.setLow(0, 1f);
-		pointSpawnShapeValue.zOffsetValue.setActive(true);
-		SpawnInfluencer spawnSource = new SpawnInfluencer(pointSpawnShapeValue);
+		spawn.getSpawnDepth().setActive(true);
+		spawn.getSpawnDepth().setLow(0);
+		spawn.getSpawnDepth().setHigh(5);
+		spawn.getSpawnDepth().setScaling(new float[] {0, 1});
+		spawn.getSpawnDepth().setTimeline(new float[] {0, 1});
+
+		SpawnInfluencer spawnSource = new SpawnInfluencer(spawn);
 
 		//Scale
 		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
 		scaleInfluencer.value.setTimeline(new float[]{0, 1});
-		scaleInfluencer.value.setScaling(new float[]{1, 0});
+		scaleInfluencer.value.setScaling(new float[]{0, 1});
 		scaleInfluencer.value.setLow(0);
-		scaleInfluencer.value.setHigh(1);
+		scaleInfluencer.value.setHigh(30);
 
 		//Color
 		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
-		colorInfluencer.colorValue.setColors(new float[] {colors[0], colors[1], colors[2], 0,0,0});
-		colorInfluencer.colorValue.setTimeline(new float[] {0, 1});
+	
+		colorInfluencer.alphaValue.setActive(true);
+		colorInfluencer.alphaValue.setLow(0);
 		colorInfluencer.alphaValue.setHigh(1);
-		colorInfluencer.alphaValue.setTimeline(new float[] {0, 0.5f, 0.8f, 1});
-		colorInfluencer.alphaValue.setScaling(new float[] {0, 0.15f, 0.5f, 0});
+		colorInfluencer.alphaValue.setTimeline(new float[] {0, 1});
+		colorInfluencer.alphaValue.setScaling(new float[] {1, 0});
 		
-		//Dynamics
-		DynamicsInfluencer dynamicsInfluencer = new DynamicsInfluencer();
-		BrownianAcceleration modifier = new BrownianAcceleration();
-		modifier.strengthValue.setTimeline(new float[]{0,1});
-		modifier.strengthValue.setScaling(new float[]{0,1});
-		modifier.strengthValue.setHigh(80);
-		modifier.strengthValue.setLow(1, 5);
-		dynamicsInfluencer.velocities.add(modifier);
+		colorInfluencer.colorValue.setColors(new float[] {0.56078434f, 0.69411767f, 0.8784314f, 0,0,0});
+		colorInfluencer.colorValue.setTimeline(new float[] {0, 1});
 		
-		baboControllers.add(new ParticleController("Smoke1", emitter, new BillboardRenderer(batch),
-			new RegionInfluencer.Single(texture),
+		getControllers().add(new ParticleController(name, emitter, new BillboardRenderer(batch),
+			new RegionInfluencer.Single(batch.getTexture()),
 			spawnSource,
 			scaleInfluencer,
-			colorInfluencer,
-			dynamicsInfluencer
+			colorInfluencer
 			));
-				
-		super.configure();
 	}
 }

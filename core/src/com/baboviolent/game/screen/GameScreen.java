@@ -73,9 +73,6 @@ public class GameScreen implements Screen {
 		PointLight plight = new PointLight();
 		plight.set(Color.RED, new Vector3(600, 100, 600), 1);
 		environment.add(plight);
-		
-		
-		
 		modelBatch = new ModelBatch();
 		
 		// Gestion des préférences
@@ -104,10 +101,7 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		modelBatch.begin(mode.getCamera());
-		
-		mode.getWorld().render(modelBatch, environment);
-		modelBatch.render(mode.getParticleSystem(), environment);
-		
+		mode.render(modelBatch, environment);
 		modelBatch.end();
 		
 		// La mise a jour du controleur doit etre apres le rendu

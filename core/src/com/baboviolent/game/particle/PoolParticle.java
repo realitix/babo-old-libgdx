@@ -1,39 +1,41 @@
 package com.baboviolent.game.particle;
 
+import com.baboviolent.game.particle.effect.BaboParticleEffect;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
-public class PoolParticle extends Pool<ParticleEffect> {
-    private ParticleEffect sourceEffect;
-    private Array<ParticleEffect> activeEffects = new Array<ParticleEffect>();
-
-    public PoolParticle (ParticleEffect sourceEffect) {
+public class PoolParticle extends Pool<BaboParticleEffect> {
+    private BaboParticleEffect sourceEffect;
+    private Array<BaboParticleEffect> activeEffects = new Array<BaboParticleEffect>();
+    private BaboParticleSystem particleSystem;
+    
+    public PoolParticle (BaboParticleEffect sourceEffect, BaboParticleSystem ps) {
         this.sourceEffect = sourceEffect;
+        this.particleSystem = ps;
     }
     
-    public Array<ParticleEffect> getActiveEffects() {
+    public Array<BaboParticleEffect> getActiveEffects() {
         return activeEffects;
     }
 
     @Override
-    public void free(ParticleEffect effect) {
+    public void free(BaboParticleEffect effect) {
         activeEffects.removeValue(effect, true);
         effect.reset();
         super.free(effect);
     }
 
     @Override
-    protected ParticleEffect newObject() {
+    protected BaboParticleEffect newObject() {
         return sourceEffect.copy();
     }
     
     @Override
-    public ParticleEffect obtain() {
-        ParticleEffect e = super.obtain();
+    public BaboParticleEffect obtain() {
+    	BaboParticleEffect e = super.obtain();
         activeEffects.add(e);
         return e;
     }
@@ -62,8 +64,8 @@ public class PoolParticle extends Pool<ParticleEffect> {
             
             // Si effet non actif, on le supprime et remet dans le pool
             if( !isActive ) {
-                ParticleEffect p = activeEffects.get(i);
-                ParticleSystem.get().remove(p);
+            	BaboParticleEffect p = activeEffects.get(i);
+                particleSystem.remove(p);
                 this.free(p);
                 activeEffects.removeValue(p, true);
             }

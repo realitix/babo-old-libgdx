@@ -9,7 +9,9 @@ import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
 import com.baboviolent.game.gameobject.ammo.SmallCalibre;
 import com.baboviolent.game.loader.TextureLoader;
+import com.baboviolent.game.particle.BaboParticleSystem;
 import com.baboviolent.game.particle.PoolParticle;
+import com.baboviolent.game.particle.effect.Smoke1Effect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -35,8 +37,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class Shotgun extends Weapon {
 	
-	public Shotgun(final Babo babo, final BulletWorld world, final PoolParticle particule) {
-		super(babo, world, particule);
+	public Shotgun(final Babo babo, final BulletWorld world, final BaboParticleSystem particle) {
+		super(babo, world, particle);
 		name = "Shotgun";
 		impulse = 50000;
 		rotateImpulse = 200000;
@@ -95,18 +97,20 @@ public class Shotgun extends Weapon {
 	    	BulletContactListener.addObject(ammo);
 		}
     	
+    	
     	// Envoie la particule
-    	ParticleEffect effect = particule.obtain();
+    	particle.start(Smoke1Effect.NAME, tmpM);
+    	/*ParticleEffect effect = particule.obtain();
     	effect.init();
     	effect.reset();
         effect.start();
-        effect.setTransform(tmpM);
+        effect.setTransform(tmpM);*/
         /*DynamicsInfluencer influencer = effect.getControllers().get(0).findInfluencer(DynamicsInfluencer.class);
         PolarAcceleration modifier = (PolarAcceleration) influencer.velocities.get(0);
         float rotate = getAngleFromQuaternion(tmpQ);
         modifier.thetaValue.setHighMin((-10 + rotate));
         modifier.thetaValue.setHighMax((10 + rotate));*/
-        ParticleSystem.get().add(effect);
+        //ParticleSystem.get().add(effect);
     	
     	// On creer la force inverse
     	//instance.body.applyCentralImpulse(tmpV3.scl(-100));

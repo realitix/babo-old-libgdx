@@ -9,6 +9,7 @@ import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
 import com.baboviolent.game.gameobject.ammo.Ammo;
 import com.baboviolent.game.loader.BaboModelLoader;
+import com.baboviolent.game.particle.BaboParticleSystem;
 import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
@@ -20,19 +21,19 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
 public class Weapon extends GameObject {
 	protected final BulletWorld world;
-	protected final PoolParticle particule;
 	protected final Babo babo; // Babo tenant l'arme
 	protected float impulse; // Puissance de la balle
 	protected float frequency; // Temps en millisecond entre deux tirs
 	protected float rotateImpulse; // Impulsion pour faire tourner l'arme
 	protected long lastShoot;
+	protected final BaboParticleSystem particle;
 	
-	public Weapon(final Babo b, final BulletWorld w, final PoolParticle p) {
+	public Weapon(final Babo b, final BulletWorld w, final BaboParticleSystem p) {
 		super();
 		type = GameObject.TYPE_WEAPON;
 		babo = b;
 		world = w;
-		particule = p;
+		particle = p;
 	}
 	
 	// Amelioration en utilisant seulement l'angular velocity

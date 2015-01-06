@@ -82,7 +82,7 @@ public class ParticleLoader {
 	        manager.load(p+toLoad.get(i)+PARTICLE_EXTENSION, ParticleEffect.class, loadParam);
 		    manager.finishLoading();
 		    ParticleEffect effect = manager.get(p+toLoad.get(i)+PARTICLE_EXTENSION);
-		    particles.put(toLoad.get(i), new PoolParticle(effect));
+		    //particles.put(toLoad.get(i), new PoolParticle(effect));
 	    }
 	    
 	    return particles;

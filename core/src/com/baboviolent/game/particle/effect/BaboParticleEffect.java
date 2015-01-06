@@ -7,18 +7,28 @@ import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 import com.badlogic.gdx.utils.Array;
 
 public class BaboParticleEffect extends ParticleEffect {
-	protected Array<ParticleController> baboControllers;
-	protected BillboardParticleBatch batch;
-	protected Texture texture;
+	protected int type;
+	protected String name;
 	
-	public BaboParticleEffect(BillboardParticleBatch batch, Texture texture) {
+	public BaboParticleEffect() {
 		super();
-		baboControllers = new Array<ParticleController>();
-		this.batch = batch;
-		this.texture = texture;
 	}
 	
-	protected void configure() {
-		this.getControllers().addAll(baboControllers);
+	public BaboParticleEffect(BaboParticleEffect effect) {
+		super(effect);
+		type = effect.getType();
+		name = effect.getName();
+	}
+
+	public String getName() {
+		return name;
+	}
+	
+	public int getType() {
+		return type;
+	}
+	
+	public BaboParticleEffect copy() {
+		return new BaboParticleEffect(this);
 	}
 }
