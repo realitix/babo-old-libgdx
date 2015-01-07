@@ -73,6 +73,7 @@ public abstract class SimpleInfluencer extends Influencer {
 			
 			valueChannel.data[i] = interpolationChannel.data[a +ParticleChannels.InterpolationStartOffset] + 
 															interpolationChannel.data[a +ParticleChannels.InterpolationDiffOffset] * value.getScale(lifeChannel.data[l]);
+			System.out.println(valueChannel.data);
 		}
 	}
 	

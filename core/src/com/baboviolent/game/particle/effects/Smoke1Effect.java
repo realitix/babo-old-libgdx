@@ -31,7 +31,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 		//Emitter
 		RegularEmitter emitter = new RegularEmitter();
 		emitter.setMinParticleCount(0);
-		emitter.setMaxParticleCount(500);
+		emitter.setMaxParticleCount(1);
 		emitter.setContinuous(false);
 
 		emitter.getEmission().setActive(true);
@@ -81,15 +81,15 @@ public class Smoke1Effect extends BaboParticleEffect {
 		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
 		scaleInfluencer.value.setTimeline(new float[]{0, 1});
 		scaleInfluencer.value.setScaling(new float[]{0, 1});
-		scaleInfluencer.value.setLow(0);
-		scaleInfluencer.value.setHigh(30);
+		scaleInfluencer.value.setLow(30);
+		scaleInfluencer.value.setHigh(60);
 		
 		//TEST ROTATION
 		RotationInfluencer rotationInfluencer = new RotationInfluencer();
-		rotationInfluencer.value.setTimeline(new float[]{0, 1});
-		rotationInfluencer.value.setScaling(new float[]{0, 1});
-		rotationInfluencer.value.setLow(0);
-		rotationInfluencer.value.setHigh(1);
+		//rotationInfluencer.value.setTimeline(new float[]{0, 1});
+		//rotationInfluencer.value.setScaling(new float[]{0, 1});
+		//rotationInfluencer.value.setLow(0);
+		rotationInfluencer.value.setHigh(0);
 
 		//Color
 		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
