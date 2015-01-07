@@ -1,23 +1,19 @@
-package com.baboviolent.game.particle;
+package com.baboviolent.game.particle.batches;
 
-import com.baboviolent.game.particle.effect.BaboParticleEffect;
+import com.baboviolent.game.particle.effects.BaboParticleEffect;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 import com.badlogic.gdx.utils.Array;
 
-public class BaboParticleBatch extends BillboardParticleBatch {
-	public static final int TYPE1 = 1;
-	
+public class BaboParticleBatch extends BillboardParticleBatch {	
 	private Array<BaboParticleEffect> effects;
-	private int type;
 	
-	public BaboParticleBatch(Camera camera, Texture texture, int type) {
+	public BaboParticleBatch(Camera camera, Texture texture) {
 		super();
 		effects = new Array<BaboParticleEffect>();
 		this.setCamera(camera);
 		this.setTexture(texture);
-		this.type = type;
 	}
 	
 	public void addEffect(BaboParticleEffect effect) {
@@ -34,9 +30,5 @@ public class BaboParticleBatch extends BillboardParticleBatch {
 	
 	public Array<BaboParticleEffect> getEffects() {
 		return effects;
-	}
-	
-	public int getType() {
-		return type;
 	}
 }

@@ -1,6 +1,7 @@
-package com.baboviolent.game.particle.effect;
+package com.baboviolent.game.particle.effects;
 
-import com.baboviolent.game.particle.BaboParticleBatch;
+import com.baboviolent.game.particle.batches.BaboParticleBatch;
+import com.baboviolent.game.particle.influencers.RotationInfluencer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
@@ -20,13 +21,13 @@ import com.badlogic.gdx.utils.Array;
 public class Smoke1Effect extends BaboParticleEffect {
 	public static final String NAME = "smoke1";
 	
-	public Smoke1Effect() {
-		super();
+	public Smoke1Effect(BaboParticleBatch batch) {
+		super(batch);
 		name = NAME;
-		type = BaboParticleBatch.TYPE1;
+		configure();
 	}
 	
-	public void configure(BaboParticleBatch batch) {
+	public void configure() {
 		//Emitter
 		RegularEmitter emitter = new RegularEmitter();
 		emitter.setMinParticleCount(0);
@@ -82,6 +83,13 @@ public class Smoke1Effect extends BaboParticleEffect {
 		scaleInfluencer.value.setScaling(new float[]{0, 1});
 		scaleInfluencer.value.setLow(0);
 		scaleInfluencer.value.setHigh(30);
+		
+		//TEST ROTATION
+		RotationInfluencer rotationInfluencer = new RotationInfluencer();
+		rotationInfluencer.value.setTimeline(new float[]{0, 1});
+		rotationInfluencer.value.setScaling(new float[]{0, 1});
+		rotationInfluencer.value.setLow(0);
+		rotationInfluencer.value.setHigh(1);
 
 		//Color
 		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
@@ -99,6 +107,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 			new RegionInfluencer.Single(batch.getTexture()),
 			spawnSource,
 			scaleInfluencer,
+			rotationInfluencer,
 			colorInfluencer
 			));
 	}

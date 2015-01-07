@@ -2,8 +2,10 @@ package com.baboviolent.game.particle;
 
 
 import com.baboviolent.game.BaboViolentGame;
-import com.baboviolent.game.particle.effect.BaboParticleEffect;
-import com.baboviolent.game.particle.effect.Smoke1Effect;
+import com.baboviolent.game.particle.batches.BaboParticleBatch;
+import com.baboviolent.game.particle.batches.BatchSpecific1;
+import com.baboviolent.game.particle.effects.BaboParticleEffect;
+import com.baboviolent.game.particle.effects.Smoke1Effect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,28 +31,35 @@ public class BaboParticleSystem {
 	private Array<BaboParticleBatch> batches;
 
 	public BaboParticleSystem(Camera camera) {
-		initBatches(camera);
-		initPools();
+		initSystem(camera);
 	}
 	
 	/**
 	 * Initialise les batches de tous les types
+	 * et ensuite les pools
 	 */
-	private void initBatches(Camera camera) {
+	private void initSystem(Camera camera) {
+		/*
+		 * Initialisation des batches
+		 */
 		String p = BaboViolentGame.PATH_PARTICLES;
 		batches = new Array<BaboParticleBatch>();
-		batches.add(new BaboParticleBatch(
-				camera, 
-				new Texture(Gdx.files.internal(p+"smoke2.png")), 
-				BaboParticleBatch.TYPE1));
-	}
-	
-	private void initPools() {
-		pools = new ObjectMap<String, PoolParticle>();
 		
-		Smoke1Effect e1 = new Smoke1Effect();
-		e1.configure(findBatchType(e1.getType()));
-		pools.put(e1.getName(), new PoolParticle(e1, this));
+		BaboParticleBatch batch1 = new BaboParticleBatch(
+				camera, 
+				new Texture(Gdx.files.internal(p+"smoke2.png")));
+		
+		BaboParticleBatch batch2 = new BatchSpecific1(
+				camera, 
+				new Texture(Gdx.files.internal(p+"smoke2.png")));
+		
+		batches.addAll(batch1, batch2);
+		
+		/*
+		 * Initialisation des pools
+		 */
+		pools = new ObjectMap<String, PoolParticle>();
+		pools.put(Smoke1Effect.NAME, new PoolParticle(new Smoke1Effect(batch1), this));
 	}
 	
 	/**
@@ -62,7 +71,7 @@ public class BaboParticleSystem {
     	effect.reset();
         effect.start();
         effect.setTransform(transform);
-        findBatchType(effect.getType()).addEffect(effect);
+        effect.getBatch().addEffect(effect);
 	}
 	
 	public void render(ModelBatch modelBatch, Environment environment) {
@@ -72,8 +81,8 @@ public class BaboParticleSystem {
 			if( batches.get(i).getEffects().size > 0 ) {
 				batches.get(i).begin();
 				for(int j = 0; j < batches.get(i).getEffects().size; j++) {
-					batches.get(i).getEffects().get(i).update();
-					batches.get(i).getEffects().get(i).draw();
+					batches.get(i).getEffects().get(j).update();
+					batches.get(i).getEffects().get(j).draw();
 				}
 				batches.get(i).end();
 				modelBatch.render(batches.get(i), environment);
@@ -87,16 +96,7 @@ public class BaboParticleSystem {
         }
 	}
 	
-	private BaboParticleBatch findBatchType(int type) {
-		for( int i = 0; i < batches.size; i++ ) {
-			if( batches.get(i).getType() == type ) {
-				return batches.get(i);
-			}
-		}
-		return null;
-	}
-	
 	public void remove(BaboParticleEffect effect) {
-		findBatchType(effect.getType()).removeEffect(effect);
+		effect.getBatch().removeEffect(effect);
 	}
 }

@@ -11,7 +11,7 @@ import com.baboviolent.game.gameobject.ammo.SmallCalibre;
 import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.particle.BaboParticleSystem;
 import com.baboviolent.game.particle.PoolParticle;
-import com.baboviolent.game.particle.effect.Smoke1Effect;
+import com.baboviolent.game.particle.effects.Smoke1Effect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
