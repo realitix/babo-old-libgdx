@@ -29,6 +29,15 @@ public class Smoke1Effect extends BaboParticleEffect {
 		configure();
 	}
 	
+	public Smoke1Effect(Smoke1Effect effect) {
+		super(effect);
+	}
+	
+	@Override
+	public Smoke1Effect copy() {
+		return new Smoke1Effect(this);
+	}
+	
 	public void configure() {
 		//Emitter
 		RegularEmitter emitter = new RegularEmitter();

@@ -40,6 +40,7 @@ public class BaboParticleEffect extends ParticleEffect {
 		return textureFaceDirection;
 	}
 	
+	@Override
 	public BaboParticleEffect copy() {
 		return new BaboParticleEffect(this);
 	}

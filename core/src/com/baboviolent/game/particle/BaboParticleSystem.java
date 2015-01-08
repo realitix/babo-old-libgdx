@@ -79,7 +79,7 @@ public class BaboParticleSystem {
 		BaboParticleEffect effect = pools.get(name).obtain();
 		effect.setTransform(transform);
 		
-		if(width != 0 ) {
+		if( width != 0 ) {
 			effect.setWidth(width);
 		}
 		

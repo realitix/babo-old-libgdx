@@ -103,7 +103,6 @@ public class Shotgun extends Weapon {
 						.hit(power);
 				}
 			}
-			
 			particle.start(Smoke1Effect.NAME, tmpM, from.dst(to));
 			
 			//rotation.transform(tmpV3.set(1,0,0));
