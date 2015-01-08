@@ -68,7 +68,6 @@ public class RotationInfluencer  extends Influencer {
 			float cosBeta = MathUtils.cosDeg(rotation), sinBeta = MathUtils.sinDeg(rotation);
 			rotationChannel.data[offset + ParticleChannels.CosineOffset] = cosBeta;
 			rotationChannel.data[offset + ParticleChannels.SineOffset] = sinBeta;
-			System.out.println("rotation "+rotation);
 		}
 	}
 	

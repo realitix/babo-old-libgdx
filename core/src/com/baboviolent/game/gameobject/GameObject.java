@@ -1,6 +1,7 @@
 package com.baboviolent.game.gameobject;
 
 import com.baboviolent.game.Utils;
+import com.baboviolent.game.bullet.BulletCollector;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -71,6 +72,10 @@ public class GameObject {
         ci.setRestitution(restitution);
         body = new btRigidBody(ci);
         body.setUserValue(id);
+        
+        // On permet la translation avec bullet
+        BulletCollector.add(id, this);
+        
      	// On enleve le constructioninfo
      	ci.dispose();
         

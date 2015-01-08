@@ -108,7 +108,7 @@ public class Babo extends GameObject {
         instance = new BulletInstance(model, body);
     }
     
-    public Babo hit(int power) {
+    public Babo hit(float power) {
     	/*ParticleEffect effect = particules.get("blood").obtain();
     	effect.init();
     	effect.reset();

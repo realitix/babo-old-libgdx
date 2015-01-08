@@ -19,13 +19,12 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Array;
 
 
-public class Smoke1Effect extends BaboParticleEffect {
-	public static final String NAME = "smoke1";
+public class Smoke2Effect extends BaboParticleEffect {
+	public static final String NAME = "smoke2";
 	
-	public Smoke1Effect(BaboParticleBatch batch) {
+	public Smoke2Effect(BaboParticleBatch batch) {
 		super(batch);
 		name = NAME;
-		textureFaceDirection = true;
 		configure();
 	}
 	
@@ -33,7 +32,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 		//Emitter
 		RegularEmitter emitter = new RegularEmitter();
 		emitter.setMinParticleCount(0);
-		emitter.setMaxParticleCount(500);
+		emitter.setMaxParticleCount(20);
 		emitter.setContinuous(false);
 
 		emitter.getEmission().setActive(true);
@@ -43,7 +42,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 		emitter.getEmission().setTimeline(new float[] {0, 1});
 		
 		emitter.getDuration().setActive(true);
-		emitter.getDuration().setLow(200);
+		emitter.getDuration().setLow(1000);
 		
 		emitter.getLife().setActive(true);
 		emitter.getLife().setLow(0);
@@ -52,30 +51,12 @@ public class Smoke1Effect extends BaboParticleEffect {
 		emitter.getLife().setTimeline(new float[] {0, 1});
 
 		//Spawn
-		LineSpawnShapeValue spawn = new LineSpawnShapeValue();
+		PointSpawnShapeValue spawn = new PointSpawnShapeValue();
 		spawn.setActive(true);
 		spawn.setEdges(false);
 		spawn.xOffsetValue.setActive(false);
 		spawn.yOffsetValue.setActive(false);
 		spawn.zOffsetValue.setActive(false);
-		
-		spawn.getSpawnWidth().setActive(true);
-		spawn.getSpawnWidth().setLow(50);
-		spawn.getSpawnWidth().setHigh(1000);
-		spawn.getSpawnWidth().setScaling(new float[] {0, 1, 1});
-		spawn.getSpawnWidth().setTimeline(new float[] {0, 0.5f, 1});
-		
-		spawn.getSpawnHeight().setActive(true);
-		spawn.getSpawnHeight().setLow(0);
-		spawn.getSpawnHeight().setHigh(5);
-		spawn.getSpawnHeight().setScaling(new float[] {0, 1});
-		spawn.getSpawnHeight().setTimeline(new float[] {0, 1});
-		
-		spawn.getSpawnDepth().setActive(true);
-		spawn.getSpawnDepth().setLow(0);
-		spawn.getSpawnDepth().setHigh(5);
-		spawn.getSpawnDepth().setScaling(new float[] {0, 1});
-		spawn.getSpawnDepth().setTimeline(new float[] {0, 1});
 
 		SpawnInfluencer spawnSource = new SpawnInfluencer(spawn);
 
@@ -84,11 +65,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 		scaleInfluencer.value.setTimeline(new float[]{0, 1});
 		scaleInfluencer.value.setScaling(new float[]{0, 1});
 		scaleInfluencer.value.setLow(0);
-		scaleInfluencer.value.setHigh(30);
-		
-		// Rotation qui sera mis a jour a chaque tir en fonction de l'angle
-		RotationInfluencer rotationInfluencer = new RotationInfluencer();
-		rotationInfluencer.value.setHigh(0);
+		scaleInfluencer.value.setHigh(50);
 		
 		//Color
 		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
@@ -106,19 +83,9 @@ public class Smoke1Effect extends BaboParticleEffect {
 			new RegionInfluencer.Single(batch.getTexture()),
 			spawnSource,
 			scaleInfluencer,
-			colorInfluencer,
-			rotationInfluencer
+			colorInfluencer
 			));
 	}
 	
-	@Override
-	public void setWidth(float width) {
-		((LineSpawnShapeValue) (
-				getControllers()
-				.get(0)
-				.findInfluencer(SpawnInfluencer.class)
-				.spawnShapeValue))
-				.getSpawnWidth()
-				.setHigh(width);
-	}
+	
 }

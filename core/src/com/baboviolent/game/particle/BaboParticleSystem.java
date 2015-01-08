@@ -4,8 +4,10 @@ package com.baboviolent.game.particle;
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.particle.batches.BaboParticleBatch;
 import com.baboviolent.game.particle.batches.BatchSpecific1;
+import com.baboviolent.game.particle.batches.BatchSpecific2;
 import com.baboviolent.game.particle.effects.BaboParticleEffect;
 import com.baboviolent.game.particle.effects.Smoke1Effect;
+import com.baboviolent.game.particle.effects.Smoke2Effect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
@@ -49,9 +51,9 @@ public class BaboParticleSystem {
 				camera, 
 				new Texture(Gdx.files.internal(p+"smoke2.png")));
 		
-		BaboParticleBatch batch2 = new BatchSpecific1(
+		BaboParticleBatch batch2 = new BaboParticleBatch(
 				camera, 
-				new Texture(Gdx.files.internal(p+"smoke2.png")));
+				new Texture(Gdx.files.internal(p+"smoke1.png")));
 		
 		batches.addAll(batch1, batch2);
 		
@@ -60,17 +62,30 @@ public class BaboParticleSystem {
 		 */
 		pools = new ObjectMap<String, PoolParticle>();
 		pools.put(Smoke1Effect.NAME, new PoolParticle(new Smoke1Effect(batch1), this));
+		pools.put(Smoke2Effect.NAME, new PoolParticle(new Smoke2Effect(batch2), this));
+	}
+	
+	public void start(String name, Matrix4 transform) {
+		start(name, transform, 0);
 	}
 	
 	/**
 	 * Start particle effect
+	 * @param name Le nom de la particule a lance
+	 * @param transfrom La position
+	 * @param width La largeur de l'emission si implemente dans la particule
 	 */
-	public void start(String name, Matrix4 transform) {
+	public void start(String name, Matrix4 transform, float width) {
 		BaboParticleEffect effect = pools.get(name).obtain();
+		effect.setTransform(transform);
+		
+		if(width != 0 ) {
+			effect.setWidth(width);
+		}
+		
     	effect.init();
     	effect.reset();
         effect.start();
-        effect.setTransform(transform);
         effect.getBatch().addEffect(effect);
 	}
 	

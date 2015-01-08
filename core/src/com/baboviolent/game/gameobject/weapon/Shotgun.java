@@ -2,8 +2,10 @@ package com.baboviolent.game.gameobject.weapon;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Utils;
+import com.baboviolent.game.bullet.BulletCollector;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
+import com.baboviolent.game.bullet.BulletRayResult;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
@@ -12,6 +14,7 @@ import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.particle.BaboParticleSystem;
 import com.baboviolent.game.particle.PoolParticle;
 import com.baboviolent.game.particle.effects.Smoke1Effect;
+import com.baboviolent.game.particle.effects.Smoke2Effect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -43,6 +46,8 @@ public class Shotgun extends Weapon {
 		impulse = 50000;
 		rotateImpulse = 200000;
 		frequency = 1000;
+		distanceShoot = 1000;
+		power = 20;
 		
 	    friction = 0.1f;
         rollingFriction = 0.1f;
@@ -55,6 +60,82 @@ public class Shotgun extends Weapon {
 	}
 	
 	public void shoot(Vector3 target) {
+		if( TimeUtils.millis() - lastShoot < frequency )
+			return;
+
+		// Applique la direction
+		instance.body.getMotionState().getWorldTransform(tmpM);
+		tmpM.getRotation(tmpQ);
+		validQuaternion(tmpQ);
+		
+		// Decale tmpM pour etre au bout du fusil
+		Quaternion decal = rotateQuaternion(tmpQ.cpy(), 353);
+		tmpM.trn(decal.transform(tmpV3.set(1,0,0)).scl(130));
+		
+		// Le fusil tir plusieurs balles en meme temps
+		int nbAmmos = 5;
+		float angle = 10;
+		Quaternion rotation = tmpQ.cpy();
+
+		// Initialise la rotation
+		//rotateQuaternion(rotation, -nbAmmos/2*angle + 0.5f*angle);
+        
+        // Envoie les particules
+		tmpM.rotate(up, -nbAmmos/2*angle);
+    	for( int i = 0; i < nbAmmos; i++ ) {
+			//Matrix4 matrixAmmo = tmpM.cpy().rotate(up, rotation.getAngleAround(up));
+			tmpM.rotate(up, angle);
+			
+			Vector3 from = new Vector3();
+			Vector3 to = new Vector3();
+			
+			tmpM.getTranslation(from);
+			tmpM.getRotation(rotation).transform(to.set(1,0,0));
+			to.nor().scl(distanceShoot);
+			
+			BulletRayResult result = world.getRayResult(from, to);
+			if( result != null ) {
+				from.set(result.getStartRay());
+				to.set(result.getEndRay());
+				if( !result.isMap() && result.getObject().getType() == GameObject.TYPE_BABO ) {
+					((Babo)result.getObject())
+						.setLastShooter(this.getBabo())
+						.hit(power);
+				}
+			}
+			
+			particle.start(Smoke1Effect.NAME, tmpM, from.dst(to));
+			
+			//rotation.transform(tmpV3.set(1,0,0));
+			//tmpV3.nor().scl(impulse);
+			//a.body.applyCentralImpulse(tmpV3.set(1,0,0).mul(rotation).nor().scl(impulse));
+	        // On incremente l'angle
+	    	//rotateQuaternion(rotation, angle);
+		}
+    	
+    	
+    	// Envoie la particule
+    	//particle.start(Smoke1Effect.NAME, tmpM);
+    	/*ParticleEffect effect = particule.obtain();
+    	effect.init();
+    	effect.reset();
+        effect.start();
+        effect.setTransform(tmpM);*/
+        /*DynamicsInfluencer influencer = effect.getControllers().get(0).findInfluencer(DynamicsInfluencer.class);
+        PolarAcceleration modifier = (PolarAcceleration) influencer.velocities.get(0);
+        float rotate = getAngleFromQuaternion(tmpQ);
+        modifier.thetaValue.setHighMin((-10 + rotate));
+        modifier.thetaValue.setHighMax((10 + rotate));*/
+        //ParticleSystem.get().add(effect);
+    	
+    	// On creer la force inverse
+    	//instance.body.applyCentralImpulse(tmpV3.scl(-100));
+    	
+    	// On enregistre la date du tir
+    	lastShoot = TimeUtils.millis();
+	}
+	
+	public void shoot2(Vector3 target) {
 		if( TimeUtils.millis() - lastShoot < frequency )
 			return;
 

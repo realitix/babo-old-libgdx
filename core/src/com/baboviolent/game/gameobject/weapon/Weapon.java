@@ -25,6 +25,8 @@ public class Weapon extends GameObject {
 	protected float impulse; // Puissance de la balle
 	protected float frequency; // Temps en millisecond entre deux tirs
 	protected float rotateImpulse; // Impulsion pour faire tourner l'arme
+	protected float distanceShoot; // Distance du tir
+	protected float power; // Puissance du tir
 	protected long lastShoot;
 	protected final BaboParticleSystem particle;
 	

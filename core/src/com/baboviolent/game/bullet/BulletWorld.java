@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btBroadphaseInterface;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionConfiguration;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
@@ -46,6 +47,8 @@ public class BulletWorld implements Disposable {
 	public int maxSubSteps = 5;
 	public float fixedTimeStep = 1f / 60f;
 	private Camera camera = null;
+	private ClosestRayResultCallback rayTestCallback;
+	private Vector3 tmpV = new Vector3();
 
 	public BulletWorld (final Vector3 gravity) {
 		collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -55,10 +58,39 @@ public class BulletWorld implements Disposable {
 		world = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 		world.setGravity(gravity);
 		this.gravity = gravity;
+		rayTestCallback = new ClosestRayResultCallback(Vector3.Zero, Vector3.Z);
 	}
 
 	public BulletWorld () {
 		this(new Vector3(0, -GRAVITY_START, 0));
+	}
+	
+	public BulletRayResult getRayResult(Vector3 from, Vector3 to) {
+		rayTestCallback.setCollisionObject(null);
+		rayTestCallback.setClosestHitFraction(1f);
+		rayTestCallback.setRayFromWorld(from);
+		rayTestCallback.setRayToWorld(to);
+		
+		world.rayTest(from, to, rayTestCallback);
+		if (rayTestCallback.hasHit()) {
+			rayTestCallback.getHitPointWorld(tmpV);
+			boolean map = false;
+			GameObject go = null;
+			btRigidBody body = (btRigidBody) (rayTestCallback.getCollisionObject());
+			
+			if( body != null ) {
+				go = BulletCollector.get(body.getUserValue());
+				if( go == null ) map = true;
+			}
+			
+			return new BulletRayResult()
+				.setStartRay(from)
+				.setEndRay(tmpV)
+				.setMap(map)
+				.setObject(go);
+		}
+		
+		return null;
 	}
 	
 	public BulletInstance add (final BulletInstance instance) {
