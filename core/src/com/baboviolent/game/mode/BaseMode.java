@@ -33,6 +33,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -151,9 +152,14 @@ public class BaseMode {
         player.setDirection(direction);
     }
     
-    public void render(ModelBatch modelBatch, Environment environment) {
+    public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment) {
+    	modelBatch.begin(camera);
     	world.render(modelBatch, environment);
     	particleSystem.render(modelBatch, environment);
+    	modelBatch.end();
+    	
+    	// Utilise pour les muzzle flash
+    	particleSystem.render(decalBatch);
     }
     
     public void update() {

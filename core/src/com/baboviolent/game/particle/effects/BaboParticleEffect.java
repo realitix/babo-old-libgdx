@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 
 public class BaboParticleEffect extends ParticleEffect {
@@ -70,13 +71,17 @@ public class BaboParticleEffect extends ParticleEffect {
 	 * Suffisant pour l'instant
 	 */
 	protected void rotateTexture(float angle) {
-		// Si l'influencer rotation n'existe pas on le cree
-		RotationInfluencer influencer = this.getControllers().get(0).findInfluencer(RotationInfluencer.class);
-		if( influencer == null ) {
-			influencer = new RotationInfluencer();
-			this.getControllers().get(0).influencers.add(influencer);
+		for( int i = 0; i < getControllers().size; i++ ) {
+			ParticleController pc = getControllers().get(i);
+			
+			// Si l'influencer rotation n'existe pas on le cree
+			RotationInfluencer influencer = pc.findInfluencer(RotationInfluencer.class);
+			if( influencer == null ) {
+				influencer = new RotationInfluencer();
+				pc.influencers.add(influencer);
+			}
+			influencer.value.setHigh(angle);
 		}
-		influencer.value.setHigh(angle);
 	}
 	
 	/**
@@ -88,6 +93,16 @@ public class BaboParticleEffect extends ParticleEffect {
 		if( textureFaceDirection ) {
 			textureFaceDirection();
 		}
+	}
+	
+	/*
+	 * Correct the initial comportment to add transform
+	 */
+	@Override
+	public BoundingBox getBoundingBox () {
+		Matrix4 m = new Matrix4();
+		getControllers().get(0).getTransform(m);
+		return super.getBoundingBox().mul(m);
 	}
 	
 	public void setWidth(float width) {

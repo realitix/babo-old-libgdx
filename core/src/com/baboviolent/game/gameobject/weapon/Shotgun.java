@@ -83,15 +83,15 @@ public class Shotgun extends Weapon {
         // Envoie les particules
 		tmpM.rotate(up, -nbAmmos/2*angle);
     	for( int i = 0; i < nbAmmos; i++ ) {
-			//Matrix4 matrixAmmo = tmpM.cpy().rotate(up, rotation.getAngleAround(up));
 			tmpM.rotate(up, angle);
 			
 			Vector3 from = new Vector3();
 			Vector3 to = new Vector3();
 			
 			tmpM.getTranslation(from);
-			tmpM.getRotation(rotation).transform(to.set(1,0,0));
-			to.nor().scl(distanceShoot);
+			tmpM.getRotation(rotation).transform(tmpV3.set(1,0,0));
+			tmpV3.nor().scl(distanceShoot);
+			to.set(from).add(tmpV3);
 			
 			BulletRayResult result = world.getRayResult(from, to);
 			if( result != null ) {
@@ -103,94 +103,10 @@ public class Shotgun extends Weapon {
 						.hit(power);
 				}
 			}
+			
 			particle.start(Smoke1Effect.NAME, tmpM, from.dst(to));
-			
-			//rotation.transform(tmpV3.set(1,0,0));
-			//tmpV3.nor().scl(impulse);
-			//a.body.applyCentralImpulse(tmpV3.set(1,0,0).mul(rotation).nor().scl(impulse));
-	        // On incremente l'angle
-	    	//rotateQuaternion(rotation, angle);
+			particle.start(Smoke2Effect.NAME, tmpM.cpy().trn(to.cpy().sub(from)));
 		}
-    	
-    	
-    	// Envoie la particule
-    	//particle.start(Smoke1Effect.NAME, tmpM);
-    	/*ParticleEffect effect = particule.obtain();
-    	effect.init();
-    	effect.reset();
-        effect.start();
-        effect.setTransform(tmpM);*/
-        /*DynamicsInfluencer influencer = effect.getControllers().get(0).findInfluencer(DynamicsInfluencer.class);
-        PolarAcceleration modifier = (PolarAcceleration) influencer.velocities.get(0);
-        float rotate = getAngleFromQuaternion(tmpQ);
-        modifier.thetaValue.setHighMin((-10 + rotate));
-        modifier.thetaValue.setHighMax((10 + rotate));*/
-        //ParticleSystem.get().add(effect);
-    	
-    	// On creer la force inverse
-    	//instance.body.applyCentralImpulse(tmpV3.scl(-100));
-    	
-    	// On enregistre la date du tir
-    	lastShoot = TimeUtils.millis();
-	}
-	
-	public void shoot2(Vector3 target) {
-		if( TimeUtils.millis() - lastShoot < frequency )
-			return;
-
-		// Applique la direction
-		instance.body.getMotionState().getWorldTransform(tmpM);
-		tmpM.getRotation(tmpQ);
-		validQuaternion(tmpQ);
-		
-		// Decale tmpM pour etre au bout du fusil
-		Quaternion decal = rotateQuaternion(tmpQ.cpy(), 353);
-		tmpM.trn(decal.transform(tmpV3.set(1,0,0)).scl(130));
-		
-		// Le fusil tir plusieurs balles en meme temps
-		int nbAmmos = 4;
-		float angle = 10;
-		Quaternion rotation = tmpQ.cpy();
-
-		// Initialise la rotation
-		rotateQuaternion(rotation, -nbAmmos/2*angle + 0.5f*angle);
-        
-        // Envoie les particules
-    	for( int i = 0; i < nbAmmos; i++ ) {
-			// Initialise la balle
-    		SmallCalibre ammo = new SmallCalibre(this);
-			BulletInstance a = ammo.getInstance();
-			Matrix4 matrixAmmo = tmpM.cpy().trn(rotation.transform(tmpV3.set(1,0,0)).scl(30));
-			a.body.setCenterOfMassTransform(matrixAmmo);
-			world.add(a);
-			
-			// Envoie la balle
-			rotation.transform(tmpV3.set(1,0,0));
-			tmpV3.nor().scl(impulse);
-	    	a.body.applyCentralImpulse(tmpV3);
-			//a.body.applyCentralImpulse(tmpV3.set(1,0,0).mul(rotation).nor().scl(impulse));
-	        
-	        // On incremente l'angle
-	    	rotateQuaternion(rotation, angle);
-	    	
-	    	// On ajoute la balle au contact listener
-	    	BulletContactListener.addObject(ammo);
-		}
-    	
-    	
-    	// Envoie la particule
-    	particle.start(Smoke1Effect.NAME, tmpM);
-    	/*ParticleEffect effect = particule.obtain();
-    	effect.init();
-    	effect.reset();
-        effect.start();
-        effect.setTransform(tmpM);*/
-        /*DynamicsInfluencer influencer = effect.getControllers().get(0).findInfluencer(DynamicsInfluencer.class);
-        PolarAcceleration modifier = (PolarAcceleration) influencer.velocities.get(0);
-        float rotate = getAngleFromQuaternion(tmpQ);
-        modifier.thetaValue.setHighMin((-10 + rotate));
-        modifier.thetaValue.setHighMax((10 + rotate));*/
-        //ParticleSystem.get().add(effect);
     	
     	// On creer la force inverse
     	//instance.body.applyCentralImpulse(tmpV3.scl(-100));
@@ -200,7 +116,7 @@ public class Shotgun extends Weapon {
 	}
 	
 	/**
-	 * Si un Quaternion est � l'envers, on le remet dans le bon sens
+	 * Si un Quaternion est a l'envers, on le remet dans le bon sens
 	 */
 	private Quaternion validQuaternion(Quaternion q) {
 		Vector3 currentAngleAxis = new Vector3();

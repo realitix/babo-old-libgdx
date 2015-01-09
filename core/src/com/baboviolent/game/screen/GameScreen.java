@@ -33,6 +33,8 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
@@ -57,6 +59,7 @@ public class GameScreen implements Screen {
 	private Environment environment;
 	private DirectionalLight light;
 	private ModelBatch modelBatch;
+	private DecalBatch decalBatch;
 	private BaseMode mode;
 	private BulletContactListener bulletContactListener;
 	
@@ -92,6 +95,7 @@ public class GameScreen implements Screen {
 		// On cree le contact listener de bullet
 		bulletContactListener = new BulletContactListener();
 		
+		decalBatch = new DecalBatch(new CameraGroupStrategy(mode.getCamera()));
 	}
 	
 	@Override
@@ -100,9 +104,8 @@ public class GameScreen implements Screen {
 		
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		modelBatch.begin(mode.getCamera());
-		mode.render(modelBatch, environment);
-		modelBatch.end();
+		
+		mode.render(modelBatch, decalBatch, environment);
 		
 		// La mise a jour du controleur doit etre apres le rendu
 		// car affichage des touchpad

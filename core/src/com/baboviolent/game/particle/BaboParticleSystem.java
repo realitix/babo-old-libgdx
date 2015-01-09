@@ -17,6 +17,9 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
+import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleShader;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
@@ -24,6 +27,7 @@ import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.Pool;
@@ -31,8 +35,10 @@ import com.badlogic.gdx.utils.Pool;
 public class BaboParticleSystem {
 	private ObjectMap<String, PoolParticle> pools;
 	private Array<BaboParticleBatch> batches;
+	private Camera camera;
 
 	public BaboParticleSystem(Camera camera) {
+		this.camera = camera;
 		initSystem(camera);
 	}
 	
@@ -83,12 +89,20 @@ public class BaboParticleSystem {
 			effect.setWidth(width);
 		}
 		
-    	effect.init();
-    	effect.reset();
-        effect.start();
-        effect.getBatch().addEffect(effect);
+		// L'effet doit etre initialise avant d'etre valide
+		effect.init();
+		if( validEffect(effect) ) {
+    		effect.reset();
+        	effect.start();
+        	effect.getBatch().addEffect(effect);
+		}
 	}
 	
+	/**
+	 * Affiche les particules si visible a l'ecran
+	 * @param modelBatch
+	 * @param environment
+	 */
 	public void render(ModelBatch modelBatch, Environment environment) {
 		updatePools();
 		
@@ -105,6 +119,15 @@ public class BaboParticleSystem {
 		}
     }
 	
+	/**
+	 * Affiche les muzzle flash
+	 * @param decalBatch
+	 * @param environment
+	 */
+	public void render(DecalBatch decalBatch) {
+		decalBatch.flush();
+    }
+	
 	private void updatePools() {
 		for (ObjectMap.Entry<String, PoolParticle> e : pools.entries()) {
 			e.value.update();
@@ -113,5 +136,19 @@ public class BaboParticleSystem {
 	
 	public void remove(BaboParticleEffect effect) {
 		effect.getBatch().removeEffect(effect);
+	}
+	
+	/**
+	 * Permet de n'afficher que les effets visibles a l'ecran
+	 * Optimisation
+	 */
+	private boolean validEffect(BaboParticleEffect effect) {
+		System.out.println(effect.getBoundingBox().getCenter());
+		if ( camera.frustum.boundsInFrustum(effect.getBoundingBox()) ) {
+			System.out.println("On affiche");
+			return true;
+		}
+		System.out.println("On affiche pas");
+		return false;
 	}
 }
