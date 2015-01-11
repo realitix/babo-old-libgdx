@@ -52,11 +52,11 @@ public class Smoke1Effect extends BaboParticleEffect {
 		emitter.getEmission().setTimeline(new float[] {0, 1});
 		
 		emitter.getDuration().setActive(true);
-		emitter.getDuration().setLow(200);
+		emitter.getDuration().setLow(150);
 		
 		emitter.getLife().setActive(true);
 		emitter.getLife().setLow(0);
-		emitter.getLife().setHigh(500);
+		emitter.getLife().setHigh(600);
 		emitter.getLife().setScaling(new float[] {1, 1});
 		emitter.getLife().setTimeline(new float[] {0, 1});
 
@@ -71,8 +71,8 @@ public class Smoke1Effect extends BaboParticleEffect {
 		spawn.getSpawnWidth().setActive(true);
 		spawn.getSpawnWidth().setLow(50);
 		spawn.getSpawnWidth().setHigh(1000);
-		spawn.getSpawnWidth().setScaling(new float[] {0, 1, 1});
-		spawn.getSpawnWidth().setTimeline(new float[] {0, 0.5f, 1});
+		spawn.getSpawnWidth().setScaling(new float[] {0, 1});
+		spawn.getSpawnWidth().setTimeline(new float[] {0, 1});
 		
 		spawn.getSpawnHeight().setActive(true);
 		spawn.getSpawnHeight().setLow(0);
@@ -93,7 +93,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 		scaleInfluencer.value.setTimeline(new float[]{0, 1});
 		scaleInfluencer.value.setScaling(new float[]{0, 1});
 		scaleInfluencer.value.setLow(0);
-		scaleInfluencer.value.setHigh(30);
+		scaleInfluencer.value.setHigh(20);
 		
 		// Rotation qui sera mis a jour a chaque tir en fonction de l'angle
 		RotationInfluencer rotationInfluencer = new RotationInfluencer();
@@ -106,9 +106,9 @@ public class Smoke1Effect extends BaboParticleEffect {
 		colorInfluencer.alphaValue.setLow(0);
 		colorInfluencer.alphaValue.setHigh(1);
 		colorInfluencer.alphaValue.setTimeline(new float[] {0, 1});
-		colorInfluencer.alphaValue.setScaling(new float[] {1, 0});
-		
-		colorInfluencer.colorValue.setColors(new float[] {0.56078434f, 0.69411767f, 0.8784314f, 0,0,0});
+		colorInfluencer.alphaValue.setScaling(new float[] {0.9f, 0});
+
+		colorInfluencer.colorValue.setColors(new float[] {0.9f,0.9f,0.9f,0.7f,0.7f,0.7f});
 		colorInfluencer.colorValue.setTimeline(new float[] {0, 1});
 		
 		getControllers().add(new ParticleController(name, emitter, new BillboardRenderer(batch),

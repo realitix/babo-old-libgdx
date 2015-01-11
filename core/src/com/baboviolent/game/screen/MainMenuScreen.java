@@ -53,7 +53,7 @@ public class MainMenuScreen implements Screen {
  		stage.addActor(foreground);
  		
  		// Background
- 		background.addActor(new Image(new Texture(Gdx.files.internal("data/menu/main_menu/background.jpg"))));
+ 		background.addActor(new Image(new Texture(Gdx.files.internal("data/menu/main_menu/background.png"))));
  		
  		
  		// Foreground

@@ -74,7 +74,7 @@ public class Shotgun extends Weapon {
 		
 		// Le fusil tir plusieurs balles en meme temps
 		int nbAmmos = 5;
-		float angle = 10;
+		float angle = 5;
 		Quaternion rotation = tmpQ.cpy();
 
 		// Initialise la rotation
@@ -105,7 +105,7 @@ public class Shotgun extends Weapon {
 			}
 			
 			particle.start(Smoke1Effect.NAME, tmpM, from.dst(to));
-			particle.start(Smoke2Effect.NAME, tmpM.cpy().trn(to.cpy().sub(from)));
+			particle.start(Smoke2Effect.NAME, tmpM.cpy().trn(to.cpy().sub(from).sub(20)));
 		}
     	
     	// On creer la force inverse

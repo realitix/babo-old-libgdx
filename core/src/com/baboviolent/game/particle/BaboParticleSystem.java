@@ -53,11 +53,11 @@ public class BaboParticleSystem {
 		String p = BaboViolentGame.PATH_PARTICLES;
 		batches = new Array<BaboParticleBatch>();
 		
-		BaboParticleBatch batch1 = new BaboParticleBatch(
+		BaboParticleBatch batch1 = new BatchSpecific1(
 				camera, 
 				new Texture(Gdx.files.internal(p+"smoke2.png")));
 		
-		BaboParticleBatch batch2 = new BaboParticleBatch(
+		BaboParticleBatch batch2 = new BatchSpecific1(
 				camera, 
 				new Texture(Gdx.files.internal(p+"smoke1.png")));
 		
