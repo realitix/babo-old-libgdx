@@ -72,7 +72,11 @@ public class BaboParticleSystem {
 	}
 	
 	public void start(String name, Matrix4 transform) {
-		start(name, transform, 0);
+		start(name, transform, 0, 0);
+	}
+	
+	public void start(String name, Matrix4 transform, float width) {
+		start(name, transform, width, 0);
 	}
 	
 	/**
@@ -81,12 +85,16 @@ public class BaboParticleSystem {
 	 * @param transfrom La position
 	 * @param width La largeur de l'emission si implemente dans la particule
 	 */
-	public void start(String name, Matrix4 transform, float width) {
+	public void start(String name, Matrix4 transform, float width, int normal) {
 		BaboParticleEffect effect = pools.get(name).obtain();
 		effect.setTransform(transform);
 		
 		if( width != 0 ) {
 			effect.setWidth(width);
+		}
+		
+		if( normal != 0 ) {
+			effect.setNormal(normal);
 		}
 		
 		// L'effet doit etre initialise avant d'etre valide
@@ -143,12 +151,10 @@ public class BaboParticleSystem {
 	 * Optimisation
 	 */
 	private boolean validEffect(BaboParticleEffect effect) {
-		System.out.println(effect.getBoundingBox().getCenter());
 		if ( camera.frustum.boundsInFrustum(effect.getBoundingBox()) ) {
-			System.out.println("On affiche");
 			return true;
 		}
-		System.out.println("On affiche pas");
+		
 		return false;
 	}
 }

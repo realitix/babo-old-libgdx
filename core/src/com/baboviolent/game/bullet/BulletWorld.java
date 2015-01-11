@@ -35,6 +35,11 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class BulletWorld implements Disposable {
 	public static final int GRAVITY_START = 1000;
+	public static final int NORMAL_RIGHT = 1;
+	public static final int NORMAL_BOTTOM = 2;
+	public static final int NORMAL_LEFT = 3;
+	public static final int NORMAL_UP = 4;
+	
 	protected final Array<BulletInstance> instances = new Array<BulletInstance>();
 	protected final Array<BulletInstance> instancesToExpire = new Array<BulletInstance>();
 	private final ObjectMap<String, btTypedConstraint> constraints = new ObjectMap<String, btTypedConstraint>();
@@ -48,7 +53,8 @@ public class BulletWorld implements Disposable {
 	public float fixedTimeStep = 1f / 60f;
 	private Camera camera = null;
 	private ClosestRayResultCallback rayTestCallback;
-	private Vector3 tmpV = new Vector3();
+	private Vector3 tmpV3 = new Vector3();
+	private Vector3 tmpV32 = new Vector3();
 
 	public BulletWorld (final Vector3 gravity) {
 		collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -73,7 +79,15 @@ public class BulletWorld implements Disposable {
 		
 		world.rayTest(from, to, rayTestCallback);
 		if (rayTestCallback.hasHit()) {
-			rayTestCallback.getHitPointWorld(tmpV);
+			rayTestCallback.getHitPointWorld(tmpV3);
+			rayTestCallback.getHitNormalWorld(tmpV32.setZero());
+			
+			int normalRay = 0;;
+			if( Math.round(tmpV32.x) == 1 ) normalRay = NORMAL_LEFT;
+			else if( Math.round(tmpV32.x) == -1 ) normalRay = NORMAL_RIGHT;
+			else if( Math.round(tmpV32.z) == 1 ) normalRay = NORMAL_UP;
+			else if( Math.round(tmpV32.z) == -1 ) normalRay = NORMAL_BOTTOM;
+			
 			boolean map = false;
 			GameObject go = null;
 			btRigidBody body = (btRigidBody) (rayTestCallback.getCollisionObject());
@@ -85,7 +99,8 @@ public class BulletWorld implements Disposable {
 			
 			return new BulletRayResult()
 				.setStartRay(from)
-				.setEndRay(tmpV)
+				.setEndRay(tmpV3)
+				.setNormalRay(normalRay)
 				.setMap(map)
 				.setObject(go);
 		}

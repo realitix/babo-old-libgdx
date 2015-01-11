@@ -8,12 +8,22 @@ public class BulletRayResult {
 	private boolean map;
 	private Vector3 startRay;
 	private Vector3 endRay;
+	private int normalRay;
 	
 	public BulletRayResult() {
 		startRay = new Vector3();
 		endRay = new Vector3();
 	}
 	
+	public int getNormalRay() {
+		return normalRay;
+	}
+
+	public BulletRayResult setNormalRay(int normalRay) {
+		this.normalRay = normalRay;
+		return this;
+	}
+
 	public GameObject getObject() {
 		return object;
 	}

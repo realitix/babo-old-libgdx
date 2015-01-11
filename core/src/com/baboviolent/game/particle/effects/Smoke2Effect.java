@@ -24,10 +24,32 @@ import com.badlogic.gdx.utils.Array;
 public class Smoke2Effect extends BaboParticleEffect {
 	public static final String NAME = "smoke2";
 	
+	private int normal; // Utilise pour la fumme lors d'un impacte
+	
 	public Smoke2Effect(BaboParticleBatch batch) {
 		super(batch);
 		name = NAME;
 		configure();
+	}
+	
+	@Override
+	public void setNormal(int normal) {
+		this.normal = normal;
+	}
+	
+	/*
+	 * S'il n'y a pas de normal, on ne garde que le premier controleur
+	 * Sinon on verifie la presence du second controleur et on dirige la fummee dans le bon sens
+	 * @see com.badlogic.gdx.graphics.g3d.particles.ParticleEffect#init()
+	 */
+	@Override
+	public void init() {
+		if( normal == 0 ) {
+			if( getControllers().size > 1 ) {
+				getControllers().removeIndex(1);
+			}
+		}
+		
 	}
 	
 	public void configure() {
@@ -98,6 +120,4 @@ public class Smoke2Effect extends BaboParticleEffect {
 			dynamicsInfluencer
 			));
 	}
-	
-	
 }

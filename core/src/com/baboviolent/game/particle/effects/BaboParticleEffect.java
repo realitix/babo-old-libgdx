@@ -105,6 +105,6 @@ public class BaboParticleEffect extends ParticleEffect {
 		return super.getBoundingBox().mul(m);
 	}
 	
-	public void setWidth(float width) {
-	}
+	public void setWidth(float width) {}
+	public void setNormal(int normal) {}
 }

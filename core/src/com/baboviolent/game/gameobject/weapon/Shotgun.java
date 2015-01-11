@@ -104,8 +104,11 @@ public class Shotgun extends Weapon {
 				}
 			}
 			
+			
+			
 			particle.start(Smoke1Effect.NAME, tmpM, from.dst(to));
-			particle.start(Smoke2Effect.NAME, tmpM.cpy().trn(to.cpy().sub(from).sub(20)));
+			Vector3 dir = to.cpy().sub(from).nor().scl(20);
+			particle.start(Smoke2Effect.NAME, tmpM.cpy().trn(to.cpy().sub(from).sub(dir)));
 		}
     	
     	// On creer la force inverse
