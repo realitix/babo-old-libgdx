@@ -22,6 +22,7 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btBvhTriangleMeshShape;
@@ -160,6 +161,7 @@ public class Map {
         modelBuilder.begin();
         
         Array<Cell> cells = map.getCells();
+        Vector3 up = new Vector3(0, 1, 0);
         for(int i = 0; i < map.getCells().size; i++) {
         	MeshPart meshPart = groundMeshPart;
         	if( map.getCells().get(i).getType().equals(TYPE_WALL) )
@@ -169,6 +171,7 @@ public class Map {
             Node node = modelBuilder.node();
             node.id = "cell"+i;
             node.translation.set(cells.get(i).getPosition());
+            node.rotation.set(new Quaternion().set(up, cells.get(i).getAngle()));
             modelBuilder.part(
             	meshPart, 
             	material

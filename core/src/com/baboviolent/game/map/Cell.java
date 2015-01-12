@@ -6,7 +6,17 @@ public class Cell {
 	private Vector3 position;
 	private String type;
 	private String textureName;
+	private int angle;
 	
+	public int getAngle() {
+		return angle;
+	}
+
+	public Cell setAngle(int angle) {
+		this.angle = angle;
+		return this;
+	}
+
 	public Cell() {
 		position = new Vector3();
 	}
