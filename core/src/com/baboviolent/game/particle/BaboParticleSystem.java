@@ -6,6 +6,7 @@ import com.baboviolent.game.particle.batches.BaboParticleBatch;
 import com.baboviolent.game.particle.batches.BatchSpecific1;
 import com.baboviolent.game.particle.batches.BatchSpecific2;
 import com.baboviolent.game.particle.effects.BaboParticleEffect;
+import com.baboviolent.game.particle.effects.Bullet1Effect;
 import com.baboviolent.game.particle.effects.Smoke1Effect;
 import com.baboviolent.game.particle.effects.Smoke2Effect;
 import com.badlogic.gdx.Gdx;
@@ -61,6 +62,10 @@ public class BaboParticleSystem {
 				camera, 
 				new Texture(Gdx.files.internal(p+"smoke1.png")));
 		
+		BaboParticleBatch batch3 = new BatchSpecific1(
+				camera, 
+				new Texture(Gdx.files.internal(p+"glowTrail.png")));
+		
 		batches.addAll(batch1, batch2);
 		
 		/*
@@ -69,14 +74,19 @@ public class BaboParticleSystem {
 		pools = new ObjectMap<String, PoolParticle>();
 		pools.put(Smoke1Effect.NAME, new PoolParticle(new Smoke1Effect(batch1), this));
 		pools.put(Smoke2Effect.NAME, new PoolParticle(new Smoke2Effect(batch2), this));
+		pools.put(Bullet1Effect.NAME, new PoolParticle(new Bullet1Effect(batch3), this));
 	}
 	
 	public void start(String name, Matrix4 transform) {
 		start(name, transform, 0, 0);
 	}
 	
-	public void start(String name, Matrix4 transform, float width) {
+	public void startWithWidth(String name, Matrix4 transform, float width) {
 		start(name, transform, width, 0);
+	}
+	
+	public void startWithNormal(String name, Matrix4 transform, int normal) {
+		start(name, transform, 0, normal);
 	}
 	
 	/**
@@ -93,9 +103,7 @@ public class BaboParticleSystem {
 			effect.setWidth(width);
 		}
 		
-		if( normal != 0 ) {
-			effect.setNormal(normal);
-		}
+		effect.setNormal(normal);
 		
 		// L'effet doit etre initialise avant d'etre valide
 		effect.init();

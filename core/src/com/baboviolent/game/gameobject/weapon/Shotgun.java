@@ -13,6 +13,7 @@ import com.baboviolent.game.gameobject.ammo.SmallCalibre;
 import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.particle.BaboParticleSystem;
 import com.baboviolent.game.particle.PoolParticle;
+import com.baboviolent.game.particle.effects.Bullet1Effect;
 import com.baboviolent.game.particle.effects.Smoke1Effect;
 import com.baboviolent.game.particle.effects.Smoke2Effect;
 import com.badlogic.gdx.Gdx;
@@ -94,6 +95,7 @@ public class Shotgun extends Weapon {
 			to.set(from).add(tmpV3);
 			
 			BulletRayResult result = world.getRayResult(from, to);
+			int normal = 0;
 			if( result != null ) {
 				from.set(result.getStartRay());
 				to.set(result.getEndRay());
@@ -102,13 +104,14 @@ public class Shotgun extends Weapon {
 						.setLastShooter(this.getBabo())
 						.hit(power);
 				}
+				
+				normal = result.getNormalRay();
 			}
 			
-			
-			
-			particle.start(Smoke1Effect.NAME, tmpM, from.dst(to));
+			particle.start(Bullet1Effect.NAME, tmpM);
+			particle.startWithWidth(Smoke1Effect.NAME, tmpM, from.dst(to));
 			Vector3 dir = to.cpy().sub(from).nor().scl(20);
-			particle.start(Smoke2Effect.NAME, tmpM.cpy().trn(to.cpy().sub(from).sub(dir)));
+			particle.startWithNormal(Smoke2Effect.NAME, tmpM.cpy().trn(to.cpy().sub(from).sub(dir)), normal);
 		}
     	
     	// On creer la force inverse
