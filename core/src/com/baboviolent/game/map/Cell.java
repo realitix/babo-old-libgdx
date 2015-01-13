@@ -6,6 +6,14 @@ public class Cell {
 	private Vector3 position;
 	private String type;
 	private String textureName;
+	private String texture2;
+	
+	/*
+	 * Si n'est pas egal a zero, le type d'optimisation
+	 * Si c'est un cote simple, un coin...
+	 */
+	private int optimizeType;
+
 	private int angle;
 	
 	public int getAngle() {
@@ -27,6 +35,24 @@ public class Cell {
 	
 	public Cell setPosition(Vector3 position) {
 		this.position.set(position);
+		return this;
+	}
+	
+	public int getOptimizeType() {
+		return optimizeType;
+	}
+
+	public Cell setOptimizeType(int optimizeType) {
+		this.optimizeType = optimizeType;
+		return this;
+	}
+	
+	public String getTexture2() {
+		return texture2;
+	}
+
+	public Cell setTexture2(String textureOptimize) {
+		this.texture2 = textureOptimize;
 		return this;
 	}
 	

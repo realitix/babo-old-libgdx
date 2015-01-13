@@ -5,6 +5,7 @@ import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.TextureLoader;
+import com.baboviolent.game.map.optimizer.MapOptimizer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -65,6 +66,7 @@ public class Map {
 	public static final String TYPE_EMPTY = "type_empty";
 	
 	private String name;
+	private boolean optimized;
 	private String author;
 	private int version;
 	private Array<Cell> cells = new Array<Cell>();
@@ -130,10 +132,10 @@ public class Map {
 	}
 	
 	/**
-	 * Transforme la map en modèle
+	 * Transforme la map en modele
 	 */ 
 	static public Model loadModel(Map map) {
-		// @TODO Pouvoir vider les textures une fois le modèle détruit
+		// @TODO Pouvoir vider les textures une fois le modele detruit
 	    ObjectMap<String, Material> materials = TextureLoader.getMaterialsFromMap(map);
 	    
 	    // Creation du mesh cellule
@@ -191,24 +193,47 @@ public class Map {
 	
 	/**
 	 * Charge la map
-	 * On cherche d'abord en internal puis en external si non trouv�
+	 * On cherche d'abord en internal puis en external si non trouve
+	 * On essaie toujours de charger la map optimise si disponible
 	 **/
 	static public Map load(String mapname) {
-		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+"."+BaboViolentGame.EXTENSION_MAP);
+		// Map interne optimise
+		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS_OPTIMIZED+mapname+"."+BaboViolentGame.EXTENSION_MAP);
+		
+		// Map interne
+		if( !file.exists() )
+			file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+"."+BaboViolentGame.EXTENSION_MAP);
+		
+		// Map externe optimise
 		if( !file.exists() ) {
-			file = Gdx.files.external(mapname+"."+BaboViolentGame.EXTENSION_MAP);
+			file = Gdx.files.external(BaboViolentGame.PATH_MAPS_EXTERNAL_OPTIMIZED+mapname+"."+BaboViolentGame.EXTENSION_MAP);
 		}
+		
+		// Map externe
+		if( !file.exists() ) {
+			file = Gdx.files.external(BaboViolentGame.PATH_MAPS_EXTERNAL+mapname+"."+BaboViolentGame.EXTENSION_MAP);
+		}
+				
 		String jsonMap = file.readString();
 		Json json = new Json();
 		Map map = json.fromJson(Map.class, jsonMap);
 		return map;
 	}
 	
+	public static void save(Map map, String mapname) {
+		save(map, mapname, false);
+	}
+	
 	/**
 	 * Sauvegarde la map
 	 **/
-	public static void save(Map map, String mapname) {
-		FileHandle file = Gdx.files.external(mapname+"."+BaboViolentGame.EXTENSION_MAP);
+	public static void save(Map map, String mapname, boolean optimized) {
+		FileHandle file;
+		if( optimized )
+			file = Gdx.files.external(BaboViolentGame.PATH_MAPS_EXTERNAL_OPTIMIZED+mapname+"."+BaboViolentGame.EXTENSION_MAP);
+		else
+			file = Gdx.files.external(BaboViolentGame.PATH_MAPS_EXTERNAL+mapname+"."+BaboViolentGame.EXTENSION_MAP);
+
 		Json json = new Json();
 		json.setOutputType(OutputType.json);
 		json.toJson(map, file);
@@ -239,6 +264,14 @@ public class Map {
 	public Map setVersion(int version) {
 		this.version = version;
 		return this;
+	}
+	
+	public boolean isOptimized() {
+		return optimized;
+	}
+
+	public void setOptimized(boolean optimized) {
+		this.optimized = optimized;
 	}
 	
 	public Map addCell(Cell cell) {

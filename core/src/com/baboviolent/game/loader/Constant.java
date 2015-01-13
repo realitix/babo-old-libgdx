@@ -38,4 +38,8 @@ public class Constant {
 		"test_point",
 		"test"
 	};
+	
+	public static String[] maps = {
+		"test"
+	};
 }

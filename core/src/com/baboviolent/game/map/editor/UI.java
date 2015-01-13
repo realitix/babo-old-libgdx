@@ -1,8 +1,10 @@
 package com.baboviolent.game.map.editor;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.loader.Constant;
 import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.map.Map;
+import com.baboviolent.game.map.optimizer.MapOptimizer;
 import com.baboviolent.game.screen.MapEditorScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -92,6 +94,7 @@ public final class UI {
 		topPanel.add( buildTypesWidget() );
 		topPanel.add( buildSaveWidget() );
 		topPanel.add( buildLoadWidget() );
+		topPanel.add( buildOptimizeWidget() );
 		
 
 		// compute the panel's opened/closed position
@@ -304,6 +307,22 @@ public final class UI {
 		return tb;
 	}
 	
+	private TextButton buildOptimizeWidget() {
+		
+		final TextButton tb = ResourceFactory.newButton( "Optimize", new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+				Array<Map> mapsToOptimize = loadMapNameNotOptimized();
+				for( int i = 0; i < mapsToOptimize.size; i++ ) {
+					MapOptimizer optimizer = new MapOptimizer(mapsToOptimize.get(i));
+					optimizer.optimize();
+					Map.save(mapsToOptimize.get(i), mapsToOptimize.get(i).getName(), true);
+				}
+			}
+		} );
+
+		return tb;
+	}
+	
 	private Table buildBottomPanel( NinePatchDrawable back, float width, float height ) {
 		Table t = ResourceFactory.newTable();
 		t.setSize( width, height/4 );
@@ -326,8 +345,9 @@ public final class UI {
 	}
 	
 	private String[] loadMapName() {
-		Array<String> maps = new Array<String>();	    
-	    FileHandle[] files = Gdx.files.external("").list();
+		Array<String> maps = new Array<String>();
+		maps.addAll(Constant.maps);
+	    FileHandle[] files = Gdx.files.external(BaboViolentGame.PATH_MAPS_EXTERNAL).list();
         for(FileHandle file: files) {
         	if( file.extension().equals(BaboViolentGame.EXTENSION_MAP) ) {
         		maps.add(file.nameWithoutExtension());
@@ -336,6 +356,19 @@ public final class UI {
        String[] result = new String[maps.size];
        for(int i = 0; i < maps.size; i++) {
     	   result[i] = maps.get(i);
+       }
+       
+       return result;
+	}
+	
+	private Array<Map> loadMapNameNotOptimized() {
+		Array<String> maps = new Array<String>(loadMapName());
+		Array<Map> result = new Array<Map>();
+       for(int i = 0; i < maps.size; i++) {
+    	   Map m = Map.load(maps.get(i));
+    	   if( !m.isOptimized() ) {
+    		   result.add(m);;
+    	   }
        }
        
        return result;

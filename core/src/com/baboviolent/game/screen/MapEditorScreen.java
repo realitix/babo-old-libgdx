@@ -143,7 +143,6 @@ public class MapEditorScreen implements Screen {
     	
     	currentCellTexture = type;
     	currentModel = models.get(type);
-    	System.out.println("Select Ground "+type);
     	if( currentModel != null ) {
     		currentType = Map.TYPE_GROUND;
         	currentModelInstance = new ModelInstance(currentModel);
