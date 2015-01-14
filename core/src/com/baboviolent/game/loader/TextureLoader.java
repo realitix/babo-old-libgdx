@@ -1,7 +1,9 @@
 package com.baboviolent.game.loader;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.map.Cell;
 import com.baboviolent.game.map.Map;
+import com.baboviolent.game.map.optimizer.OptimizerUtils;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
@@ -122,6 +124,7 @@ public class TextureLoader {
 		ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
 		materials.putAll(getMaterials(listTextureMap(map, Map.TYPE_GROUND), TYPE_GROUND));
 		materials.putAll(getMaterials(listTextureMap(map, Map.TYPE_WALL), TYPE_WALL));
+		materials.putAll(getMaterialsOptimized(map));
 	    return materials;
 	}
     
@@ -138,6 +141,32 @@ public class TextureLoader {
 	        materials.put(e.key, material);
         }
         
+	    return materials;
+	}
+    
+    /**
+     * Charge tous les material optimise et modifie les cellules afin de facilement le charger
+     */ 
+    static public ObjectMap<String, Material> getMaterialsOptimized(Map map) {
+    	ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
+    	String p = BaboViolentGame.PATH_TEXTURE_GROUND;
+    	String po = BaboViolentGame.PATH_TEXTURE_GROUND_OPTIMIZED;
+    	
+    	// On essaie de charger l'optimise, sinon n ne fait rien
+    	for( int i = 0; i < map.getCells().size; i++  ) {
+    		Cell c = map.getCells().get(i);
+    		if( c.getOptimizeType() != 0 ) {
+    			String name = OptimizerUtils.getOptimizedFileName(c);
+    			FileHandle file = Gdx.files.internal(po+name+".png");
+    			if( file.exists() ) {
+    				TextureAttribute textureAttribute = new TextureAttribute(TextureAttribute.Diffuse, new Texture(file));
+    				Material material = new Material(textureAttribute);
+    		        materials.put(name, material);
+    		        c.setTextureName(name);
+    			}
+    		}
+    	}
+	    
 	    return materials;
 	}
 	

@@ -12,10 +12,21 @@ import com.badlogic.gdx.graphics.PixmapIO.PNG;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
 public class MapOptimizer {
+	// Cote en fonction de l'id dans le tableau
+	public static final int SIDE_RIGHT = 0;
+	public static final int SIDE_BOTTOMRIGHT = 1;
+	public static final int SIDE_BOTTOM = 2;
+	public static final int SIDE_BOTTOMLEFT = 3;
+	public static final int SIDE_LEFT = 4;
+	public static final int SIDE_TOPLEFT = 5;
+	public static final int SIDE_TOP = 6;
+	public static final int SIDE_TOPRIGHT = 7;
+		
 	// Transition sur un cote
 	public static final int TYPE_ONESIDE = 1;
 	
@@ -27,7 +38,7 @@ public class MapOptimizer {
 	
 	public void optimize() {
 		optimizeCells();
-		generateTextures();
+		OptimizerUtils.generateTextures(map);
 	}
 	
 	/**
@@ -38,77 +49,62 @@ public class MapOptimizer {
 	private void optimizeCells() {
 		Array<Cell> cells = map.getCells();
 		for( int i = 0; i < cells.size; i++ ) {
-			for( int j = 0; j < cells.size; j++ ) {
-				int type = mustOptimized(cells.get(i), cells.get(j) );
-				if( type != 0 ) {
-					cells.get(i)
-						.setOptimizeType(type)
-						.setTexture2(cells.get(j).getTextureName());
-				}
+			Array<Cell> cellsNear = OptimizerUtils.findNearCells(cells.get(i), cells);
+			optimizeCell(cells.get(i), cellsNear);
+		}
+	}
+	
+	/**
+	 * Modifie la cellule en fonction des cellules adjacentes
+	 * Les cellules adjacentes sont classe a partir de la droite et
+	 * dans le sens des aiguilles
+	 * S'il y a moins de 8 cellules adjacentes, c'est une extremite de la map donc
+	 * un mur, on passe.
+	 * De plus, on ne traite pas les murs
+	 * @param c1 La cellule a analyse
+	 * @param cs Les cellules adjacentes (8 max)
+	 */
+	private void optimizeCell(Cell c1, Array<Cell> cs) {
+		if( c1.getType().equals(Map.TYPE_WALL) || cs.size < 8 ) {
+			return;
+		}
+		
+		// On commence par determiner le nombre de cellules differentes
+		// Un mur est considere comme identique puisqu'il n'y a pas de traitement
+		Array<Integer> differents = new Array<Integer>();
+		for( int i = 0; i < cs.size; i++ ) {
+			if( !cs.get(i).getType().equals(Map.TYPE_WALL) && 
+				!cs.get(i).getTextureName().equals(c1.getTextureName()) ) {
+				differents.add(i);
+			}
+		}
+		
+		// Si une seule cellule differente
+		if( differents.size == 1 ) {
+			int id = differents.get(0);
+			optimizeOneSide(c1, cs.get(id), id);
+		}
+		
+		// Si 3 cellules differentes, cela peut etre egal a une seule si aligne
+		if( differents.size == 3 ) {
+			int alignId =  OptimizerUtils.align3(differents.get(0), differents.get(1), differents.get(2));
+			if( alignId >= 0 ) {
+				optimizeOneSide(c1, cs.get(alignId), alignId);
 			}
 		}
 	}
 	
-	private int mustOptimized(Cell c1, Cell c2) {
-		// Si une des cellules est un mur, on ne fait rien
-		if( c1.getType().equals(Map.TYPE_WALL) || c2.getType().equals(Map.TYPE_WALL) ) {
-			return 0;
+	/**
+	 * @param c1 La cellule a traite
+	 * @param c2 La cellule differente
+	 * @param side L'emplacement de la cellule differente
+	 */
+	private void optimizeOneSide(Cell c1, Cell c2, int side) {
+		if( side%2 == 0 ) {
+			c1
+				.setOptimizeType(TYPE_ONESIDE)
+				.setTexture2(c2.getTextureName())
+				.setAngle((side/2)*90 + 180);
 		}
-		
-		// Cellules cote a cote
-		if( c1.getPosition().dst(c2.getPosition()) == BaboViolentGame.SIZE_MAP_CELL ) {
-			// Textures differentes
-			if( !c1.getTextureName().equals(c2.getTextureName()) ) {
-				return TYPE_ONESIDE;
-			}
-		}
-		
-		return 0;
-	}
-	
-	private void generateTextures() {
-		Array<Cell> cells = map.getCells();
-		ObjectMap<String, Pixmap> textures = new ObjectMap<String, Pixmap>();
-		PixmapGenerator generator = new PixmapGenerator();
-		for( int i = 0; i < cells.size; i++ ) {
-			if( cells.get(i).getOptimizeType() != 0 ) {
-				Cell c = cells.get(i);
-				String textureName = c.getTextureName()+"_"+
-						c.getTexture2()+"_"+
-						c.getOptimizeType();
-				
-				if( !textures.containsKey(textureName) ) {
-					textures.put(
-						textureName,
-						generator.generate(
-							c.getTextureName(),
-							c.getTexture2(),
-							c.getOptimizeType()
-						));
-				}
-			}
-		}
-		
-		// Write png files
-		for (ObjectMap.Entry<String, Pixmap> e : textures.entries()) {
-			if( e.value == null ) {
-				continue;
-			}
-			
-			FileHandle file = Gdx.files.external(BaboViolentGame.PATH_TEXTURE_EXTERNAL_OPTIMIZED+e.key+".png");
-			PNG writer = new PNG((int)(e.value.getWidth() * e.value.getHeight() * 1.5f));
-			try {
-				writer.setFlipY(false);
-				try {
-					writer.write(file, e.value);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
-			} 
-			finally {
-				writer.dispose();
-			}
-        }
-		
 	}
 }

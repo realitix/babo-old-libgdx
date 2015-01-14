@@ -197,12 +197,8 @@ public class Map {
 	 * On essaie toujours de charger la map optimise si disponible
 	 **/
 	static public Map load(String mapname) {
-		// Map interne optimise
-		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS_OPTIMIZED+mapname+"."+BaboViolentGame.EXTENSION_MAP);
-		
 		// Map interne
-		if( !file.exists() )
-			file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+"."+BaboViolentGame.EXTENSION_MAP);
+		FileHandle file = Gdx.files.internal(BaboViolentGame.PATH_MAPS+mapname+"."+BaboViolentGame.EXTENSION_MAP);
 		
 		// Map externe optimise
 		if( !file.exists() ) {

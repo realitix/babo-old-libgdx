@@ -19,13 +19,12 @@ public class BaboViolentGame extends Game {
 	static public String PATH_TEXTURE = "data/texture/";
     static public String PATH_TEXTURE_GROUND = "data/texture/ground/";
     static public String PATH_TEXTURE_WALL = "data/texture/wall/";
-    static public String PATH_TEXTURE_OPTIMIZED = "data/texture/ground/optimized/";
+    static public String PATH_TEXTURE_GROUND_OPTIMIZED = "data/texture/ground/optimized/";
     static public String PATH_TEXTURE_EXTERNAL_OPTIMIZED = "babo/maps/optimized/textures/";
     static public String PATH_MODELS = "data/models/";
     static public String PATH_PARTICLES = "data/particles/";
     static public String PATH_EDITOR = "data/editor/";
     static public String PATH_MAPS = "data/maps/";
-    static public String PATH_MAPS_OPTIMIZED = "data/maps/optimized/";
     static public String PATH_MAPS_EXTERNAL = "babo/maps/";
     static public String PATH_MAPS_EXTERNAL_OPTIMIZED = "babo/maps/optimized/";
     static public String BABO_MODEL_NAME = "babo";

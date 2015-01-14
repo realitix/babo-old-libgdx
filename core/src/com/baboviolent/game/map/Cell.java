@@ -21,7 +21,7 @@ public class Cell {
 	}
 
 	public Cell setAngle(int angle) {
-		this.angle = angle;
+		this.angle = angle%360;
 		return this;
 	}
 
