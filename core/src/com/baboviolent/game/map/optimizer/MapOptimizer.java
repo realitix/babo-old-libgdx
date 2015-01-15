@@ -29,6 +29,10 @@ public class MapOptimizer {
 		
 	// Transition sur un cote
 	public static final int TYPE_ONESIDE = 1;
+	// Transition sur deux cote
+	public static final int TYPE_TWOSIDE = 2;
+	// Transition sur un coin
+	public static final int TYPE_CORNER = 3;
 	
 	private Map map;
 	
@@ -79,18 +83,37 @@ public class MapOptimizer {
 			}
 		}
 		
-		// Si une seule cellule differente
-		if( differents.size == 1 ) {
-			int id = differents.get(0);
-			optimizeOneSide(c1, cs.get(id), id);
-		}
-		
-		// Si 3 cellules differentes, cela peut etre egal a une seule si aligne
-		if( differents.size == 3 ) {
-			int alignId =  OptimizerUtils.align3(differents.get(0), differents.get(1), differents.get(2));
-			if( alignId >= 0 ) {
-				optimizeOneSide(c1, cs.get(alignId), alignId);
-			}
+		int id = 0;
+		switch( differents.size ) {
+			case 1:
+				id = differents.get(0);
+				optimizeOneSide(c1, cs.get(id), id);
+				break;
+			case 2:
+				id = OptimizerUtils.align2(differents.get(0), differents.get(1));
+				if( id >= 0 ) optimizeOneSide(c1, cs.get(id), id);
+				break;
+			case 3:
+				id = OptimizerUtils.align3(differents.get(0), differents.get(1), differents.get(2));
+				if( id >= 0 ) { optimizeOneSide(c1, cs.get(id), id); }
+				else {
+					id = OptimizerUtils.corner3(differents.get(0), differents.get(1), differents.get(2));
+					if( id >= 0 ) { optimizeCorner(c1, cs.get(id), id); }
+				}
+				
+				break;
+			case 5:
+				id = OptimizerUtils.corner5(
+						differents.get(0), differents.get(1), differents.get(2),
+						differents.get(3), differents.get(4));
+				if( id >= 0 ) { optimizeCorner(c1, cs.get(id), id); }
+				break;
+			case 6:
+				id = OptimizerUtils.align6(
+						differents.get(0), differents.get(1), differents.get(2),
+						differents.get(3), differents.get(4), differents.get(5));
+				if( id >= 0 ) optimizeTwoSide(c1, cs.get(id), id);
+				break;
 		}
 	}
 	
@@ -106,5 +129,31 @@ public class MapOptimizer {
 				.setTexture2(c2.getTextureName())
 				.setAngle((side/2)*90 + 180);
 		}
+	}
+	
+	/**
+	 * @param c1 La cellule a traite
+	 * @param c2 La cellule differente
+	 * @param side L'emplacement de la cellule differente
+	 */
+	private void optimizeTwoSide(Cell c1, Cell c2, int side) {
+		if( side%2 == 0 ) {
+			c1
+				.setOptimizeType(TYPE_TWOSIDE)
+				.setTexture2(c2.getTextureName())
+				.setAngle((side/2)*90 + 180);
+		}
+	}
+	
+	/**
+	 * @param c1 La cellule a traite
+	 * @param c2 La cellule differente
+	 * @param side L'emplacement de la cellule differente
+	 */
+	private void optimizeCorner(Cell c1, Cell c2, int side) {
+		c1
+			.setOptimizeType(TYPE_CORNER)
+			.setTexture2(c2.getTextureName())
+			.setAngle((side/2)*90 + 180);
 	}
 }

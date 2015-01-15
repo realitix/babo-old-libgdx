@@ -1,5 +1,6 @@
 package com.baboviolent.game.mode;
 
+import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Utils;
 import com.baboviolent.game.ai.AiBabo;
 import com.baboviolent.game.ai.bullet.BulletRaycastCollisionDetector;
@@ -10,12 +11,12 @@ import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.camera.ChaseCamera2;
 import com.baboviolent.game.controller.BaboController;
+import com.baboviolent.game.effect.particle.BaboParticleSystem;
+import com.baboviolent.game.effect.particle.PoolParticle;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.weapon.Shotgun;
 import com.baboviolent.game.loader.ParticleLoader;
 import com.baboviolent.game.map.Map;
-import com.baboviolent.game.particle.BaboParticleSystem;
-import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
 import com.badlogic.gdx.ai.steer.behaviors.PrioritySteering;
@@ -30,9 +31,12 @@ import com.badlogic.gdx.ai.steer.utils.rays.ParallelSideRayConfiguration;
 import com.badlogic.gdx.ai.steer.utils.rays.SingleRayConfiguration;
 import com.badlogic.gdx.ai.utils.RaycastCollisionDetector;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.math.MathUtils;
@@ -51,6 +55,7 @@ public class BaseMode {
 	protected Map map;
 	protected int nbIa;
 	protected Vector3 tmpV = new Vector3();
+	protected Decal cursor;
     
     public BaseMode(final String mapName) {
         map = Map.load(mapName);
@@ -82,6 +87,11 @@ public class BaseMode {
         
         // Initialisation de l'intelligence artificielle
         initIa();
+        
+        // Initialisation du curseur
+        cursor = Decal.newDecal(new TextureRegion(
+        		new Texture(Gdx.files.internal(BaboViolentGame.PATH_TEXTURE_OTHERS+"Cross01.png"))),
+        		true);
     }
     
     protected void initPlayer() {
@@ -160,16 +170,23 @@ public class BaseMode {
     	
     	// Utilise pour les muzzle flash
     	particleSystem.render(decalBatch);
+    	
+    	// Le curseur
+    	decalBatch.add(cursor);
+    	
+    	decalBatch.flush();
     }
     
     public void update() {
-    	player.setTarget(controller.getTarget());
-    	camera.setTarget(controller.getTarget());
+    	Vector3 target = controller.getTarget();
+    	player.setTarget(target);
+    	camera.setTarget(target);
     	
         camera.update();
 		world.update();
 		
 		updateBabos();
+		updateCursor(target);
     }
     
     protected Vector3 getTarget() {
@@ -188,6 +205,13 @@ public class BaseMode {
     			babos.get(i).getLastShooter().addScore(1);
     		}
     	}
+    }
+    
+    protected void updateCursor(Vector3 target) {
+    	Vector3 t = target.cpy();
+    	t.y = camera.position.y - 300;
+    	cursor.setPosition(t);
+    	cursor.lookAt(t.add(0, 20, 0 ), Vector3.Y);
     }
     
     /**

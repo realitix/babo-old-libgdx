@@ -1,6 +1,6 @@
-package com.baboviolent.game.particle.batches;
+package com.baboviolent.game.effect.particle.batches;
 
-import com.baboviolent.game.particle.effects.BaboParticleEffect;
+import com.baboviolent.game.effect.particle.effects.BaboParticleEffect;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;

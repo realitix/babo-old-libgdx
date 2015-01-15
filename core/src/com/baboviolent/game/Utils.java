@@ -224,8 +224,8 @@ public class Utils {
 	
 	/**
 	 * Renvoie la position sur la grille en fonction de la souris
-	 * la grille est sur l'axe XZ, le vecteur doit être fourni pour optimiser
-	 * Car utiliser pendant une boucle'
+	 * la grille est sur l'axe XZ, le vecteur doit etre fourni pour optimiser
+	 * Car utiliser pendant une boucle
 	 */ 
 	public static Vector3 getPositionFromMouse(Vector3 position, Camera camera, int screenX, int screenY) {
 		Ray ray = camera.getPickRay(screenX, screenY);

@@ -1,8 +1,8 @@
-package com.baboviolent.game.particle.effects;
+package com.baboviolent.game.effect.particle.effects;
 
 import com.baboviolent.game.bullet.BulletWorld;
-import com.baboviolent.game.particle.batches.BaboParticleBatch;
-import com.baboviolent.game.particle.influencers.RotationInfluencer;
+import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
+import com.baboviolent.game.effect.particle.influencers.RotationInfluencer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;

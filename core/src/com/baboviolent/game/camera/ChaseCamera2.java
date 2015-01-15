@@ -65,8 +65,8 @@ public class ChaseCamera2 extends PerspectiveCamera {
 		super.update();		
 	}
 	
-	public void setTarget(Vector3 target) {
-		this.target.set(target);
+	public void setTarget(Vector3 t) {
+		target.set(t);
 		animationStep = animationSpeed;
 		//babo.getInstance().transform.getTranslation(startLook);
 		startLook.set(position);

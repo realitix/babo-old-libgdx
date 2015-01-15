@@ -1,14 +1,14 @@
-package com.baboviolent.game.particle;
+package com.baboviolent.game.effect.particle;
 
 
 import com.baboviolent.game.BaboViolentGame;
-import com.baboviolent.game.particle.batches.BaboParticleBatch;
-import com.baboviolent.game.particle.batches.BatchSpecific1;
-import com.baboviolent.game.particle.batches.BatchSpecific2;
-import com.baboviolent.game.particle.effects.BaboParticleEffect;
-import com.baboviolent.game.particle.effects.Bullet1Effect;
-import com.baboviolent.game.particle.effects.Smoke1Effect;
-import com.baboviolent.game.particle.effects.Smoke2Effect;
+import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
+import com.baboviolent.game.effect.particle.batches.BatchSpecific1;
+import com.baboviolent.game.effect.particle.batches.BatchSpecific2;
+import com.baboviolent.game.effect.particle.effects.BaboParticleEffect;
+import com.baboviolent.game.effect.particle.effects.Bullet1Effect;
+import com.baboviolent.game.effect.particle.effects.Smoke1Effect;
+import com.baboviolent.game.effect.particle.effects.Smoke2Effect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
@@ -141,7 +141,7 @@ public class BaboParticleSystem {
 	 * @param environment
 	 */
 	public void render(DecalBatch decalBatch) {
-		decalBatch.flush();
+		
     }
 	
 	private void updatePools() {

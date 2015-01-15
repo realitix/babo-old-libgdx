@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 
 public class BaboViolentGame extends Game {
 	static public String DESKTOP_PREFIX = "./bin/";
+	static public String PATH_TEXTURE_OTHERS = "data/texture/other/";
 	static public String PATH_TEXTURE = "data/texture/";
     static public String PATH_TEXTURE_GROUND = "data/texture/ground/";
     static public String PATH_TEXTURE_WALL = "data/texture/wall/";

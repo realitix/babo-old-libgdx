@@ -145,6 +145,30 @@ public class OptimizerUtils {
 		return result;
 	}
 	
+	public static int align2(int s1, int s2) {
+		if( sideIn(s1, s2, MapOptimizer.SIDE_RIGHT, MapOptimizer.SIDE_TOPRIGHT) || 
+			sideIn(s1, s2, MapOptimizer.SIDE_RIGHT, MapOptimizer.SIDE_BOTTOMRIGHT)) {
+			return MapOptimizer.SIDE_RIGHT;
+		}
+		
+		if( sideIn(s1, s2, MapOptimizer.SIDE_BOTTOM, MapOptimizer.SIDE_BOTTOMRIGHT) || 
+			sideIn(s1, s2, MapOptimizer.SIDE_BOTTOM, MapOptimizer.SIDE_BOTTOMLEFT)) {
+			return MapOptimizer.SIDE_BOTTOM;
+		}
+		
+		if( sideIn(s1, s2, MapOptimizer.SIDE_LEFT, MapOptimizer.SIDE_BOTTOMLEFT) || 
+			sideIn(s1, s2, MapOptimizer.SIDE_LEFT, MapOptimizer.SIDE_TOPLEFT)) {
+			return MapOptimizer.SIDE_LEFT;
+		}
+		
+		if( sideIn(s1, s2, MapOptimizer.SIDE_TOP, MapOptimizer.SIDE_TOPLEFT) || 
+			sideIn(s1, s2, MapOptimizer.SIDE_TOP, MapOptimizer.SIDE_TOPRIGHT)) {
+			return MapOptimizer.SIDE_TOP;
+		}
+		
+		return -1;
+	}
+	
 	public static int align3(int s1, int s2, int s3) {
 		if( sideIn(s1, s2, s3, 
 				MapOptimizer.SIDE_RIGHT, 
@@ -177,13 +201,134 @@ public class OptimizerUtils {
 		return -1;
 	}
 	
-	public static boolean sideIn(int s1, int s2, int s3, int t1, int t2, int t3) {
+	public static int corner3(int s1, int s2, int s3) {
+		if( sideIn(s1, s2, s3, 
+				MapOptimizer.SIDE_RIGHT, 
+				MapOptimizer.SIDE_TOPRIGHT,
+				MapOptimizer.SIDE_TOP) ) {
+			return MapOptimizer.SIDE_TOPRIGHT;
+		}
+		
+		if( sideIn(s1, s2, s3, 
+				MapOptimizer.SIDE_BOTTOM, 
+				MapOptimizer.SIDE_BOTTOMRIGHT,
+				MapOptimizer.SIDE_RIGHT) ) {
+			return MapOptimizer.SIDE_BOTTOMRIGHT;
+		}
+		
+		if( sideIn(s1, s2, s3, 
+				MapOptimizer.SIDE_LEFT, 
+				MapOptimizer.SIDE_BOTTOM,
+				MapOptimizer.SIDE_BOTTOMLEFT) ) {
+			return MapOptimizer.SIDE_BOTTOMLEFT;
+		}
+		
+		if( sideIn(s1, s2, s3, 
+				MapOptimizer.SIDE_TOP, 
+				MapOptimizer.SIDE_TOPLEFT,
+				MapOptimizer.SIDE_LEFT) ) {
+			return MapOptimizer.SIDE_TOPLEFT;
+		}
+		
+		return -1;
+	}
+	
+	public static int corner5(int s1, int s2, int s3, int s4, int s5) {
+		if( sideIn(s1, s2, s3, s4, s5,
+				MapOptimizer.SIDE_RIGHT, 
+				MapOptimizer.SIDE_TOPRIGHT,
+				MapOptimizer.SIDE_TOPLEFT,
+				MapOptimizer.SIDE_BOTTOMRIGHT,
+				MapOptimizer.SIDE_TOP) ) {
+			return MapOptimizer.SIDE_TOPRIGHT;
+		}
+		
+		if( sideIn(s1, s2, s3, s4, s5,
+				MapOptimizer.SIDE_BOTTOMLEFT, 
+				MapOptimizer.SIDE_BOTTOM, 
+				MapOptimizer.SIDE_BOTTOMRIGHT,
+				MapOptimizer.SIDE_TOPRIGHT,
+				MapOptimizer.SIDE_RIGHT) ) {
+			return MapOptimizer.SIDE_BOTTOMRIGHT;
+		}
+		
+		if( sideIn(s1, s2, s3, s4, s5,
+				MapOptimizer.SIDE_TOPLEFT,
+				MapOptimizer.SIDE_LEFT, 
+				MapOptimizer.SIDE_BOTTOM,
+				MapOptimizer.SIDE_BOTTOMRIGHT,
+				MapOptimizer.SIDE_BOTTOMLEFT) ) {
+			return MapOptimizer.SIDE_BOTTOMLEFT;
+		}
+		
+		if( sideIn(s1, s2, s3, s4, s5, 
+				MapOptimizer.SIDE_TOPRIGHT,
+				MapOptimizer.SIDE_TOP, 
+				MapOptimizer.SIDE_TOPLEFT,
+				MapOptimizer.SIDE_BOTTOMLEFT,
+				MapOptimizer.SIDE_LEFT) ) {
+			return MapOptimizer.SIDE_TOPLEFT;
+		}
+		
+		return -1;
+	}
+	
+	public static int align6(int s1, int s2, int s3, int s4, int s5, int s6) {
+		// Gauche et droite
+		if( sideIn(s1, s2, s3, s4, s5, s6, 
+				MapOptimizer.SIDE_RIGHT, 
+				MapOptimizer.SIDE_TOPRIGHT,
+				MapOptimizer.SIDE_BOTTOMRIGHT,
+				MapOptimizer.SIDE_LEFT, 
+				MapOptimizer.SIDE_TOPLEFT,
+				MapOptimizer.SIDE_BOTTOMLEFT) ) {
+			return MapOptimizer.SIDE_RIGHT;
+		}
+		
+		// Haut et bas
+		if( sideIn(s1, s2, s3, s4, s5, s6,
+				MapOptimizer.SIDE_BOTTOM, 
+				MapOptimizer.SIDE_BOTTOMLEFT,
+				MapOptimizer.SIDE_BOTTOMRIGHT,
+				MapOptimizer.SIDE_TOP, 
+				MapOptimizer.SIDE_TOPLEFT,
+				MapOptimizer.SIDE_TOPRIGHT) ) {
+			return MapOptimizer.SIDE_TOP;
+		}
+		
+		return -1;
+	}
+	
+	/*public static boolean sideIn(int s1, int s2, int s3, int t1, int t2, int t3) {
 		if( s1 != t1 && s1 != t2 && s1 != t3 )
 			return false;
 		if( s2 != t1 && s2 != t2 && s2 != t3 )
 			return false;
 		if( s3 != t1 && s3 != t2 && s3 != t3 )
 			return false;
+		return true;
+	}*/
+
+	// Verifie que les n premier parameter valide les n seconds
+	public static boolean sideIn(int... args) {
+		int nb = args.length;
+		if( nb%2 != 0 )
+			return false;
+		
+		int nb2 = nb/2;
+		for( int i = 0; i < nb2; i++ ) {
+			boolean isOneOf = false;
+			for( int j = 0; j < nb2; j++ ) {
+				if( args[i] == args[nb2+j] ) {
+					isOneOf = true;
+				}
+			}
+			
+			if( !isOneOf ) {
+				return false;
+			}
+		}
+
 		return true;
 	}
 }

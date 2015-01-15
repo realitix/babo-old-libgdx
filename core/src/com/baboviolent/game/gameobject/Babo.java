@@ -6,11 +6,11 @@ import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.effect.particle.BaboParticleSystem;
+import com.baboviolent.game.effect.particle.PoolParticle;
 import com.baboviolent.game.gameobject.weapon.Weapon;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.TextureLoader;
-import com.baboviolent.game.particle.BaboParticleSystem;
-import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -287,8 +287,8 @@ public class Babo extends GameObject {
         return manualDeath;
     }
     
-    public Babo setTarget(Vector3 f) {
-    	target.set(f.x, f.y, f.z);
+    public Babo setTarget(Vector3 t) {
+    	target.set(t);
         return this;
     }
     

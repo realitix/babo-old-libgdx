@@ -1,8 +1,8 @@
 package com.baboviolent.game.loader;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.effect.particle.PoolParticle;
 import com.baboviolent.game.map.Map;
-import com.baboviolent.game.particle.PoolParticle;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
