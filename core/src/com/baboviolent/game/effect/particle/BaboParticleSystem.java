@@ -135,15 +135,6 @@ public class BaboParticleSystem {
 		}
     }
 	
-	/**
-	 * Affiche les muzzle flash
-	 * @param decalBatch
-	 * @param environment
-	 */
-	public void render(DecalBatch decalBatch) {
-		
-    }
-	
 	private void updatePools() {
 		for (ObjectMap.Entry<String, PoolParticle> e : pools.entries()) {
 			e.value.update();

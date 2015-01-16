@@ -21,7 +21,7 @@ public class BaboController {
 			case WebGL:
 				controller = new DesktopController(mode);
 				Gdx.input.setInputProcessor((DesktopController)controller);
-				//Gdx.input.setCursorCatched(true);
+				Gdx.input.setCursorCatched(true);
 				break;
 			default:
 		}

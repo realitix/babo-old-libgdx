@@ -25,7 +25,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
  */ 
 public class MobileController extends BaseController {
 	
-	public static final int TARGET_DISTANCE = 1000;
+	public static final int TARGET_DISTANCE = 100;
 	
 	private Stage stage;
 	private Touchpad left;

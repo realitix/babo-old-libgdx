@@ -11,6 +11,7 @@ import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.camera.ChaseCamera2;
 import com.baboviolent.game.controller.BaboController;
+import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
 import com.baboviolent.game.effect.particle.PoolParticle;
 import com.baboviolent.game.gameobject.Babo;
@@ -50,7 +51,7 @@ public class BaseMode {
     protected BulletWorld world;
     protected ChaseCamera2 camera;
     protected Babo player;
-    protected BaboParticleSystem particleSystem;
+    protected BaboEffectSystem effectSystem;
 	protected BaboController controller;
 	protected Map map;
 	protected int nbIa;
@@ -77,7 +78,7 @@ public class BaseMode {
 		world.add(Map.loadInstance(map));
 		
 		// Initialisation des particules
-		particleSystem = new BaboParticleSystem(camera);
+		effectSystem = new BaboEffectSystem(camera);
 		
 		// Initialisation du controller
 		controller = new BaboController(this, camera);
@@ -102,10 +103,10 @@ public class BaseMode {
     }
     
     protected Babo initBabo(String username) {
-        Babo babo = new Babo(username, "skin22", particleSystem, world);
+        Babo babo = new Babo(username, "skin22", effectSystem.getParticleSystem(), world);
         world.add(babo);
         babos.add(babo);
-        Shotgun shotgun = new Shotgun(babo, world, particleSystem);
+        Shotgun shotgun = new Shotgun(babo, world, effectSystem.getParticleSystem());
         world.add(shotgun);
         babo.setWeapon(shotgun);
         BulletContactListener.addObject(babo);
@@ -119,10 +120,10 @@ public class BaseMode {
     	}
     	
     	for( int i = 0; i < nbIa; i++) {
-    		AiBabo ai = new AiBabo("ai1", "skin22", particleSystem, world, babos, pathGenerator);
+    		AiBabo ai = new AiBabo("ai1", "skin22", effectSystem.getParticleSystem(), world, babos, pathGenerator);
     		world.add(ai);
     		babos.add(ai);
-    		Shotgun shotgun = new Shotgun(ai, world, particleSystem);
+    		Shotgun shotgun = new Shotgun(ai, world, effectSystem.getParticleSystem());
     		world.add(shotgun);
     		ai.setWeapon(shotgun);
     		BulletContactListener.addObject(ai);
@@ -165,11 +166,8 @@ public class BaseMode {
     public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment) {
     	modelBatch.begin(camera);
     	world.render(modelBatch, environment);
-    	particleSystem.render(modelBatch, environment);
+    	effectSystem.render(modelBatch, decalBatch, environment);
     	modelBatch.end();
-    	
-    	// Utilise pour les muzzle flash
-    	particleSystem.render(decalBatch);
     	
     	// Le curseur
     	decalBatch.add(cursor);

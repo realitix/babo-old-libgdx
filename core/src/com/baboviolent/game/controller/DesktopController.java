@@ -34,7 +34,7 @@ public class DesktopController extends BaseController implements InputProcessor 
     @Override
     public boolean keyDown(int keycode) {
     	/**
-    	 * La caméra est toujours pointé vers l'axe Z donc c'est facile'
+    	 * La camera est toujours pointe vers l'axe Z donc c'est facile
     	 */ 
         Vector3 direction = mode.getPlayer().getDirection();
         if( keycode == Keys.UP )
