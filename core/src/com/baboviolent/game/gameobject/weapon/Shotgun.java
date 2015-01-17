@@ -7,6 +7,8 @@ import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletRayResult;
 import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.effect.BaboEffectSystem;
+import com.baboviolent.game.effect.group.Shoot1;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
 import com.baboviolent.game.effect.particle.PoolParticle;
 import com.baboviolent.game.effect.particle.effects.Bullet1Effect;
@@ -41,8 +43,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class Shotgun extends Weapon {
 	
-	public Shotgun(final Babo babo, final BulletWorld world, final BaboParticleSystem particle) {
-		super(babo, world, particle);
+	public Shotgun(final Babo babo, final BulletWorld world, final BaboEffectSystem effectSystem) {
+		super(babo, world, effectSystem);
 		name = "Shotgun";
 		impulse = 50000;
 		rotateImpulse = 200000;
@@ -76,6 +78,8 @@ public class Shotgun extends Weapon {
 		// Le fusil tir plusieurs balles en meme temps
 		int nbAmmos = 5;
 		float angle = 5;
+		float angleMin = 3;
+		float angleMax = 8;
 		Quaternion rotation = tmpQ.cpy();
 
 		// Initialise la rotation
@@ -108,10 +112,7 @@ public class Shotgun extends Weapon {
 				normal = result.getNormalRay();
 			}
 			
-			particle.start(Bullet1Effect.NAME, tmpM);
-			particle.startWithWidth(Smoke1Effect.NAME, tmpM, from.dst(to));
-			Vector3 dir = to.cpy().sub(from).nor().scl(20);
-			particle.startWithNormal(Smoke2Effect.NAME, tmpM.cpy().trn(to.cpy().sub(from).sub(dir)), normal);
+			effectSystem.get(Shoot1.NAME).start(tmpM, from, to, normal);
 		}
     	
     	// On creer la force inverse

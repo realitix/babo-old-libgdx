@@ -5,6 +5,7 @@ import java.util.Random;
 import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
 import com.baboviolent.game.effect.particle.PoolParticle;
 import com.baboviolent.game.gameobject.Babo;
@@ -28,14 +29,14 @@ public class Weapon extends GameObject {
 	protected float distanceShoot; // Distance du tir
 	protected float power; // Puissance du tir
 	protected long lastShoot;
-	protected final BaboParticleSystem particle;
+	protected final BaboEffectSystem effectSystem;
 	
-	public Weapon(final Babo b, final BulletWorld w, final BaboParticleSystem p) {
+	public Weapon(final Babo b, final BulletWorld w, final BaboEffectSystem e) {
 		super();
 		type = GameObject.TYPE_WEAPON;
 		babo = b;
 		world = w;
-		particle = p;
+		effectSystem = e;
 	}
 	
 	// Amelioration en utilisant seulement l'angular velocity

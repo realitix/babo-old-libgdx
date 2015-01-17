@@ -106,7 +106,7 @@ public class BaseMode {
         Babo babo = new Babo(username, "skin22", effectSystem.getParticleSystem(), world);
         world.add(babo);
         babos.add(babo);
-        Shotgun shotgun = new Shotgun(babo, world, effectSystem.getParticleSystem());
+        Shotgun shotgun = new Shotgun(babo, world, effectSystem);
         world.add(shotgun);
         babo.setWeapon(shotgun);
         BulletContactListener.addObject(babo);
@@ -123,7 +123,7 @@ public class BaseMode {
     		AiBabo ai = new AiBabo("ai1", "skin22", effectSystem.getParticleSystem(), world, babos, pathGenerator);
     		world.add(ai);
     		babos.add(ai);
-    		Shotgun shotgun = new Shotgun(ai, world, effectSystem.getParticleSystem());
+    		Shotgun shotgun = new Shotgun(ai, world, effectSystem);
     		world.add(shotgun);
     		ai.setWeapon(shotgun);
     		BulletContactListener.addObject(ai);

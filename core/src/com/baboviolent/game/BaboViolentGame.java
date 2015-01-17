@@ -33,14 +33,9 @@ public class BaboViolentGame extends Game {
     static public final float SIZE_MAP_CELL = 200;
     static public final float BABO_DIAMETER = 100;
     static public final float BABO_SPEED = 10;
-	public SpriteBatch batch;
-	public BitmapFont font;
 	
 	@Override
 	public void create () {
-		batch = new SpriteBatch();
-		font = new BitmapFont();
-		
 		this.setScreen(new MainMenuScreen(this));
 	}
 
@@ -50,7 +45,6 @@ public class BaboViolentGame extends Game {
 	}
 	
 	public void dispose() {
-        batch.dispose();
     }
 	
 	static public boolean isMobile() {
