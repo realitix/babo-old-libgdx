@@ -100,6 +100,7 @@ public class Shotgun extends Weapon {
 			
 			BulletRayResult result = world.getRayResult(from, to);
 			int normal = 0;
+			Vector3 normalRay = null;
 			if( result != null ) {
 				from.set(result.getStartRay());
 				to.set(result.getEndRay());
@@ -109,10 +110,11 @@ public class Shotgun extends Weapon {
 						.hit(power);
 				}
 				
-				normal = result.getNormalRay();
+				normal = result.getNormalRayToRefactor();
+				normalRay = result.getNormalRay();
 			}
 			
-			effectSystem.get(Shoot1.NAME).start(tmpM, from, to, normal);
+			effectSystem.get(Shoot1.NAME).start(tmpM, from, to, normal, normalRay);
 		}
     	
     	// On creer la force inverse

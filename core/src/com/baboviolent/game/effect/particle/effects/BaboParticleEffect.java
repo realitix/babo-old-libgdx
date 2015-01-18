@@ -54,6 +54,8 @@ public class BaboParticleEffect extends ParticleEffect {
     		currentAngle = 360 - currentAngle;
     	}
     	
+    	currentAngle += 90;
+    	
     	return (360 - currentAngle ) % 360;
 	}
 	
@@ -107,4 +109,5 @@ public class BaboParticleEffect extends ParticleEffect {
 	
 	public void setWidth(float width) {}
 	public void setNormal(int normal) {}
+	public void setNormalRay(Vector3 normalRay) {}
 }

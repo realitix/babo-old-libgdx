@@ -19,6 +19,8 @@ import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardRenderer;
 import com.badlogic.gdx.graphics.g3d.particles.values.LineSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.PointSpawnShapeValue;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
 
@@ -27,6 +29,7 @@ public class Smoke2Effect extends BaboParticleEffect {
 	
 	private Matrix4 tmpM = new Matrix4();
 	private int normal;
+	private Vector3 normalRay;
 	
 	public Smoke2Effect(BaboParticleBatch batch) {
 		super(batch);
@@ -49,6 +52,11 @@ public class Smoke2Effect extends BaboParticleEffect {
 		this.normal = normal;
 	}
 	
+	@Override
+	public void setNormalRay(Vector3 normalRay) {
+		this.normalRay = normalRay;
+	}
+	
 	/*
 	 * ON ANNULE, ON VA CREER UN NOUVEL EFFET
 	 * S'il n'y a pas de normal, on ne garde que le premier controleur
@@ -57,7 +65,7 @@ public class Smoke2Effect extends BaboParticleEffect {
 	 */
 	@Override
 	public void init() {
-		if( normal == 0 ) {
+		/*if( normal == 0 ) {
 			if( getControllers().size > 1 ) {
 				getControllers().removeIndex(1);
 			}
@@ -75,9 +83,34 @@ public class Smoke2Effect extends BaboParticleEffect {
 			// On regle le troisieme en fonction de la normal
 			PolarAcceleration pa = (PolarAcceleration) d.velocities.get(2);
 			pa.thetaValue.setHigh(getAngleFromNormal(normal));
+		}*/
+		
+		if( normalRay == null ) {
+			if( getControllers().size > 1 ) {
+				getControllers().removeIndex(1);
+			}
+		}
+		else {
+			if( getControllers().size < 2 ) {
+				getControllers().add(configure2());
+			}
+			
+			ParticleController c = findController("smokeNormal");
+			getControllers().get(0).getTransform(tmpM);
+			c.setTransform(tmpM);
+			DynamicsInfluencer d = c.findInfluencer(DynamicsInfluencer.class);
+			
+			// On regle le troisieme en fonction de la normal
+			PolarAcceleration pa = (PolarAcceleration) d.velocities.get(2);
+			pa.thetaValue.setHigh(getAngleFromNormalRay(normalRay));
 		}
 		
 		super.init();
+	}
+	
+	private float getAngleFromNormalRay(Vector3 normalRay) {
+		Vector2 v2 = new Vector2(normalRay.x, normalRay.z);
+		return v2.angle();
 	}
 	
 	private float getAngleFromNormal(int normal) {
@@ -110,13 +143,13 @@ public class Smoke2Effect extends BaboParticleEffect {
 		emitter.setContinuous(false);
 
 		emitter.getEmission().setActive(true);
-		emitter.getEmission().setHigh(2);
+		emitter.getEmission().setHigh(10);
 		
 		emitter.getDuration().setActive(true);
-		emitter.getDuration().setLow(100);
+		emitter.getDuration().setLow(300);
 		
 		emitter.getLife().setActive(true);
-		emitter.getLife().setHigh(1500);
+		emitter.getLife().setHigh(600);
 
 		//Spawn
 		PointSpawnShapeValue spawn = new PointSpawnShapeValue();
@@ -131,8 +164,8 @@ public class Smoke2Effect extends BaboParticleEffect {
 		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
 		scaleInfluencer.value.setTimeline(new float[]{0, 1});
 		scaleInfluencer.value.setScaling(new float[]{0, 1});
-		scaleInfluencer.value.setLow(30);
-		scaleInfluencer.value.setHigh(200);
+		scaleInfluencer.value.setLow(60);
+		scaleInfluencer.value.setHigh(60);
 		
 		//Color
 		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
@@ -160,9 +193,10 @@ public class Smoke2Effect extends BaboParticleEffect {
 		modifier2.strengthValue.setHigh(30);
 		
 		PolarAcceleration modifier3 = new PolarAcceleration();
-		modifier3.strengthValue.setTimeline(new float[]{0});
-		modifier3.strengthValue.setScaling(new float[]{1});
-		modifier3.strengthValue.setHigh(500);
+		modifier3.strengthValue.setTimeline(new float[]{0, 1});
+		modifier3.strengthValue.setScaling(new float[]{1, 0});
+		modifier3.strengthValue.setHigh(1800);
+		modifier3.strengthValue.setLow(200);
 		modifier3.phiValue.setTimeline(new float[]{0});
 		modifier3.phiValue.setScaling(new float[]{1});
 		modifier3.phiValue.setHigh(90);
@@ -197,6 +231,9 @@ public class Smoke2Effect extends BaboParticleEffect {
 		
 		emitter.getLife().setActive(true);
 		emitter.getLife().setHigh(1500);
+		
+		emitter.getDelay().setActive(true);
+		emitter.getDelay().setLow(100);
 
 		//Spawn
 		PointSpawnShapeValue spawn = new PointSpawnShapeValue();

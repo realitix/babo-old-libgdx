@@ -78,15 +78,19 @@ public class BaboParticleSystem {
 	}
 	
 	public void start(String name, Matrix4 transform) {
-		start(name, transform, 0, 0);
+		start(name, transform, 0, 0, null);
 	}
 	
 	public void startWithWidth(String name, Matrix4 transform, float width) {
-		start(name, transform, width, 0);
+		start(name, transform, width, 0, null);
 	}
 	
 	public void startWithNormal(String name, Matrix4 transform, int normal) {
-		start(name, transform, 0, normal);
+		start(name, transform, 0, normal, null);
+	}
+	
+	public void startWithNormal(String name, Matrix4 transform, Vector3 normal) {
+		start(name, transform, 0, 0, normal);
 	}
 	
 	/**
@@ -95,7 +99,7 @@ public class BaboParticleSystem {
 	 * @param transfrom La position
 	 * @param width La largeur de l'emission si implemente dans la particule
 	 */
-	public void start(String name, Matrix4 transform, float width, int normal) {
+	public void start(String name, Matrix4 transform, float width, int normal, Vector3 normalRay) {
 		BaboParticleEffect effect = pools.get(name).obtain();
 		effect.setTransform(transform);
 		
@@ -103,7 +107,7 @@ public class BaboParticleSystem {
 			effect.setWidth(width);
 		}
 		
-		effect.setNormal(normal);
+		effect.setNormalRay(normalRay);
 		
 		// L'effet doit etre initialise avant d'etre valide
 		effect.init();

@@ -80,7 +80,7 @@ public class BulletWorld implements Disposable {
 		world.rayTest(from, to, rayTestCallback);
 		if (rayTestCallback.hasHit()) {
 			rayTestCallback.getHitPointWorld(tmpV3);
-			rayTestCallback.getHitNormalWorld(tmpV32.setZero());
+			rayTestCallback.getHitNormalWorld(tmpV32);
 			
 			int normalRay = 0;;
 			if( Math.round(tmpV32.x) == 1 ) normalRay = NORMAL_LEFT;
@@ -100,7 +100,8 @@ public class BulletWorld implements Disposable {
 			return new BulletRayResult()
 				.setStartRay(from)
 				.setEndRay(tmpV3)
-				.setNormalRay(normalRay)
+				.setNormalRayToRefactor(normalRay)
+				.setNormalRay(tmpV32)
 				.setMap(map)
 				.setObject(go);
 		}

@@ -8,19 +8,29 @@ public class BulletRayResult {
 	private boolean map;
 	private Vector3 startRay;
 	private Vector3 endRay;
-	private int normalRay;
+	private Vector3 normalRay;
+	private int normalRayToRefactor;
 	
 	public BulletRayResult() {
 		startRay = new Vector3();
 		endRay = new Vector3();
 	}
 	
-	public int getNormalRay() {
+	public BulletRayResult setNormalRay(Vector3 normalRay) {
+		this.normalRay = normalRay;
+		return this;
+	}
+	
+	public Vector3 getNormalRay() {
 		return normalRay;
 	}
+	
+	public int getNormalRayToRefactor() {
+		return normalRayToRefactor;
+	}
 
-	public BulletRayResult setNormalRay(int normalRay) {
-		this.normalRay = normalRay;
+	public BulletRayResult setNormalRayToRefactor(int normalRay) {
+		this.normalRayToRefactor = normalRay;
 		return this;
 	}
 

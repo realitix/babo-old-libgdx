@@ -11,5 +11,5 @@ public class GroupEffect {
 		effectSystem = s;
 	}
 	
-	public void start(Matrix4 transform, Vector3 from, Vector3 to, int normal) {}
+	public void start(Matrix4 transform, Vector3 from, Vector3 to, int normal, Vector3 normalRay) {}
 }
