@@ -137,7 +137,8 @@ public class TextureLoader {
         
         for (ObjectMap.Entry<String, Texture> e : textures.entries()) {
 	        TextureAttribute textureAttribute = new TextureAttribute(TextureAttribute.Diffuse, e.value);
-	        Material material = new Material(textureAttribute);
+	        ColorAttribute colorAttribute = ColorAttribute.createDiffuse(1,1,1,0.6f);
+	        Material material = new Material(textureAttribute, colorAttribute);
 	        materials.put(e.key, material);
         }
         
