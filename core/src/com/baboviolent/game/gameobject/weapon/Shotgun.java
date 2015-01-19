@@ -11,7 +11,6 @@ import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.effect.group.Shoot1;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
 import com.baboviolent.game.effect.particle.PoolParticle;
-import com.baboviolent.game.effect.particle.effects.Bullet1Effect;
 import com.baboviolent.game.effect.particle.effects.Smoke1Effect;
 import com.baboviolent.game.effect.particle.effects.Smoke2Effect;
 import com.baboviolent.game.gameobject.Babo;
@@ -34,6 +33,7 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.PolarAcceleration;
 import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -78,8 +78,6 @@ public class Shotgun extends Weapon {
 		// Le fusil tir plusieurs balles en meme temps
 		int nbAmmos = 5;
 		float angle = 5;
-		float angleMin = 3;
-		float angleMax = 8;
 		Quaternion rotation = tmpQ.cpy();
 
 		// Initialise la rotation
@@ -87,8 +85,11 @@ public class Shotgun extends Weapon {
         
         // Envoie les particules
 		tmpM.rotate(up, -nbAmmos/2*angle);
+		float tmpf = 0;
     	for( int i = 0; i < nbAmmos; i++ ) {
-			tmpM.rotate(up, angle);
+    		tmpf = angle - tmpf; // On reintialise tmpf
+    		tmpf += angle + MathUtils.random(-angle, angle);
+			tmpM.rotate(up, tmpf);
 			
 			Vector3 from = new Vector3();
 			Vector3 to = new Vector3();
@@ -99,7 +100,6 @@ public class Shotgun extends Weapon {
 			to.set(from).add(tmpV3);
 			
 			BulletRayResult result = world.getRayResult(from, to);
-			int normal = 0;
 			Vector3 normalRay = null;
 			if( result != null ) {
 				from.set(result.getStartRay());
@@ -110,11 +110,10 @@ public class Shotgun extends Weapon {
 						.hit(power);
 				}
 				
-				normal = result.getNormalRayToRefactor();
 				normalRay = result.getNormalRay();
 			}
 			
-			effectSystem.get(Shoot1.NAME).start(tmpM, from, to, normal, normalRay);
+			effectSystem.get(Shoot1.NAME).start(tmpM, from, to, normalRay);
 		}
     	
     	// On creer la force inverse

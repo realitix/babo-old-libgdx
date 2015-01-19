@@ -20,11 +20,17 @@ import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardRenderer;
 import com.badlogic.gdx.graphics.g3d.particles.values.LineSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.PointSpawnShapeValue;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.utils.Array;
 
-
+/**
+ * Trainee de fumme lors du tir
+ */
 public class Smoke1Effect extends BaboParticleEffect {
 	public static final String NAME = "smoke1";
+	
+	private Matrix4 tmpM = new Matrix4();
+	private Quaternion tmpQ = new Quaternion();
 	
 	public Smoke1Effect(BaboParticleBatch batch) {
 		super(batch);
@@ -44,9 +50,15 @@ public class Smoke1Effect extends BaboParticleEffect {
 	
 	@Override
 	public void init() {
-		DynamicsInfluencer d = getControllers().get(0).findInfluencer(DynamicsInfluencer.class);
+		ParticleController c = getControllers().get(0);
+		DynamicsInfluencer d = c.findInfluencer(DynamicsInfluencer.class);
 		PolarAcceleration pa = (PolarAcceleration) d.velocities.get(0);
-		pa.thetaValue.setHigh(getAngleFromNormalRay(normalRay));
+		
+		c.getTransform(tmpM);
+		tmpM.getRotation(tmpQ);
+		float angle = getAngleFromQuaternion(tmpQ);
+		
+		pa.thetaValue.setHigh(angle);
 		
 		super.init();
 	}
@@ -67,7 +79,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 		emitter.getDuration().setLow(100);
 		
 		emitter.getLife().setActive(true);
-		emitter.getLife().setHigh(2500);
+		emitter.getLife().setHigh(600);
 
 		//Spawn
 		PointSpawnShapeValue spawn = new PointSpawnShapeValue();
@@ -118,10 +130,10 @@ public class Smoke1Effect extends BaboParticleEffect {
 		DynamicsInfluencer dynamicsInfluencer = new DynamicsInfluencer();
 		
 		PolarAcceleration modifier = new PolarAcceleration();
-		modifier.strengthValue.setTimeline(new float[]{0, 1});
-		modifier.strengthValue.setScaling(new float[]{1, 0});
-		modifier.strengthValue.setHigh(1800);
-		modifier.strengthValue.setLow(200);
+		modifier.strengthValue.setTimeline(new float[]{0, 0.3f, 1});
+		modifier.strengthValue.setScaling(new float[]{1,0,0});
+		modifier.strengthValue.setHigh(800);
+		modifier.strengthValue.setLow(0);
 		modifier.phiValue.setTimeline(new float[]{0});
 		modifier.phiValue.setScaling(new float[]{1});
 		modifier.phiValue.setHigh(90);

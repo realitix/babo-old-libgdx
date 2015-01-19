@@ -9,7 +9,6 @@ public class BulletRayResult {
 	private Vector3 startRay;
 	private Vector3 endRay;
 	private Vector3 normalRay;
-	private int normalRayToRefactor;
 	
 	public BulletRayResult() {
 		startRay = new Vector3();
@@ -23,15 +22,6 @@ public class BulletRayResult {
 	
 	public Vector3 getNormalRay() {
 		return normalRay;
-	}
-	
-	public int getNormalRayToRefactor() {
-		return normalRayToRefactor;
-	}
-
-	public BulletRayResult setNormalRayToRefactor(int normalRay) {
-		this.normalRayToRefactor = normalRay;
-		return this;
 	}
 
 	public GameObject getObject() {
