@@ -18,17 +18,20 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.Brow
 import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardRenderer;
 import com.badlogic.gdx.graphics.g3d.particles.values.LineSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.PointSpawnShapeValue;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-
+/**
+ * Fumme apres l'impacte
+ * Et rebond si impact detecte
+ */
 public class Smoke2Effect extends BaboParticleEffect {
 	public static final String NAME = "smoke2";
 	
 	private Matrix4 tmpM = new Matrix4();
-	private int normal;
 	private Vector3 normalRay;
 	
 	public Smoke2Effect(BaboParticleBatch batch) {
@@ -46,45 +49,18 @@ public class Smoke2Effect extends BaboParticleEffect {
 		return new Smoke2Effect(this);
 	}
 	
-	
-	@Override
-	public void setNormal(int normal) {
-		this.normal = normal;
-	}
-	
 	@Override
 	public void setNormalRay(Vector3 normalRay) {
 		this.normalRay = normalRay;
 	}
 	
 	/*
-	 * ON ANNULE, ON VA CREER UN NOUVEL EFFET
 	 * S'il n'y a pas de normal, on ne garde que le premier controleur
 	 * Sinon on verifie la presence du second controleur et on dirige la fumee dans le bon sens
 	 * @see com.badlogic.gdx.graphics.g3d.particles.ParticleEffect#init()
 	 */
 	@Override
-	public void init() {
-		/*if( normal == 0 ) {
-			if( getControllers().size > 1 ) {
-				getControllers().removeIndex(1);
-			}
-		}
-		else {
-			if( getControllers().size < 2 ) {
-				getControllers().add(configure2());
-			}
-			
-			ParticleController c = findController("smokeNormal");
-			getControllers().get(0).getTransform(tmpM);
-			c.setTransform(tmpM);
-			DynamicsInfluencer d = c.findInfluencer(DynamicsInfluencer.class);
-			
-			// On regle le troisieme en fonction de la normal
-			PolarAcceleration pa = (PolarAcceleration) d.velocities.get(2);
-			pa.thetaValue.setHigh(getAngleFromNormal(normal));
-		}*/
-		
+	public void init() {		
 		if( normalRay == null ) {
 			if( getControllers().size > 1 ) {
 				getControllers().removeIndex(1);
@@ -102,37 +78,18 @@ public class Smoke2Effect extends BaboParticleEffect {
 			
 			// On regle le troisieme en fonction de la normal
 			PolarAcceleration pa = (PolarAcceleration) d.velocities.get(2);
-			pa.thetaValue.setHigh(getAngleFromNormalRay(normalRay));
+			float angle = getAngleFromNormalRay(normalRay);
+			angle += MathUtils.random(-30, 30);
+			pa.thetaValue.setHigh(angle);
 		}
 		
 		super.init();
 	}
 	
+	
 	private float getAngleFromNormalRay(Vector3 normalRay) {
 		Vector2 v2 = new Vector2(normalRay.x, normalRay.z);
 		return v2.angle();
-	}
-	
-	private float getAngleFromNormal(int normal) {
-		float result;
-		switch( normal ) {
-			case BulletWorld.NORMAL_RIGHT:
-				result = 180;
-				break;
-			case BulletWorld.NORMAL_BOTTOM:
-				result = 270;
-				break;
-			case BulletWorld.NORMAL_LEFT:
-				result = 0;
-				break;
-			case BulletWorld.NORMAL_UP:
-				result = 90;
-				break;
-			default:
-				result = 0;
-		}
-		
-		return result;
 	}
 	
 	private ParticleController configure2() {

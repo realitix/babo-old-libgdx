@@ -6,7 +6,8 @@ import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
 import com.baboviolent.game.effect.particle.batches.BatchSpecific1;
 import com.baboviolent.game.effect.particle.batches.BatchSpecific2;
 import com.baboviolent.game.effect.particle.effects.BaboParticleEffect;
-import com.baboviolent.game.effect.particle.effects.Bullet1Effect;
+import com.baboviolent.game.effect.particle.effects.Collision1Effect;
+import com.baboviolent.game.effect.particle.effects.MuzzleFlash1Effect;
 import com.baboviolent.game.effect.particle.effects.Smoke1Effect;
 import com.baboviolent.game.effect.particle.effects.Smoke2Effect;
 import com.badlogic.gdx.Gdx;
@@ -62,11 +63,15 @@ public class BaboParticleSystem {
 				camera, 
 				new Texture(Gdx.files.internal(p+"smoke1.png")));
 		
-		BaboParticleBatch batch3 = new BatchSpecific1(
+		BaboParticleBatch batch3 = new BatchSpecific2(
 				camera, 
-				new Texture(Gdx.files.internal(p+"glowTrail.png")));
+				new Texture(Gdx.files.internal(p+"nuzzleFlash.png")));
 		
-		batches.addAll(batch1, batch2);
+		BaboParticleBatch batch4 = new BatchSpecific2(
+				camera, 
+				new Texture(Gdx.files.internal(p+"shotGlow.png")));
+		
+		batches.addAll(batch1, batch2, batch3, batch4);
 		
 		/*
 		 * Initialisation des pools
@@ -74,7 +79,8 @@ public class BaboParticleSystem {
 		pools = new ObjectMap<String, PoolParticle>();
 		pools.put(Smoke1Effect.NAME, new PoolParticle(new Smoke1Effect(batch1), this));
 		pools.put(Smoke2Effect.NAME, new PoolParticle(new Smoke2Effect(batch2), this));
-		pools.put(Bullet1Effect.NAME, new PoolParticle(new Bullet1Effect(batch3), this));
+		pools.put(MuzzleFlash1Effect.NAME, new PoolParticle(new MuzzleFlash1Effect(batch3), this));
+		pools.put(Collision1Effect.NAME, new PoolParticle(new Collision1Effect(batch4), this));
 	}
 	
 	public void start(String name, Matrix4 transform) {

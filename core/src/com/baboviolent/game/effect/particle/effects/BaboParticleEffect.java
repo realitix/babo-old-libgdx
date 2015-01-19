@@ -54,8 +54,6 @@ public class BaboParticleEffect extends ParticleEffect {
     		currentAngle = 360 - currentAngle;
     	}
     	
-    	currentAngle += 90;
-    	
     	return (360 - currentAngle ) % 360;
 	}
 	
@@ -65,7 +63,7 @@ public class BaboParticleEffect extends ParticleEffect {
 	protected void textureFaceDirection() {
 		Quaternion tmpQ = new Quaternion();
 		this.getControllers().get(0).transform.getRotation(tmpQ);
-		rotateTexture(getAngleFromQuaternion(tmpQ));
+		rotateTexture(getAngleFromQuaternion(tmpQ) - 90);
 	}
 	
 	/**
@@ -82,7 +80,7 @@ public class BaboParticleEffect extends ParticleEffect {
 				influencer = new RotationInfluencer();
 				pc.influencers.add(influencer);
 			}
-			influencer.value.setHigh(angle);
+			influencer.value.setHigh(angle%360);
 		}
 	}
 	
