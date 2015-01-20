@@ -56,8 +56,6 @@ public class GameScreen implements Screen {
 	public final static int TYPE_MULTIPLAYER = 2;
 	
 	final private BaboViolentGame game;
-	private Environment environment;
-	private DirectionalLight light;
 	private ModelBatch modelBatch;
 	private DecalBatch decalBatch;
 	private BaseMode mode;
@@ -67,15 +65,7 @@ public class GameScreen implements Screen {
 		Bullet.init();
 		game = g;
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        environment = new Environment();
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1));
-		light = new DirectionalLight();
-		light.set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f);
-		environment.add(light);
 		
-		PointLight plight = new PointLight();
-		plight.set(Color.RED, new Vector3(600, 100, 600), 1);
-		environment.add(plight);
 		modelBatch = new ModelBatch();
 		
 		// Gestion des préférences
@@ -105,7 +95,7 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		mode.render(modelBatch, decalBatch, environment);
+		mode.render(modelBatch, decalBatch);
 		
 		// La mise a jour du controleur doit etre apres le rendu
 		// car affichage des touchpad
@@ -147,6 +137,5 @@ public class GameScreen implements Screen {
 		bulletContactListener.dispose();
 		modelBatch.dispose();
 		modelBatch = null;
-		light = null;
 	}
 }

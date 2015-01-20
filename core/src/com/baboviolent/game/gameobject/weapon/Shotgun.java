@@ -9,6 +9,7 @@ import com.baboviolent.game.bullet.BulletRayResult;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.effect.group.Shoot1;
+import com.baboviolent.game.effect.light.effects.Light1Effect;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
 import com.baboviolent.game.effect.particle.PoolParticle;
 import com.baboviolent.game.effect.particle.effects.Smoke1Effect;
@@ -112,9 +113,10 @@ public class Shotgun extends Weapon {
 				
 				normalRay = result.getNormalRay();
 			}
-			
 			effectSystem.get(Shoot1.NAME).start(tmpM, from, to, normalRay);
 		}
+    	
+    	effectSystem.getLightSystem().start(Light1Effect.NAME, tmpM);
     	
     	// On creer la force inverse
     	//instance.body.applyCentralImpulse(tmpV3.scl(-100));

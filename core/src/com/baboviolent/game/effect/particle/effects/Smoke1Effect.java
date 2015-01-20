@@ -1,6 +1,7 @@
 package com.baboviolent.game.effect.particle.effects;
 
 import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
+import com.baboviolent.game.effect.particle.influencers.PositionInfluencer;
 import com.baboviolent.game.effect.particle.influencers.RotationInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleHeightInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleWidthInfluencer;
@@ -100,8 +101,8 @@ public class Smoke1Effect extends BaboParticleEffect {
 		ScaleWidthInfluencer scaleWidthInfluencer = new ScaleWidthInfluencer();
 		scaleWidthInfluencer.value.setTimeline(new float[]{0, 1});
 		scaleWidthInfluencer.value.setScaling(new float[]{0, 1});
-		scaleWidthInfluencer.value.setLow(10);
-		scaleWidthInfluencer.value.setHigh(100);
+		scaleWidthInfluencer.value.setLow(0);
+		scaleWidthInfluencer.value.setHigh(20);
 		
 		//Scale Height
 		ScaleHeightInfluencer scaleHeightInfluencer = new ScaleHeightInfluencer();
