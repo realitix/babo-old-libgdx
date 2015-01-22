@@ -98,9 +98,9 @@ public class Smoke1Effect extends BaboParticleEffect {
 		//Scale Width
 		ScaleWidthInfluencer scaleWidthInfluencer = new ScaleWidthInfluencer();
 		scaleWidthInfluencer.value.setTimeline(new float[]{0, 0.3f, 1});
-		scaleWidthInfluencer.value.setScaling(new float[]{0, 1, 1});
+		scaleWidthInfluencer.value.setScaling(new float[]{0, 0.5f, 1});
 		scaleWidthInfluencer.value.setLow(0);
-		scaleWidthInfluencer.value.setHigh(20);
+		scaleWidthInfluencer.value.setHigh(50);
 		
 		//Scale Height
 		ScaleHeightInfluencer scaleHeightInfluencer = new ScaleHeightInfluencer();
@@ -133,22 +133,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 
 		colorInfluencer.colorValue.setColors(new float[] {0.9f,0.9f,0.9f,0.7f,0.7f,0.7f});
 		colorInfluencer.colorValue.setTimeline(new float[] {0, 1});
-		
-		//Dynamics
-		/*DynamicsInfluencer dynamicsInfluencer = new DynamicsInfluencer();
-		
-		PolarAcceleration modifier = new PolarAcceleration();
-		modifier.strengthValue.setTimeline(new float[]{0,0.1f,0.1f, 1});
-		modifier.strengthValue.setScaling(new float[]{1,1,0,0});
-		modifier.strengthValue.setHigh(10000);
-		modifier.strengthValue.setLow(0);
-		modifier.phiValue.setTimeline(new float[]{0});
-		modifier.phiValue.setScaling(new float[]{1});
-		modifier.phiValue.setHigh(90);
-		modifier.thetaValue.setTimeline(new float[]{0});
-		modifier.thetaValue.setScaling(new float[]{1});
-		dynamicsInfluencer.velocities.add(modifier);*/
-		
+
 		getControllers().add(new ParticleController(name, emitter, new BillboardRenderer(batch),
 			new RegionInfluencer.Single(batch.getTexture()),
 			spawnSource,
@@ -158,100 +143,19 @@ public class Smoke1Effect extends BaboParticleEffect {
 			colorInfluencer,
 			rotationInfluencer,
 			positionInfluencer
-			//dynamicsInfluencer
 			));
 	}
 	
-	public void configure2() {
-		//Emitter
-		RegularEmitter emitter = new RegularEmitter();
-		emitter.setMinParticleCount(0);
-		emitter.setMaxParticleCount(500);
-		emitter.setContinuous(false);
-
-		emitter.getEmission().setActive(true);
-		emitter.getEmission().setLow(0);
-		emitter.getEmission().setHigh(1500);
-		emitter.getEmission().setScaling(new float[] {0.5f, 1});
-		emitter.getEmission().setTimeline(new float[] {0, 1});
-		
-		emitter.getDuration().setActive(true);
-		emitter.getDuration().setLow(150);
-		
-		emitter.getLife().setActive(true);
-		emitter.getLife().setLow(0);
-		emitter.getLife().setHigh(600);
-		emitter.getLife().setScaling(new float[] {1, 1});
-		emitter.getLife().setTimeline(new float[] {0, 1});
-
-		//Spawn
-		LineSpawnShapeValue spawn = new LineSpawnShapeValue();
-		spawn.setActive(true);
-		spawn.setEdges(false);
-		spawn.xOffsetValue.setActive(false);
-		spawn.yOffsetValue.setActive(false);
-		spawn.zOffsetValue.setActive(false);
-		
-		spawn.getSpawnWidth().setActive(true);
-		spawn.getSpawnWidth().setLow(50);
-		spawn.getSpawnWidth().setHigh(1000);
-		spawn.getSpawnWidth().setScaling(new float[] {0, 1});
-		spawn.getSpawnWidth().setTimeline(new float[] {0, 1});
-		
-		spawn.getSpawnHeight().setActive(true);
-		spawn.getSpawnHeight().setLow(0);
-		spawn.getSpawnHeight().setHigh(5);
-		spawn.getSpawnHeight().setScaling(new float[] {0, 1});
-		spawn.getSpawnHeight().setTimeline(new float[] {0, 1});
-		
-		spawn.getSpawnDepth().setActive(true);
-		spawn.getSpawnDepth().setLow(0);
-		spawn.getSpawnDepth().setHigh(5);
-		spawn.getSpawnDepth().setScaling(new float[] {0, 1});
-		spawn.getSpawnDepth().setTimeline(new float[] {0, 1});
-
-		SpawnInfluencer spawnSource = new SpawnInfluencer(spawn);
-
-		//Scale
-		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
-		scaleInfluencer.value.setTimeline(new float[]{0, 1});
-		scaleInfluencer.value.setScaling(new float[]{0, 1});
-		scaleInfluencer.value.setLow(0);
-		scaleInfluencer.value.setHigh(20);
-		
-		// Rotation qui sera mis a jour a chaque tir en fonction de l'angle
-		RotationInfluencer rotationInfluencer = new RotationInfluencer();
-		rotationInfluencer.value.setHigh(0);
-		
-		//Color
-		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
-	
-		colorInfluencer.alphaValue.setActive(true);
-		colorInfluencer.alphaValue.setLow(0);
-		colorInfluencer.alphaValue.setHigh(1);
-		colorInfluencer.alphaValue.setTimeline(new float[] {0, 1});
-		colorInfluencer.alphaValue.setScaling(new float[] {0.9f, 0});
-
-		colorInfluencer.colorValue.setColors(new float[] {0.9f,0.9f,0.9f,0.7f,0.7f,0.7f});
-		colorInfluencer.colorValue.setTimeline(new float[] {0, 1});
-		
-		getControllers().add(new ParticleController(name, emitter, new BillboardRenderer(batch),
-			new RegionInfluencer.Single(batch.getTexture()),
-			spawnSource,
-			scaleInfluencer,
-			colorInfluencer,
-			rotationInfluencer
-			));
-	}
-	
-	/*@Override
+	@Override
 	public void setWidth(float width) {
-		((LineSpawnShapeValue) (
-				getControllers()
-				.get(0)
-				.findInfluencer(SpawnInfluencer.class)
-				.spawnShapeValue))
-				.getSpawnWidth()
-				.setHigh(width);
-	}*/
+		getControllers()
+		.get(0)
+		.findInfluencer(ScaleHeightInfluencer.class)
+		.value.setHigh(width);
+		
+		getControllers()
+		.get(0)
+		.findInfluencer(PositionInfluencer.class)
+		.strengthValue.setHigh(width/2);
+	}
 }
