@@ -52,14 +52,12 @@ public class Smoke1Effect extends BaboParticleEffect {
 	@Override
 	public void init() {
 		ParticleController c = getControllers().get(0);
-		DynamicsInfluencer d = c.findInfluencer(DynamicsInfluencer.class);
-		PolarAcceleration pa = (PolarAcceleration) d.velocities.get(0);
+		PositionInfluencer p = c.findInfluencer(PositionInfluencer.class);
 		
 		c.getTransform(tmpM);
 		tmpM.getRotation(tmpQ);
 		float angle = getAngleFromQuaternion(tmpQ);
-		
-		pa.thetaValue.setHigh(angle);
+		p.thetaValue = angle;
 		
 		super.init();
 	}
@@ -99,17 +97,26 @@ public class Smoke1Effect extends BaboParticleEffect {
 		
 		//Scale Width
 		ScaleWidthInfluencer scaleWidthInfluencer = new ScaleWidthInfluencer();
-		scaleWidthInfluencer.value.setTimeline(new float[]{0, 1});
-		scaleWidthInfluencer.value.setScaling(new float[]{0, 1});
+		scaleWidthInfluencer.value.setTimeline(new float[]{0, 0.3f, 1});
+		scaleWidthInfluencer.value.setScaling(new float[]{0, 1, 1});
 		scaleWidthInfluencer.value.setLow(0);
 		scaleWidthInfluencer.value.setHigh(20);
 		
 		//Scale Height
 		ScaleHeightInfluencer scaleHeightInfluencer = new ScaleHeightInfluencer();
-		scaleHeightInfluencer.value.setTimeline(new float[]{0, 1});
-		scaleHeightInfluencer.value.setScaling(new float[]{0, 1});
+		scaleHeightInfluencer.value.setTimeline(new float[]{0, 0.3f, 1});
+		scaleHeightInfluencer.value.setScaling(new float[]{0, 1, 1});
 		scaleHeightInfluencer.value.setLow(10);
 		scaleHeightInfluencer.value.setHigh(1000);
+		
+		// Position
+		PositionInfluencer positionInfluencer = new PositionInfluencer();
+		positionInfluencer.strengthValue.setTimeline(new float[]{0, 0.03f, 1});
+		positionInfluencer.strengthValue.setScaling(new float[]{0, 1, 1});
+		positionInfluencer.strengthValue.setLow(0);
+		positionInfluencer.strengthValue.setHigh(500);
+		positionInfluencer.phiValue = 90;
+		positionInfluencer.thetaValue = 0;
 		
 		// Rotation qui sera mis a jour a chaque tir en fonction de l'angle
 		RotationInfluencer rotationInfluencer = new RotationInfluencer();
@@ -128,19 +135,19 @@ public class Smoke1Effect extends BaboParticleEffect {
 		colorInfluencer.colorValue.setTimeline(new float[] {0, 1});
 		
 		//Dynamics
-		DynamicsInfluencer dynamicsInfluencer = new DynamicsInfluencer();
+		/*DynamicsInfluencer dynamicsInfluencer = new DynamicsInfluencer();
 		
 		PolarAcceleration modifier = new PolarAcceleration();
-		modifier.strengthValue.setTimeline(new float[]{0, 0.3f, 1});
-		modifier.strengthValue.setScaling(new float[]{1,0,0});
-		modifier.strengthValue.setHigh(800);
+		modifier.strengthValue.setTimeline(new float[]{0,0.1f,0.1f, 1});
+		modifier.strengthValue.setScaling(new float[]{1,1,0,0});
+		modifier.strengthValue.setHigh(10000);
 		modifier.strengthValue.setLow(0);
 		modifier.phiValue.setTimeline(new float[]{0});
 		modifier.phiValue.setScaling(new float[]{1});
 		modifier.phiValue.setHigh(90);
 		modifier.thetaValue.setTimeline(new float[]{0});
 		modifier.thetaValue.setScaling(new float[]{1});
-		dynamicsInfluencer.velocities.add(modifier);
+		dynamicsInfluencer.velocities.add(modifier);*/
 		
 		getControllers().add(new ParticleController(name, emitter, new BillboardRenderer(batch),
 			new RegionInfluencer.Single(batch.getTexture()),
@@ -150,7 +157,8 @@ public class Smoke1Effect extends BaboParticleEffect {
 			scaleHeightInfluencer,
 			colorInfluencer,
 			rotationInfluencer,
-			dynamicsInfluencer
+			positionInfluencer
+			//dynamicsInfluencer
 			));
 	}
 	
