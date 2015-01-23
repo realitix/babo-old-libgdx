@@ -137,8 +137,7 @@ public class TextureLoader {
         
         for (ObjectMap.Entry<String, Texture> e : textures.entries()) {
 	        TextureAttribute textureAttribute = new TextureAttribute(TextureAttribute.Diffuse, e.value);
-	        ColorAttribute colorAttribute = ColorAttribute.createDiffuse(1,1,1,0.6f);
-	        Material material = new Material(textureAttribute, colorAttribute);
+	        Material material = getMaterialFromTextureAttribute(textureAttribute);
 	        materials.put(e.key, material);
         }
         
@@ -161,7 +160,7 @@ public class TextureLoader {
     			FileHandle file = Gdx.files.internal(po+name+".png");
     			if( file.exists() ) {
     				TextureAttribute textureAttribute = new TextureAttribute(TextureAttribute.Diffuse, new Texture(file));
-    				Material material = new Material(textureAttribute);
+    				Material material = getMaterialFromTextureAttribute(textureAttribute);
     		        materials.put(name, material);
     		        c.setTextureName(name);
     			}
@@ -170,9 +169,16 @@ public class TextureLoader {
 	    
 	    return materials;
 	}
+    
+    static private Material getMaterialFromTextureAttribute(TextureAttribute textureAttribute) {
+        return new Material(
+        		textureAttribute,
+        		ColorAttribute.createSpecular(0,0,1,1));
+        
+    }
 	
 	/**
-     * Charge tous les modèles du type passé en paramètre
+     * Charge tous les modeles du type passé en paramètre
      */ 
     static public ObjectMap<String, Model> getModels(String type) {
         return getModels(listTextureFolder(type), type);
@@ -195,7 +201,7 @@ public class TextureLoader {
         	}
         	if( type == TYPE_WALL) {
         		m =  mb.createBox(s, s, s, e.value, Usage.Position | Usage.Normal | Usage.TextureCoordinates);
-        		// On déplace le cub pour le mettre au niveau du sol
+        		// On deplace le cub pour le mettre au niveau du sol
         		m.meshes.get(0).transform(new Matrix4(new Vector3(0, s/2, 0), new Quaternion(), new Vector3(1,1,1)));
         	}
             models.put(e.key, m);
