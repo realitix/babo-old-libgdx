@@ -1,6 +1,7 @@
 package com.baboviolent.game.effect.light.effects;
 
 import com.baboviolent.game.effect.particle.effects.Collision1Effect;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class Light1Effect extends BaboLightEffect {
 	public static final String NAME = "Light1Effect";
@@ -20,8 +21,14 @@ public class Light1Effect extends BaboLightEffect {
 	}
 	
 	public void configure() {
-		color.set(255, 255, 255, 1);
-		intensity = 1;
-		life = 2000;
+		color.set(1, 0, 0, 0.5f);
+		intensity = 100000;
+		life = 500;
+	}
+	
+	@Override
+	public void update() {
+		super.update();
+		light.intensity = intensity * (life - TimeUtils.timeSinceMillis(startTime))/life;
 	}
 }

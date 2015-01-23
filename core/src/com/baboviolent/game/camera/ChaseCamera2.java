@@ -2,6 +2,7 @@ package com.baboviolent.game.camera;
 
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
+import com.baboviolent.game.map.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Interpolation;
@@ -28,12 +29,22 @@ public class ChaseCamera2 extends PerspectiveCamera {
 	private Interpolation interpolation;
 	private float animationSpeed = 0.03f;
 	
-	public ChaseCamera2() {
+	/* Delimitation de la map */
+	private Vector3 mapBottomRight;
+	private Vector3 mapBottomLeft;
+	private Vector3 mapTopLeft;
+	private Vector3 mapTopRight;
+	
+	public ChaseCamera2(Map map) {
 		super(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		this.far = 10000;
 		this.near = 10;
 		this.up.set(0,0,1);
 		interpolation = new Interpolation.PowOut(3);
+		mapBottomRight = map.getBottomRight();
+	    mapBottomLeft = map.getBottomLeft();
+	    mapTopLeft = map.getTopLeft();
+	    mapTopRight = map.getTopRight();
 		loaded = false;
 	}
 	
@@ -41,10 +52,10 @@ public class ChaseCamera2 extends PerspectiveCamera {
 	    this.babo = babo;
 	    this.babo.getInstance().transform.getTranslation(tmp);
 	    position.set(tmp.x, desiredOffset.y, tmp.z + desiredOffset.z);
-	    loaded = true;
+	    loaded = true;	    
 	    update();
 	}
-	
+
 	@Override
 	public void update() {
 		if( !loaded )
@@ -72,6 +83,22 @@ public class ChaseCamera2 extends PerspectiveCamera {
 		startLook.set(position);
 		babo.getInstance().transform.getTranslation(tmp);
 		endLook.set(tmp.lerp(target, 0.43f));
+	}
+	
+	public Vector3 getMapBottomRight() {
+		return mapBottomRight;
+	}
+
+	public Vector3 getMapBottomLeft() {
+		return mapBottomLeft;
+	}
+
+	public Vector3 getMapTopLeft() {
+		return mapTopLeft;
+	}
+
+	public Vector3 getMapTopRight() {
+		return mapTopRight;
 	}
 }
 

@@ -25,6 +25,7 @@ import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
@@ -49,7 +50,12 @@ public class BaboLightSystem {
 	public BaboLightSystem(Camera camera, Environment environment) {
 		this.environment = environment;
 		this.camera = camera;
+		initLight();
 		initSystem();
+	}
+	
+	private void initLight() {
+		environment.add(new DirectionalLight().set(new Color(0.8f,0.8f,0.8f,0.5f), new Vector3(-0.5f,-1,-0.5f).nor()));
 	}
 	
 	private void initSystem() {

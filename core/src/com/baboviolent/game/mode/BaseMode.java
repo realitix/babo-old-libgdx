@@ -70,13 +70,12 @@ public class BaseMode {
     }
     
     public void init() {
-    	// Initailisation de l'environement
+    	// Initialisation de l'environement
     	environment = new Environment();
     	environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1));
-		environment.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f));
 		
     	// Initialisation de la camera
-    	camera = new ChaseCamera2();
+    	camera = new ChaseCamera2(map);
     			
         // Initialisation du monde
 		world = new BulletWorld();

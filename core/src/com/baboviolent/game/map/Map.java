@@ -238,6 +238,58 @@ public class Map {
 	public String getName() {
 		return name;
 	}
+	
+	public Vector3 getBottomRight() {
+		float r = 9999999, b = 9999999;
+		for( int i = 0; i < cells.size; i++) {
+			// Right
+			if( cells.get(i).getPosition().x < r )
+				r = cells.get(i).getPosition().x;
+			// Bottom
+			if( cells.get(i).getPosition().z < b )
+				b = cells.get(i).getPosition().z;
+		}
+		return new Vector3(r,0,b);
+	}
+	
+	public Vector3 getBottomLeft() {
+		float l = -9999999, b = 9999999;
+		for( int i = 0; i < cells.size; i++) {
+			// Left
+			if( cells.get(i).getPosition().x > l )
+				l = cells.get(i).getPosition().x;
+			// Bottom
+			if( cells.get(i).getPosition().z < b )
+				b = cells.get(i).getPosition().z;
+		}
+		return new Vector3(l,0,b);
+	}
+	
+	public Vector3 getTopLeft() {
+		float l = -9999999, t = -9999999;
+		for( int i = 0; i < cells.size; i++) {
+			// Left
+			if( cells.get(i).getPosition().x > l )
+				l = cells.get(i).getPosition().x;
+			// Top
+			if( cells.get(i).getPosition().z > t )
+				t = cells.get(i).getPosition().z;
+		}
+		return new Vector3(l,0,t);
+	}
+	
+	public Vector3 getTopRight() {
+		float r = 9999999, t = -9999999;
+		for( int i = 0; i < cells.size; i++) {
+			// Right
+			if( cells.get(i).getPosition().x < r )
+				r = cells.get(i).getPosition().x;
+			// Top
+			if( cells.get(i).getPosition().z > t )
+				t = cells.get(i).getPosition().z;
+		}
+		return new Vector3(r,0,t);
+	}
 
 	public Map setName(String name) {
 		this.name = name;
