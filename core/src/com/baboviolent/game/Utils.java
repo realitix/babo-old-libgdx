@@ -229,10 +229,6 @@ public class Utils {
 	 */ 
 	public static Vector3 getPositionFromMouse(Vector3 position, Camera camera, int screenX, int screenY) {
 		Ray ray = camera.getPickRay(screenX, screenY);
-		
-		// Hack car le rayon est faux, @TODO a comprendre
-		ray.direction.x /= 3.5f;
-		ray.direction.z /= 3.5f;
         final float distance = -ray.origin.y / ray.direction.y;
         position.set(ray.direction).scl(distance).add(ray.origin);
         position.x = Math.round(position.x);

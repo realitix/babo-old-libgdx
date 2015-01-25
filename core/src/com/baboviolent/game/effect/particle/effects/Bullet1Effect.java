@@ -1,7 +1,9 @@
 package com.baboviolent.game.effect.particle.effects;
 
 import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
+import com.baboviolent.game.effect.particle.influencers.PositionInfluencer;
 import com.baboviolent.game.effect.particle.influencers.RotationInfluencer;
+import com.baboviolent.game.effect.particle.influencers.ScaleHeightInfluencer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
@@ -26,6 +28,8 @@ public class Bullet1Effect extends BaboParticleEffect {
 	
 	private Matrix4 tmpM = new Matrix4();
 	private Quaternion tmpQ = new Quaternion();
+	private float life = 400;
+	private float initWidth = 1000;
 	
 	public Bullet1Effect(BaboParticleBatch batch) {
 		super(batch);
@@ -46,6 +50,19 @@ public class Bullet1Effect extends BaboParticleEffect {
 	@Override
 	public void init() {
 		ParticleController c = getControllers().get(0);
+		PositionInfluencer p = c.findInfluencer(PositionInfluencer.class);
+		
+		c.getTransform(tmpM);
+		tmpM.getRotation(tmpQ);
+		float angle = getAngleFromQuaternion(tmpQ);
+		p.thetaValue = angle;
+		
+		super.init();
+	}
+	
+	/*
+	public void init() {
+		ParticleController c = getControllers().get(0);
 		DynamicsInfluencer d = c.findInfluencer(DynamicsInfluencer.class);
 		PolarAcceleration pa = (PolarAcceleration) d.velocities.get(0);
 		
@@ -56,7 +73,7 @@ public class Bullet1Effect extends BaboParticleEffect {
 		pa.thetaValue.setHigh(angle);
 		
 		super.init();
-	}
+	}*/
 	
 	public void configure() {
 		//Emitter
@@ -69,13 +86,12 @@ public class Bullet1Effect extends BaboParticleEffect {
 		emitter.getEmission().setHigh(1);
 		
 		emitter.getDuration().setActive(true);
-		emitter.getDuration().setLow(100);
+		emitter.getDuration().setLow(50);
 		
 		emitter.getLife().setActive(true);
-		emitter.getLife().setLow(0);
-		emitter.getLife().setHigh(2000);
-		emitter.getLife().setScaling(new float[] {1, 1});
-		emitter.getLife().setTimeline(new float[] {0, 1});
+		emitter.getLife().setHigh(life);
+		emitter.getLife().setScaling(new float[] {1});
+		emitter.getLife().setTimeline(new float[] {0});
 
 		//Spawn
 		PointSpawnShapeValue spawn = new PointSpawnShapeValue();
@@ -90,8 +106,9 @@ public class Bullet1Effect extends BaboParticleEffect {
 		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
 		scaleInfluencer.value.setTimeline(new float[]{0, 1});
 		scaleInfluencer.value.setScaling(new float[]{0, 1});
-		scaleInfluencer.value.setHigh(30);
-		scaleInfluencer.value.setLow(0);
+		scaleInfluencer.value.setLow(10);
+		scaleInfluencer.value.setHigh(24);
+		
 		
 		// Rotation qui sera mis a jour a chaque tir en fonction de l'angle
 		RotationInfluencer rotationInfluencer = new RotationInfluencer();
@@ -111,19 +128,27 @@ public class Bullet1Effect extends BaboParticleEffect {
 		colorInfluencer.colorValue.setTimeline(new float[] {0});
 		
 		//Dynamics
-		DynamicsInfluencer dynamicsInfluencer = new DynamicsInfluencer();
+		/*DynamicsInfluencer dynamicsInfluencer = new DynamicsInfluencer();
 		
 		PolarAcceleration modifier = new PolarAcceleration();
-		modifier.strengthValue.setTimeline(new float[]{0.01f,0.02f, 1});
-		modifier.strengthValue.setScaling(new float[]{1,0,0});
-		modifier.strengthValue.setLow(0);
-		modifier.strengthValue.setHigh(10000);
+		modifier.strengthValue.setTimeline(new float[]{0});
+		modifier.strengthValue.setScaling(new float[]{1});
+		modifier.strengthValue.setHigh(5000);
 		modifier.phiValue.setTimeline(new float[]{0});
 		modifier.phiValue.setScaling(new float[]{1});
 		modifier.phiValue.setHigh(90);
 		modifier.thetaValue.setTimeline(new float[]{0});
 		modifier.thetaValue.setScaling(new float[]{1});
-		dynamicsInfluencer.velocities.add(modifier);
+		dynamicsInfluencer.velocities.add(modifier);*/
+		
+		// Position
+		PositionInfluencer positionInfluencer = new PositionInfluencer();
+		positionInfluencer.strengthValue.setTimeline(new float[]{0,1});
+		positionInfluencer.strengthValue.setScaling(new float[]{0,1});
+		positionInfluencer.strengthValue.setHigh(0);
+		positionInfluencer.strengthValue.setHigh(initWidth);
+		positionInfluencer.phiValue = 90;
+		positionInfluencer.thetaValue = 0;
 		
 		getControllers().add(new ParticleController(name, emitter, new BillboardRenderer(batch),
 			new RegionInfluencer.Single(batch.getTexture()),
@@ -131,7 +156,22 @@ public class Bullet1Effect extends BaboParticleEffect {
 			scaleInfluencer,
 			colorInfluencer,
 			rotationInfluencer,
-			dynamicsInfluencer
+			positionInfluencer
+			//dynamicsInfluencer
 			));
+	}
+	
+	@Override
+	public void setWidth(float width) {		
+		getControllers()
+		.get(0)
+		.findInfluencer(PositionInfluencer.class)
+		.strengthValue.setHigh(width);
+		
+		((RegularEmitter)getControllers()
+		.get(0)
+		.emitter)
+		.getLife()
+		.setHigh(width*life/initWidth);
 	}
 }

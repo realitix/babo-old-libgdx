@@ -21,13 +21,17 @@ public class Shoot1 extends GroupEffect {
 
 	public void start(Matrix4 transform, Vector3 from, Vector3 to, Vector3 normalRay) {
 		BaboParticleSystem p = effectSystem.getParticleSystem();		
-		p.start(MuzzleFlash1Effect.NAME, transform);
-		//p.start(Bullet1Effect.NAME, transform);
+		p.startWithWidth(Bullet1Effect.NAME, transform, from.dst(to));
 		p.startWithWidth(Smoke1Effect.NAME, transform, from.dst(to));
 		
 		Vector3 dir = to.cpy().sub(from).nor().scl(20);
 		Matrix4 impact = transform.cpy().trn(to.cpy().sub(from).sub(dir));
 		p.start(Collision1Effect.NAME, impact);
 		p.startWithNormal(Smoke2Effect.NAME, impact, normalRay);
+	}
+	
+	public void startUnique(Matrix4 transform) {
+		effectSystem.getLightSystem().start(Light1Effect.NAME, transform);
+		effectSystem.getParticleSystem().start(MuzzleFlash1Effect.NAME, transform);
 	}	
 }

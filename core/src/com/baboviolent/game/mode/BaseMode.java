@@ -100,6 +100,7 @@ public class BaseMode {
         cursor = Decal.newDecal(new TextureRegion(
         		new Texture(Gdx.files.internal(BaboViolentGame.PATH_TEXTURE_OTHERS+"Cross01.png"))),
         		true);
+        cursor.setDimensions(120, 120);
     }
     
     protected void initPlayer() {
@@ -214,7 +215,6 @@ public class BaseMode {
     
     protected void updateCursor(Vector3 target) {
     	Vector3 t = target.cpy();
-    	t.y = camera.position.y - 300;
     	cursor.setPosition(t);
     	cursor.lookAt(t.add(0, 20, 0 ), Vector3.Y);
     }

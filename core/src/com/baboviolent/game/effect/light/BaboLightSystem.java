@@ -55,7 +55,7 @@ public class BaboLightSystem {
 	}
 	
 	private void initLight() {
-		environment.add(new DirectionalLight().set(new Color(0.8f,0.8f,0.8f,0.5f), new Vector3(-0.5f,-1,-0.5f).nor()));
+		environment.add(new DirectionalLight().set(new Color(0.8f,0.8f,0.8f,0.5f), new Vector3(0,-1,0).nor()));
 	}
 	
 	private void initSystem() {

@@ -18,7 +18,7 @@ public class ChaseCamera2 extends PerspectiveCamera {
 	/** Babo a suivre */
 	private Babo babo;
 	/** Distance par rapport à l'objet */ 
-	private final Vector3 desiredOffset = new Vector3(0, 1000, 0);
+	private final Vector3 desiredOffset = new Vector3(0, 1200, 0);
 	/** Vecteur temporaire */
 	private Vector3 tmp = new Vector3();
 	private boolean loaded;

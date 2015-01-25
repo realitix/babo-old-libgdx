@@ -75,6 +75,7 @@ public class Shotgun extends Weapon {
 		// Decale tmpM pour etre au bout du fusil
 		Quaternion decal = rotateQuaternion(tmpQ.cpy(), 353);
 		tmpM.trn(decal.transform(tmpV3.set(1,0,0)).scl(130));
+		Matrix4 tmpMBase = tmpM.cpy();
 		
 		// Le fusil tir plusieurs balles en meme temps
 		int nbAmmos = 5;
@@ -115,8 +116,7 @@ public class Shotgun extends Weapon {
 			}
 			effectSystem.get(Shoot1.NAME).start(tmpM, from, to, normalRay);
 		}
-    	
-    	effectSystem.getLightSystem().start(Light1Effect.NAME, tmpM);
+    	effectSystem.get(Shoot1.NAME).startUnique(tmpMBase);
     	
     	// On creer la force inverse
     	//instance.body.applyCentralImpulse(tmpV3.scl(-100));

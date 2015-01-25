@@ -172,8 +172,7 @@ public class TextureLoader {
     
     static private Material getMaterialFromTextureAttribute(TextureAttribute textureAttribute) {
         return new Material(
-        		textureAttribute,
-        		ColorAttribute.createSpecular(0,0,1,1));
+        		textureAttribute);
         
     }
 	

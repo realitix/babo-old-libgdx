@@ -21,8 +21,8 @@ public class Light1Effect extends BaboLightEffect {
 	}
 	
 	public void configure() {
-		color.set(1, 0, 0, 0.5f);
-		intensity = 100000;
+		color.set(0.8f, 0.34f, 0, 1);
+		intensity = 10000;
 		life = 200;
 	}
 	
@@ -32,3 +32,6 @@ public class Light1Effect extends BaboLightEffect {
 		light.intensity = intensity * (life - TimeUtils.timeSinceMillis(startTime))/life;
 	}
 }
+
+
+

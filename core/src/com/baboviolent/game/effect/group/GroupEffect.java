@@ -12,4 +12,5 @@ public class GroupEffect {
 	}
 	
 	public void start(Matrix4 transform, Vector3 from, Vector3 to, Vector3 normalRay) {}
+	public void startUnique(Matrix4 transform) {}
 }

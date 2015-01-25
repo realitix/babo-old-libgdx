@@ -78,7 +78,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 		emitter.getDuration().setLow(100);
 		
 		emitter.getLife().setActive(true);
-		emitter.getLife().setHigh(600);
+		emitter.getLife().setHigh(800);
 
 		//Spawn
 		PointSpawnShapeValue spawn = new PointSpawnShapeValue();
@@ -111,7 +111,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 		
 		// Position
 		PositionInfluencer positionInfluencer = new PositionInfluencer();
-		positionInfluencer.strengthValue.setTimeline(new float[]{0, 0.03f, 1});
+		positionInfluencer.strengthValue.setTimeline(new float[]{0, 0.3f, 1});
 		positionInfluencer.strengthValue.setScaling(new float[]{0, 1, 1});
 		positionInfluencer.strengthValue.setLow(0);
 		positionInfluencer.strengthValue.setHigh(500);
@@ -129,7 +129,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 		colorInfluencer.alphaValue.setLow(0);
 		colorInfluencer.alphaValue.setHigh(1);
 		colorInfluencer.alphaValue.setTimeline(new float[] {0, 1});
-		colorInfluencer.alphaValue.setScaling(new float[] {0.9f, 0});
+		colorInfluencer.alphaValue.setScaling(new float[] {0.5f, 0});
 
 		colorInfluencer.colorValue.setColors(new float[] {0.9f,0.9f,0.9f,0.7f,0.7f,0.7f});
 		colorInfluencer.colorValue.setTimeline(new float[] {0, 1});

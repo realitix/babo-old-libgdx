@@ -1,6 +1,7 @@
 package com.baboviolent.game.effect.particle.effects;
 
 import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
+import com.baboviolent.game.effect.particle.influencers.PositionInfluencer;
 import com.baboviolent.game.effect.particle.influencers.RotationInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleHeightInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleWidthInfluencer;
@@ -29,6 +30,9 @@ import com.badlogic.gdx.utils.Array;
 public class MuzzleFlash1Effect extends BaboParticleEffect {
 	public static final String NAME = "muzzleflash1";
 	
+	private Matrix4 tmpM = new Matrix4();
+	private Quaternion tmpQ = new Quaternion();
+	
 	public MuzzleFlash1Effect(BaboParticleBatch batch) {
 		super(batch);
 		name = NAME;
@@ -45,6 +49,22 @@ public class MuzzleFlash1Effect extends BaboParticleEffect {
 		return new MuzzleFlash1Effect(this);
 	}
 	
+	/**
+	 * Avance legerement la flemme pour la voir en entiere
+	 */
+	@Override
+	public void init() {
+		ParticleController c = getControllers().get(0);
+		PositionInfluencer p = c.findInfluencer(PositionInfluencer.class);
+		
+		c.getTransform(tmpM);
+		tmpM.getRotation(tmpQ);
+		float angle = getAngleFromQuaternion(tmpQ);
+		p.thetaValue = angle;
+		
+		super.init();
+	}
+	
 	public void configure() {
 		//Emitter
 		RegularEmitter emitter = new RegularEmitter();
@@ -56,10 +76,10 @@ public class MuzzleFlash1Effect extends BaboParticleEffect {
 		emitter.getEmission().setLow(1);
 		
 		emitter.getDuration().setActive(true);
-		emitter.getDuration().setLow(100);
+		emitter.getDuration().setLow(10);
 		
 		emitter.getLife().setActive(true);
-		emitter.getLife().setHigh(200);
+		emitter.getLife().setHigh(100);
 
 		//Spawn
 		PointSpawnShapeValue spawn = new PointSpawnShapeValue();
@@ -72,10 +92,18 @@ public class MuzzleFlash1Effect extends BaboParticleEffect {
 
 		// Scale
 		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
-		scaleInfluencer.value.setTimeline(new float[]{0,1});
-		scaleInfluencer.value.setScaling(new float[]{0,1});
-		scaleInfluencer.value.setHigh(60);
+		scaleInfluencer.value.setTimeline(new float[]{0,0.5f,1});
+		scaleInfluencer.value.setScaling(new float[]{0,1, 1});
+		scaleInfluencer.value.setHigh(100);
 		scaleInfluencer.value.setLow(2);
+		
+		// Position
+		PositionInfluencer positionInfluencer = new PositionInfluencer();
+		positionInfluencer.strengthValue.setTimeline(new float[]{1});
+		positionInfluencer.strengthValue.setScaling(new float[]{1});
+		positionInfluencer.strengthValue.setHigh(30);
+		positionInfluencer.phiValue = 90;
+		positionInfluencer.thetaValue = 0;
 		
 		// Rotation qui sera mis a jour a chaque tir en fonction de l'angle
 		RotationInfluencer rotationInfluencer = new RotationInfluencer();
@@ -86,8 +114,8 @@ public class MuzzleFlash1Effect extends BaboParticleEffect {
 		colorInfluencer.alphaValue.setActive(true);
 		colorInfluencer.alphaValue.setLow(0);
 		colorInfluencer.alphaValue.setHigh(1);
-		colorInfluencer.alphaValue.setTimeline(new float[] {0,1});
-		colorInfluencer.alphaValue.setScaling(new float[] {1,0});
+		colorInfluencer.alphaValue.setTimeline(new float[] {0, 0.5f, 1});
+		colorInfluencer.alphaValue.setScaling(new float[] {1,1,0});
 
 		colorInfluencer.colorValue.setColors(new float[] {1,1,1});
 		colorInfluencer.colorValue.setTimeline(new float[] {0});
@@ -97,7 +125,8 @@ public class MuzzleFlash1Effect extends BaboParticleEffect {
 			spawnSource,
 			scaleInfluencer,
 			colorInfluencer,
-			rotationInfluencer
+			rotationInfluencer,
+			positionInfluencer
 			));
 	}
 }
