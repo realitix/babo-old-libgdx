@@ -4,6 +4,7 @@ import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
 import com.baboviolent.game.effect.particle.influencers.PositionInfluencer;
 import com.baboviolent.game.effect.particle.influencers.RotationInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleHeightInfluencer;
+import com.baboviolent.game.effect.particle.influencers.ScaleWidthInfluencer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
@@ -60,21 +61,6 @@ public class Bullet1Effect extends BaboParticleEffect {
 		super.init();
 	}
 	
-	/*
-	public void init() {
-		ParticleController c = getControllers().get(0);
-		DynamicsInfluencer d = c.findInfluencer(DynamicsInfluencer.class);
-		PolarAcceleration pa = (PolarAcceleration) d.velocities.get(0);
-		
-		c.getTransform(tmpM);
-		tmpM.getRotation(tmpQ);
-		float angle = getAngleFromQuaternion(tmpQ);
-		
-		pa.thetaValue.setHigh(angle);
-		
-		super.init();
-	}*/
-	
 	public void configure() {
 		//Emitter
 		RegularEmitter emitter = new RegularEmitter();
@@ -101,14 +87,26 @@ public class Bullet1Effect extends BaboParticleEffect {
 		spawn.yOffsetValue.setActive(false);
 		spawn.zOffsetValue.setActive(false);
 		SpawnInfluencer spawnSource = new SpawnInfluencer(spawn);
-
-		//Scale
-		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
-		scaleInfluencer.value.setTimeline(new float[]{0, 1});
-		scaleInfluencer.value.setScaling(new float[]{0, 1});
-		scaleInfluencer.value.setLow(10);
-		scaleInfluencer.value.setHigh(24);
 		
+		// Scale
+		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
+		scaleInfluencer.value.setTimeline(new float[]{0});
+		scaleInfluencer.value.setScaling(new float[]{1});
+		scaleInfluencer.value.setHigh(1);
+		
+		//Scale Width
+		ScaleWidthInfluencer scaleWidthInfluencer = new ScaleWidthInfluencer();
+		scaleWidthInfluencer.value.setTimeline(new float[]{0, 0.3f, 1});
+		scaleWidthInfluencer.value.setScaling(new float[]{0, 0.5f, 1});
+		scaleWidthInfluencer.value.setLow(10);
+		scaleWidthInfluencer.value.setHigh(10);
+		
+		//Scale Height
+		ScaleHeightInfluencer scaleHeightInfluencer = new ScaleHeightInfluencer();
+		scaleHeightInfluencer.value.setTimeline(new float[]{0, 0.3f, 1});
+		scaleHeightInfluencer.value.setScaling(new float[]{0, 1, 1});
+		scaleHeightInfluencer.value.setLow(10);
+		scaleHeightInfluencer.value.setHigh(50);
 		
 		// Rotation qui sera mis a jour a chaque tir en fonction de l'angle
 		RotationInfluencer rotationInfluencer = new RotationInfluencer();
@@ -116,30 +114,14 @@ public class Bullet1Effect extends BaboParticleEffect {
 		
 		//Color
 		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
-	
 		colorInfluencer.alphaValue.setActive(true);
 		colorInfluencer.alphaValue.setLow(0);
 		colorInfluencer.alphaValue.setHigh(1);
 		colorInfluencer.alphaValue.setTimeline(new float[] {0, 1});
-		colorInfluencer.alphaValue.setScaling(new float[] {1, 1});
-
-		//colorInfluencer.colorValue.setColors(new float[] {0.7f,0.7f,0.7f});
-		colorInfluencer.colorValue.setColors(new float[] {1,1,1});
+		colorInfluencer.alphaValue.setScaling(new float[] {1, 0});
+		colorInfluencer.colorValue.setColors(new float[] {0.9f,0.5f,0.5f});
 		colorInfluencer.colorValue.setTimeline(new float[] {0});
-		
-		//Dynamics
-		/*DynamicsInfluencer dynamicsInfluencer = new DynamicsInfluencer();
-		
-		PolarAcceleration modifier = new PolarAcceleration();
-		modifier.strengthValue.setTimeline(new float[]{0});
-		modifier.strengthValue.setScaling(new float[]{1});
-		modifier.strengthValue.setHigh(5000);
-		modifier.phiValue.setTimeline(new float[]{0});
-		modifier.phiValue.setScaling(new float[]{1});
-		modifier.phiValue.setHigh(90);
-		modifier.thetaValue.setTimeline(new float[]{0});
-		modifier.thetaValue.setScaling(new float[]{1});
-		dynamicsInfluencer.velocities.add(modifier);*/
+
 		
 		// Position
 		PositionInfluencer positionInfluencer = new PositionInfluencer();
@@ -154,10 +136,11 @@ public class Bullet1Effect extends BaboParticleEffect {
 			new RegionInfluencer.Single(batch.getTexture()),
 			spawnSource,
 			scaleInfluencer,
+			scaleWidthInfluencer,
+			scaleHeightInfluencer,
 			colorInfluencer,
 			rotationInfluencer,
 			positionInfluencer
-			//dynamicsInfluencer
 			));
 	}
 	

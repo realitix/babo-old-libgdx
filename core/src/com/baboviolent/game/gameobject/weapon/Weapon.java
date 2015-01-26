@@ -58,13 +58,14 @@ public class Weapon extends GameObject {
     	/**
     	 * Si on est dirige vers la cible, on stoppe le mouvement
     	 */
-    	if( Math.abs(targetAngle - currentAngle) < 4 ) {
+    	if( Math.abs(targetAngle - currentAngle) < 3 ) {
     		instance.body.clearForces();
     		instance.body.setAngularVelocity(new Vector3(0,0,0));
     	}
     	else {
     		float av = instance.body.getAngularVelocity().y;
-    		float velocity = 5;
+    		//float velocity = 5;
+    		float velocity = (Math.abs(targetAngle - currentAngle)%360)/5;
     		// On determine le sens de la target
     		boolean toLeft = false;
     		float targetAngleOrigin2 = targetAngle - currentAngle;

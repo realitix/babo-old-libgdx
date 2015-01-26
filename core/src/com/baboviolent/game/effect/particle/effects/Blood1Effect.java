@@ -1,16 +1,20 @@
 package com.baboviolent.game.effect.particle.effects;
 
 import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
+import com.baboviolent.game.effect.particle.influencers.PositionInfluencer;
 import com.baboviolent.game.effect.particle.influencers.RotationInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleHeightInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleWidthInfluencer;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.TangentialAcceleration;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer;
+import com.badlogic.gdx.graphics.g3d.particles.influencers.RegionInfluencer.AspectTextureRegion;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ScaleInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.SpawnInfluencer;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.BrownianAcceleration;
@@ -19,46 +23,58 @@ import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.Rota
 import com.badlogic.gdx.graphics.g3d.particles.renderers.BillboardRenderer;
 import com.badlogic.gdx.graphics.g3d.particles.values.LineSpawnShapeValue;
 import com.badlogic.gdx.graphics.g3d.particles.values.PointSpawnShapeValue;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.utils.Array;
 
-/**
- * Trainee de fumme lors du tir
- */
-public class Collision1Effect extends BaboParticleEffect {
-	public static final String NAME = "collision1";
+
+public class Blood1Effect extends BaboParticleEffect {
+	public static final String NAME = "blood1";
 	
-	public Collision1Effect(BaboParticleBatch batch) {
+	private TextureAtlas atlas;
+	
+	public Blood1Effect(BaboParticleBatch batch, TextureAtlas atlas) {
 		super(batch);
 		name = NAME;
+		this.atlas = atlas;
 		configure();
 	}
 	
-	public Collision1Effect(Collision1Effect effect) {
+	public Blood1Effect(Blood1Effect effect) {
 		super(effect);
+		this.atlas = effect.getAtlas();
 	}
 	
 	@Override
-	public Collision1Effect copy() {
-		return new Collision1Effect(this);
+	public Blood1Effect copy() {
+		return new Blood1Effect(this);
+	}
+	
+	@Override
+	public void init() {
+		ColorInfluencer.Single c = getControllers().get(0).findInfluencer(ColorInfluencer.Single.class);
+		c.colorValue.setColors(new float[] {MathUtils.random(0.3f, 1f),0,0});
+		super.init();
 	}
 	
 	public void configure() {
 		//Emitter
 		RegularEmitter emitter = new RegularEmitter();
-		emitter.setMinParticleCount(1);
-		emitter.setMaxParticleCount(1);
+		emitter.setMinParticleCount(10);
+		emitter.setMaxParticleCount(200);
 		emitter.setContinuous(false);
 
 		emitter.getEmission().setActive(true);
-		emitter.getEmission().setLow(1);
+		emitter.getEmission().setHigh(100);
 		
 		emitter.getDuration().setActive(true);
-		emitter.getDuration().setLow(100);
+		emitter.getDuration().setLow(600);
 		
 		emitter.getLife().setActive(true);
-		emitter.getLife().setHigh(200);
+		emitter.getLife().setHigh(1000);
+		emitter.getLife().setScaling(new float[] {1});
+		emitter.getLife().setTimeline(new float[] {0});
 
 		//Spawn
 		PointSpawnShapeValue spawn = new PointSpawnShapeValue();
@@ -68,29 +84,59 @@ public class Collision1Effect extends BaboParticleEffect {
 		spawn.yOffsetValue.setActive(false);
 		spawn.zOffsetValue.setActive(false);
 		SpawnInfluencer spawnSource = new SpawnInfluencer(spawn);
-
+		
 		// Scale
 		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
-		scaleInfluencer.value.setTimeline(new float[]{0});
-		scaleInfluencer.value.setScaling(new float[]{1});
-		scaleInfluencer.value.setHigh(32);
-		
+		scaleInfluencer.value.setTimeline(new float[]{0, 1});
+		scaleInfluencer.value.setScaling(new float[]{0,1});
+		scaleInfluencer.value.setHigh(10);
+		scaleInfluencer.value.setHigh(50);
+
 		//Color
 		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
 		colorInfluencer.alphaValue.setActive(true);
 		colorInfluencer.alphaValue.setLow(0);
 		colorInfluencer.alphaValue.setHigh(1);
-		colorInfluencer.alphaValue.setTimeline(new float[] {0,1});
-		colorInfluencer.alphaValue.setScaling(new float[] {1,0});
-
-		colorInfluencer.colorValue.setColors(new float[] {1,1,1});
+		colorInfluencer.alphaValue.setTimeline(new float[] {0, 1});
+		colorInfluencer.alphaValue.setScaling(new float[] {1, 0});
+		colorInfluencer.colorValue.setColors(new float[] {1,0,0});
 		colorInfluencer.colorValue.setTimeline(new float[] {0});
 		
+		// Region
+		Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();
+		RegionInfluencer.Random regionInfluencer = new RegionInfluencer.Random();
+		regionInfluencer.regions = new Array<AspectTextureRegion>( false, regions.size, AspectTextureRegion.class);
+		for( int i = 0; i < regions.size; i++ ) {
+			regionInfluencer.add(regions.get(i));
+		}
+		
+		//Dynamics
+		// Il faut faire brownian plus polar
+		DynamicsInfluencer dynamicsInfluencer = new DynamicsInfluencer();
+		
+		BrownianAcceleration modifier1 = new BrownianAcceleration();
+		modifier1.strengthValue.setTimeline(new float[]{0});
+		modifier1.strengthValue.setScaling(new float[]{1});
+		modifier1.strengthValue.setHigh(5000);
+		
+		TangentialAcceleration modifier2 = new TangentialAcceleration();
+		modifier2.strengthValue.setTimeline(new float[]{0});
+		modifier2.strengthValue.setScaling(new float[]{1});
+		modifier2.strengthValue.setHigh(10);
+		
+		dynamicsInfluencer.velocities.add(modifier1);
+		//dynamicsInfluencer.velocities.add(modifier2);
+		
 		getControllers().add(new ParticleController(name, emitter, new BillboardRenderer(batch),
-			new RegionInfluencer.Single(batch.getTexture()),
+			regionInfluencer,
 			spawnSource,
 			scaleInfluencer,
-			colorInfluencer
+			colorInfluencer,
+			dynamicsInfluencer
 			));
+	}
+	
+	public TextureAtlas getAtlas() {
+		return atlas;
 	}
 }

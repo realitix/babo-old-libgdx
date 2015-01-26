@@ -6,6 +6,7 @@ import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
 import com.baboviolent.game.effect.particle.batches.BatchSpecific1;
 import com.baboviolent.game.effect.particle.batches.BatchSpecific2;
 import com.baboviolent.game.effect.particle.effects.BaboParticleEffect;
+import com.baboviolent.game.effect.particle.effects.Blood1Effect;
 import com.baboviolent.game.effect.particle.effects.Bullet1Effect;
 import com.baboviolent.game.effect.particle.effects.Collision1Effect;
 import com.baboviolent.game.effect.particle.effects.MuzzleFlash1Effect;
@@ -14,6 +15,7 @@ import com.baboviolent.game.effect.particle.effects.Smoke2Effect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
@@ -50,10 +52,14 @@ public class BaboParticleSystem {
 	 * et ensuite les pools
 	 */
 	private void initSystem(Camera camera) {
+		String p = BaboViolentGame.PATH_PARTICLES;
+		
+		// Precharge pour le sang car textureatlas
+		TextureAtlas bloodAtlas = new TextureAtlas(p+"blood/atlas/blood.atlas");
+		
 		/*
 		 * Initialisation des batches
 		 */
-		String p = BaboViolentGame.PATH_PARTICLES;
 		batches = new Array<BaboParticleBatch>();
 		
 		BaboParticleBatch batch1 = new BatchSpecific1(
@@ -72,11 +78,15 @@ public class BaboParticleSystem {
 				camera, 
 				new Texture(Gdx.files.internal(p+"shotGlow.png")));
 		
-		BaboParticleBatch batch5 = new BatchSpecific1(
+		BaboParticleBatch batch5 = new BatchSpecific2(
 				camera,
 				new Texture(Gdx.files.internal(p+"glowTrail.png")));
 		
-		batches.addAll(batch1, batch2, batch3, batch4, batch5);
+		BaboParticleBatch batch6 = new BatchSpecific1(
+				camera,
+				bloodAtlas.getTextures().first());
+		
+		batches.addAll(batch1, batch2, batch3, batch4, batch5, batch6);
 		
 		/*
 		 * Initialisation des pools
@@ -87,6 +97,7 @@ public class BaboParticleSystem {
 		pools.put(MuzzleFlash1Effect.NAME, new PoolParticle(new MuzzleFlash1Effect(batch3), this));
 		pools.put(Collision1Effect.NAME, new PoolParticle(new Collision1Effect(batch4), this));
 		pools.put(Bullet1Effect.NAME, new PoolParticle(new Bullet1Effect(batch5), this));
+		pools.put(Blood1Effect.NAME, new PoolParticle(new Blood1Effect(batch6, bloodAtlas), this));
 	}
 	
 	public void start(String name, Matrix4 transform) {

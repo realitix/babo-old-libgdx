@@ -106,10 +106,20 @@ public class Shotgun extends Weapon {
 			if( result != null ) {
 				from.set(result.getStartRay());
 				to.set(result.getEndRay());
-				if( !result.isMap() && result.getObject().getType() == GameObject.TYPE_BABO ) {
-					((Babo)result.getObject())
-						.setLastShooter(this.getBabo())
+				if( !result.isMap() ) {
+					Babo targetBabo = null;
+					switch( result.getObject().getType() ) {
+						case GameObject.TYPE_BABO:
+							targetBabo = ((Babo)result.getObject());
+							break;
+						case GameObject.TYPE_WEAPON:
+							targetBabo = ((Weapon)result.getObject()).getBabo();
+					}
+					
+					if( targetBabo != null ) {
+						targetBabo.setLastShooter(this.getBabo())
 						.hit(power);
+					}
 				}
 				
 				normalRay = result.getNormalRay();

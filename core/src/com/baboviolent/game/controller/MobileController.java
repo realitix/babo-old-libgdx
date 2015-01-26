@@ -2,6 +2,7 @@ package com.baboviolent.game.controller;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Utils;
+import com.baboviolent.game.controller.scene2d.BaboTouchpad;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.mode.BaseMode;
 import com.baboviolent.game.screen.GameScreen;
@@ -48,10 +49,10 @@ public class MobileController extends BaseController {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		
 		int size = width/5;
-		left = new Touchpad(size/5, skin);
+		left = new BaboTouchpad(size/5, skin);
 		left.setBounds(width/10, height/10, size, size);
 		
-		right = new Touchpad(size/5, skin);
+		right = new BaboTouchpad(size/5, skin);
 		right.setBounds(width - width/10 - size, height/10, size, size);
 		
 		stage.addActor(left);
