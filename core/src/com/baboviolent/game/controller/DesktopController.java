@@ -46,7 +46,7 @@ public class DesktopController extends BaseController implements InputProcessor 
         if( keycode == Keys.RIGHT )
         	direction.x = 1;
         
-		mode.onSetPlayerDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
+        mode.onSetPlayerDirection(direction.nor());
 		return true;
     }
     
@@ -66,7 +66,7 @@ public class DesktopController extends BaseController implements InputProcessor 
     	if( keycode == Keys.RIGHT && direction.x > 0 )
     		direction.x = 0;
     	
-    	mode.onSetPlayerDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
+    	mode.onSetPlayerDirection(direction.nor());
     	return true;
     }
     

@@ -47,10 +47,10 @@ public class Shotgun extends Weapon {
 	public Shotgun(final Babo babo, final BulletWorld world, final BaboEffectSystem effectSystem) {
 		super(babo, world, effectSystem);
 		name = "Shotgun";
-		impulse = 50000;
+		impulse = 100;
 		rotateImpulse = 200000;
 		frequency = 1000;
-		distanceShoot = 1000;
+		distanceShoot = 10;
 		power = 20;
 	    
         
@@ -68,7 +68,7 @@ public class Shotgun extends Weapon {
 		
 		// Decale tmpM pour etre au bout du fusil
 		Quaternion decal = rotateQuaternion(tmpQ.cpy(), 353);
-		tmpM.trn(decal.transform(tmpV3.set(1,0,0)).scl(130));
+		tmpM.trn(decal.transform(tmpV3.set(1,0,0)).scl(1.3f));
 		Matrix4 tmpMBase = tmpM.cpy();
 		
 		// Le fusil tir plusieurs balles en meme temps
@@ -123,7 +123,8 @@ public class Shotgun extends Weapon {
     	effectSystem.get(Shoot1.NAME).startUnique(tmpMBase);
     	
     	// On creer la force inverse
-    	//instance.body.applyCentralImpulse(tmpV3.scl(-100));
+    	tmpMBase.getTranslation(tmpV3);
+    	instance.body.applyCentralImpulse(tmpV3.sub(target).nor().scl(impulse));
     	
     	// On enregistre la date du tir
     	lastShoot = TimeUtils.millis();

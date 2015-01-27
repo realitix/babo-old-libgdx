@@ -94,14 +94,14 @@ public class MuzzleFlash1Effect extends BaboParticleEffect {
 		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
 		scaleInfluencer.value.setTimeline(new float[]{0,0.5f,1});
 		scaleInfluencer.value.setScaling(new float[]{0,1, 1});
-		scaleInfluencer.value.setHigh(100);
-		scaleInfluencer.value.setLow(2);
+		scaleInfluencer.value.setHigh(1);
+		scaleInfluencer.value.setLow(0.02f);
 		
 		// Position
 		PositionInfluencer positionInfluencer = new PositionInfluencer();
 		positionInfluencer.strengthValue.setTimeline(new float[]{1});
 		positionInfluencer.strengthValue.setScaling(new float[]{1});
-		positionInfluencer.strengthValue.setHigh(30);
+		positionInfluencer.strengthValue.setHigh(0.3f);
 		positionInfluencer.phiValue = 90;
 		positionInfluencer.thetaValue = 0;
 		

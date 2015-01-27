@@ -32,7 +32,6 @@ public class BaboViolentGame extends Game {
     static public String EXTENSION_MAP = "babomap";
     static public final float SIZE_MAP_CELL = 2;
     static public final float BABO_DIAMETER = 1;
-    static public final float BABO_SPEED = 10;
 	
 	@Override
 	public void create () {

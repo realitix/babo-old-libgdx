@@ -25,7 +25,7 @@ public class Shoot1 extends GroupEffect {
 		p.startWithWidth(Bullet1Effect.NAME, transform, from.dst(to));
 		p.startWithWidth(Smoke1Effect.NAME, transform, from.dst(to));
 		
-		Vector3 dir = to.cpy().sub(from).nor().scl(20);
+		Vector3 dir = to.cpy().sub(from).nor().scl(0.2f);
 		Matrix4 impact = transform.cpy().trn(to.cpy().sub(from).sub(dir));
 		p.start(Collision1Effect.NAME, impact);
 		p.startWithNormal(Smoke2Effect.NAME, impact, normalRay);

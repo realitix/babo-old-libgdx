@@ -13,7 +13,7 @@ public class DeathMatchMode extends BaseMode {
 	
 	public DeathMatchMode(final String mapName) {
 		super(mapName);
-		nbIa = 0;
+		nbIa = 1;
     }	
 
 }

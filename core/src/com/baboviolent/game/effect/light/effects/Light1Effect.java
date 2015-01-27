@@ -22,7 +22,7 @@ public class Light1Effect extends BaboLightEffect {
 	
 	public void configure() {
 		color.set(0.8f, 0.34f, 0, 1);
-		intensity = 10000;
+		intensity = 10;
 		life = 200;
 	}
 	

@@ -69,7 +69,7 @@ public class MobileController extends BaseController {
         	v2.set(left.getKnobPercentX(), left.getKnobPercentY());
         	v2.setAngle(roundAngle(v2.angle()));
         	direction.set(v2.x, 0, v2.y);
-        	mode.onSetPlayerDirection(direction.nor().scl(BaboViolentGame.BABO_SPEED));
+        	mode.onSetPlayerDirection(direction.nor());
         }
         else if( !direction.isZero() ) {
         	direction.set(0, 0, 0);

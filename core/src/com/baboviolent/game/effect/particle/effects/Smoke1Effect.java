@@ -100,21 +100,21 @@ public class Smoke1Effect extends BaboParticleEffect {
 		scaleWidthInfluencer.value.setTimeline(new float[]{0, 0.3f, 1});
 		scaleWidthInfluencer.value.setScaling(new float[]{0, 0.5f, 1});
 		scaleWidthInfluencer.value.setLow(0);
-		scaleWidthInfluencer.value.setHigh(50);
+		scaleWidthInfluencer.value.setHigh(0.5f);
 		
 		//Scale Height
 		ScaleHeightInfluencer scaleHeightInfluencer = new ScaleHeightInfluencer();
 		scaleHeightInfluencer.value.setTimeline(new float[]{0, 0.3f, 1});
 		scaleHeightInfluencer.value.setScaling(new float[]{0, 1, 1});
-		scaleHeightInfluencer.value.setLow(10);
-		scaleHeightInfluencer.value.setHigh(1000);
+		scaleHeightInfluencer.value.setLow(0.1f);
+		scaleHeightInfluencer.value.setHigh(10);
 		
 		// Position
 		PositionInfluencer positionInfluencer = new PositionInfluencer();
 		positionInfluencer.strengthValue.setTimeline(new float[]{0, 0.3f, 1});
 		positionInfluencer.strengthValue.setScaling(new float[]{0, 1, 1});
 		positionInfluencer.strengthValue.setLow(0);
-		positionInfluencer.strengthValue.setHigh(500);
+		positionInfluencer.strengthValue.setHigh(5);
 		positionInfluencer.phiValue = 90;
 		positionInfluencer.thetaValue = 0;
 		

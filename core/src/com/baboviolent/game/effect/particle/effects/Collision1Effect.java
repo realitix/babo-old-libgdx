@@ -73,7 +73,7 @@ public class Collision1Effect extends BaboParticleEffect {
 		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
 		scaleInfluencer.value.setTimeline(new float[]{0});
 		scaleInfluencer.value.setScaling(new float[]{1});
-		scaleInfluencer.value.setHigh(32);
+		scaleInfluencer.value.setHigh(0.32f);
 		
 		//Color
 		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();

@@ -80,11 +80,11 @@ public class Babo extends GameObject {
         friction = 100f;
         rollingFriction = 0.1f;
         linearDamping = 0.8f;
-        angularDamping = 0.4f;
+        angularDamping = 0.8f;
         restitution = 0.5f;
         mass = 20;
-        maxSpeed = 10;
-    	maxAcceleration = 200;
+        maxSpeed = 350;
+    	maxAcceleration = 400;
         
         target = new Vector3();
         
@@ -244,7 +244,10 @@ public class Babo extends GameObject {
 		trans.setTranslation(0, 0, 0);*/
 		
 		// Le vecteur torque indique sur quel axe on tourne. Si on veut aller vers x, il faut tourner sur l'axe z
-		b.applyTorque(new Vector3(torque.z, torque.y, torque.x));
+		//b.applyTorque(new Vector3(torque.z, torque.y, torque.x));
+		// Test avec impulsion centrale
+		torque.y = 0;
+		b.applyCentralForce(new Vector3(-torque.x, torque.y, torque.z));
     }
     
     public Babo teleport(Vector3 v) {

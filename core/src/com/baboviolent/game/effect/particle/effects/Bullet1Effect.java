@@ -30,7 +30,7 @@ public class Bullet1Effect extends BaboParticleEffect {
 	private Matrix4 tmpM = new Matrix4();
 	private Quaternion tmpQ = new Quaternion();
 	private float life = 400;
-	private float initWidth = 1000;
+	private float initWidth = 10;
 	
 	public Bullet1Effect(BaboParticleBatch batch) {
 		super(batch);
@@ -98,15 +98,15 @@ public class Bullet1Effect extends BaboParticleEffect {
 		ScaleWidthInfluencer scaleWidthInfluencer = new ScaleWidthInfluencer();
 		scaleWidthInfluencer.value.setTimeline(new float[]{0, 0.3f, 1});
 		scaleWidthInfluencer.value.setScaling(new float[]{0, 0.5f, 1});
-		scaleWidthInfluencer.value.setLow(10);
-		scaleWidthInfluencer.value.setHigh(10);
+		scaleWidthInfluencer.value.setLow(0.1f);
+		scaleWidthInfluencer.value.setHigh(0.1f);
 		
 		//Scale Height
 		ScaleHeightInfluencer scaleHeightInfluencer = new ScaleHeightInfluencer();
 		scaleHeightInfluencer.value.setTimeline(new float[]{0, 0.3f, 1});
 		scaleHeightInfluencer.value.setScaling(new float[]{0, 1, 1});
-		scaleHeightInfluencer.value.setLow(10);
-		scaleHeightInfluencer.value.setHigh(50);
+		scaleHeightInfluencer.value.setLow(0.1f);
+		scaleHeightInfluencer.value.setHigh(0.5f);
 		
 		// Rotation qui sera mis a jour a chaque tir en fonction de l'angle
 		RotationInfluencer rotationInfluencer = new RotationInfluencer();

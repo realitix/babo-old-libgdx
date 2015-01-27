@@ -121,8 +121,8 @@ public class Smoke2Effect extends BaboParticleEffect {
 		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
 		scaleInfluencer.value.setTimeline(new float[]{0, 1});
 		scaleInfluencer.value.setScaling(new float[]{0, 1});
-		scaleInfluencer.value.setLow(60);
-		scaleInfluencer.value.setHigh(60);
+		scaleInfluencer.value.setLow(0.6f);
+		scaleInfluencer.value.setHigh(0.6f);
 		
 		//Color
 		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
@@ -147,13 +147,13 @@ public class Smoke2Effect extends BaboParticleEffect {
 		PolarAcceleration modifier2 = new PolarAcceleration();
 		modifier2.strengthValue.setTimeline(new float[]{0});
 		modifier2.strengthValue.setScaling(new float[]{1});
-		modifier2.strengthValue.setHigh(30);
+		modifier2.strengthValue.setHigh(0.3f);
 		
 		PolarAcceleration modifier3 = new PolarAcceleration();
 		modifier3.strengthValue.setTimeline(new float[]{0, 1});
 		modifier3.strengthValue.setScaling(new float[]{1, 0});
-		modifier3.strengthValue.setHigh(1800);
-		modifier3.strengthValue.setLow(200);
+		modifier3.strengthValue.setHigh(18);
+		modifier3.strengthValue.setLow(2);
 		modifier3.phiValue.setTimeline(new float[]{0});
 		modifier3.phiValue.setScaling(new float[]{1});
 		modifier3.phiValue.setHigh(90);
@@ -205,8 +205,8 @@ public class Smoke2Effect extends BaboParticleEffect {
 		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
 		scaleInfluencer.value.setTimeline(new float[]{0, 1});
 		scaleInfluencer.value.setScaling(new float[]{0, 1});
-		scaleInfluencer.value.setLow(30);
-		scaleInfluencer.value.setHigh(200);
+		scaleInfluencer.value.setLow(0.3f);
+		scaleInfluencer.value.setHigh(2);
 		
 		//Color
 		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
@@ -231,7 +231,7 @@ public class Smoke2Effect extends BaboParticleEffect {
 		PolarAcceleration modifier2 = new PolarAcceleration();
 		modifier2.strengthValue.setTimeline(new float[]{0});
 		modifier2.strengthValue.setScaling(new float[]{1});
-		modifier2.strengthValue.setHigh(30);
+		modifier2.strengthValue.setHigh(0.3f);
 		
 		dynamicsInfluencer.velocities.add(modifier1);
 		dynamicsInfluencer.velocities.add(modifier2);
