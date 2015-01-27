@@ -215,7 +215,9 @@ public class BaseMode {
     }
     
     protected void updateCursor(Vector3 target) {
-    	cursor.setPosition(target);
+    	Vector3 tmp = target.cpy();
+    	tmp.y = BaboViolentGame.SIZE_MAP_CELL;
+    	cursor.setPosition(tmp);
     }
     
     /**
