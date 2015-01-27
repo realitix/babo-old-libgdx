@@ -125,7 +125,7 @@ public class Map {
 	}
 	
 	/**
-	 * Créer un modèle à partir du nom
+	 * Cree un modele a partir du nom
 	*/
 	static public Model loadModel (String mapname) {
         return Map.loadModel(Map.load(mapname));
@@ -172,7 +172,7 @@ public class Map {
         	Material material = materials.get(cells.get(i).getTextureName());
             Node node = modelBuilder.node();
             node.id = "cell"+i;
-            node.translation.set(cells.get(i).getPosition());
+            node.translation.set(cells.get(i).getAbsolutePosition());
             node.rotation.set(new Quaternion().set(up, cells.get(i).getAngle()));
             modelBuilder.part(
             	meshPart, 

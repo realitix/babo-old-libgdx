@@ -100,7 +100,7 @@ public class BaseMode {
         cursor = Decal.newDecal(new TextureRegion(
         		new Texture(Gdx.files.internal(BaboViolentGame.PATH_TEXTURE_OTHERS+"Cross01.png"))),
         		true);
-        cursor.setDimensions(120, 120);
+        cursor.setDimensions(1.5f, 1.5f);
         cursor.setRotation(Vector3.Y, Vector3.Y);
     }
     
@@ -230,7 +230,7 @@ public class BaseMode {
     	float max = 0;
     	for( int i = 0; i < map.getCells().size; i++ ) {
     	    if( map.getCells().get(i).getType().equals(Map.TYPE_GROUND) ) {
-    	        Vector3 cp = map.getCells().get(i).getPosition();
+    	        Vector3 cp = map.getCells().get(i).getAbsolutePosition();
     	        float sumTmp = 0;
         	    for( int j = 0; j < babos.size; j++ ) {
         	        if( babos.get(j).getState() == Babo.STATE_ALIVE ) {
@@ -245,6 +245,8 @@ public class BaseMode {
         	    }
     	    }
     	}
+    	
+    	position.y = BaboViolentGame.BABO_DIAMETER + 0.001f;
     	
     	return position;
     }

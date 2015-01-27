@@ -231,9 +231,9 @@ public class Utils {
 		Ray ray = camera.getPickRay(screenX, screenY);
         final float distance = -ray.origin.y / ray.direction.y;
         position.set(ray.direction).scl(distance).add(ray.origin);
-        position.x = Math.round(position.x);
+        /*position.x = Math.round(position.x);
         position.y = Math.round(position.y);
-        position.z = Math.round(position.z);
+        position.z = Math.round(position.z);*/
         return position;
 	}
 	

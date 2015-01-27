@@ -1,8 +1,15 @@
 package com.baboviolent.game.map;
 
+import com.baboviolent.game.BaboViolentGame;
 import com.badlogic.gdx.math.Vector3;
 
-public class Cell {	
+public class Cell {
+	/**
+	 * Position sur la grille
+	 * Ce n'est pas la position absolue, on en deduit ensuite la taille
+	 * C'est juste le placement des carres
+	 * Attention commence a zero
+	 */
 	private Vector3 position;
 	private String type;
 	private String textureName;
@@ -31,6 +38,10 @@ public class Cell {
 	
 	public Vector3 getPosition() {
 		return position.cpy();
+	}
+	
+	public Vector3 getAbsolutePosition() {
+		return position.cpy().scl(BaboViolentGame.SIZE_MAP_CELL);
 	}
 	
 	public Cell setPosition(Vector3 position) {

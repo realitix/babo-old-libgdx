@@ -37,6 +37,13 @@ public class Weapon extends GameObject {
 		babo = b;
 		world = w;
 		effectSystem = e;
+		
+		friction = 0.1f;
+        rollingFriction = 0.1f;
+        linearDamping = 0.1f;
+        angularDamping = 0.1f;
+        restitution = 0.1f;
+        mass = 1;
 	}
 	
 	// Amelioration en utilisant seulement l'angular velocity
@@ -58,14 +65,16 @@ public class Weapon extends GameObject {
     	/**
     	 * Si on est dirige vers la cible, on stoppe le mouvement
     	 */
-    	if( Math.abs(targetAngle - currentAngle) < 3 ) {
+    	float ceil = 3;
+    	float diffAngle = Math.abs(targetAngle - currentAngle);
+    	if( diffAngle < ceil || diffAngle > 360 - ceil ) {
     		instance.body.clearForces();
-    		instance.body.setAngularVelocity(new Vector3(0,0,0));
+    		instance.body.setAngularVelocity(Vector3.Zero);
     	}
     	else {
     		float av = instance.body.getAngularVelocity().y;
-    		//float velocity = 5;
-    		float velocity = (Math.abs(targetAngle - currentAngle)%360)/5;
+    		float velocity = 5;
+    		//float velocity = (Math.abs(targetAngle - currentAngle)%360)/5;
     		// On determine le sens de la target
     		boolean toLeft = false;
     		float targetAngleOrigin2 = targetAngle - currentAngle;

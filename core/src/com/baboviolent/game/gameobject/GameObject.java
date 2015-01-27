@@ -70,6 +70,7 @@ public class GameObject {
         ci.setLinearDamping(linearDamping);
         ci.setAngularDamping(angularDamping);
         ci.setRestitution(restitution);
+        
         body = new btRigidBody(ci);
         body.setUserValue(id);
         

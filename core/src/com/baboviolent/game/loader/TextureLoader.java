@@ -177,14 +177,14 @@ public class TextureLoader {
     }
 	
 	/**
-     * Charge tous les modeles du type passé en paramètre
+     * Charge tous les modeles du type passe en parametre
      */ 
     static public ObjectMap<String, Model> getModels(String type) {
         return getModels(listTextureFolder(type), type);
 	}
 	
 	/**
-     * Charge les modèles du type passés en paramètre
+     * Charge les modeles du type passes en parametre
      */ 
     static public ObjectMap<String, Model> getModels(Array<String> toLoad, String type) {
         ObjectMap<String, Material> materials = TextureLoader.getMaterials(toLoad, type);

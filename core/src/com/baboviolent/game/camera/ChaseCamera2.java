@@ -17,8 +17,8 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 public class ChaseCamera2 extends PerspectiveCamera {
 	/** Babo a suivre */
 	private Babo babo;
-	/** Distance par rapport à l'objet */ 
-	private final Vector3 desiredOffset = new Vector3(0, 1200, 0);
+	/** Distance par rapport a l'objet */ 
+	private final Vector3 desiredOffset = new Vector3(0, 12, 0);
 	/** Vecteur temporaire */
 	private Vector3 tmp = new Vector3();
 	private boolean loaded;
@@ -68,7 +68,7 @@ public class ChaseCamera2 extends PerspectiveCamera {
 		
 		tmp.set(startLook);
 		tmp.interpolate(endLook, animationStep, interpolation);
-		position.set(tmp.x, desiredOffset.y, tmp.z + desiredOffset.z);
+		position.set(tmp.x, babo.getPosition().y + desiredOffset.y, tmp.z + desiredOffset.z);
 		tmp.set(position);
 		tmp.y = 0;
 	    lookAt(tmp);

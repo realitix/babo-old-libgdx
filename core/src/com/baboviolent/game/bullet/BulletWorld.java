@@ -34,7 +34,7 @@ import com.badlogic.gdx.utils.PerformanceCounter;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class BulletWorld implements Disposable {
-	public static final int GRAVITY_START = 1000;
+	public static final int GRAVITY_START = 10;
 	
 	protected final Array<BulletInstance> instances = new Array<BulletInstance>();
 	protected final Array<BulletInstance> instancesToExpire = new Array<BulletInstance>();
@@ -162,14 +162,6 @@ public class BulletWorld implements Disposable {
 	}
 
 	public void render (final ModelBatch modelBatch, final Environment environment) {
-		/*for( int i = 0; i < instances.size; i++) {
-			if( instances.get(i).userData != null && instances.get(i).userData.equals("map") ) {
-				
-			}
-			else {
-				modelBatch.render(instances.get(i), environment);
-			}
-		}*/
 		modelBatch.render(instances, environment);
 	}
 

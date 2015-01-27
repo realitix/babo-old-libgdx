@@ -69,7 +69,7 @@ public class MapEditorScreen implements Screen {
 		modelBatch = new ModelBatch();
 		instances = new Array<ModelInstance>();
 		camera = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());;
-		camera.position.set(0f, 600, 0f);
+		camera.position.set(0f, 3*BaboViolentGame.SIZE_MAP_CELL, 0f);
 		camera.up.set(0, 0, 1);
 		camera.lookAt(0, 0, 0);
 		camera.far = 10000;
@@ -86,7 +86,7 @@ public class MapEditorScreen implements Screen {
         //cameraController.rotateButton = Buttons.LEFT;
         //cameraController.forwardButton = -10; // On desactive le forward
         //cameraController.scrollFactor = -0.1f;
-        cameraController.translateUnits = 3000f;
+        //cameraController.translateUnits = 3000f;
         
 		// Ajout de l'UI
 		ui = new UI( this, !BaboViolentGame.isMobile() );
@@ -109,16 +109,16 @@ public class MapEditorScreen implements Screen {
     
 	private void initGrid() {
 		ModelBuilder mb = new ModelBuilder();
+        float s = BaboViolentGame.SIZE_MAP_CELL;
         int gridX = 100;
         int gridZ = 100;
-        float s = BaboViolentGame.SIZE_MAP_CELL;
         // X = ROUGE, Y = VERT, Z = BLEU
         instances.add(new ModelInstance(mb.createXYZCoordinates( s*5, new Material(), Usage.Position | Usage.ColorUnpacked )));
         instances.add(new ModelInstance(mb.createLineGrid(gridX, gridZ, s, s, new Material(ColorAttribute.createDiffuse(Color.GRAY)), Usage.Position)));
 	}
 	
 	/**
-	 * Cette fonction permet de switcher entre rotation et déplacement
+	 * Cette fonction permet de switcher entre rotation et deplacement
 	 */
 	public void switchInput() {
 		if( rotationInput ) {
@@ -224,7 +224,7 @@ public class MapEditorScreen implements Screen {
     	if(currentModelInstance != null) {
     		Vector3 position = getPositionFromMouse(screenX, screenY);
     		if(currentType == Map.TYPE_GROUND || currentType == Map.TYPE_WALL)
-    			position = positionToCell(position);
+    			position = positionToGrid(position);
     		
 	        currentModelInstance.transform.setToTranslation(position);
     	}
@@ -244,12 +244,12 @@ public class MapEditorScreen implements Screen {
     }
     
     /**
-     * Cree une nouvelle instance du model en parametre et l'ajoute a�la map
+     * Cree une nouvelle instance du model en parametre et l'ajoute a la map
      */ 
     public void createCell(int screenX, int screenY) {
-    	Vector3 position = positionToCell(getPositionFromMouse(screenX, screenY));
+    	Vector3 mousePosition = getPositionFromMouse(screenX, screenY);
     	ModelInstance i = new ModelInstance(currentModel);
-    	i.transform.setTranslation(position);
+    	i.transform.setTranslation(positionToGrid(mousePosition));
     	instances.add(i);
     	
     	String type = "";
@@ -259,7 +259,7 @@ public class MapEditorScreen implements Screen {
     		type = Map.TYPE_WALL;
     	
     	i.userData = type;
-    	map.addCell(new Cell().setPosition(position).setTextureName(currentCellTexture).setType(type));
+    	map.addCell(new Cell().setPosition(positionToCell(mousePosition)).setTextureName(currentCellTexture).setType(type));
     }
     
     /**
@@ -299,15 +299,31 @@ public class MapEditorScreen implements Screen {
         }
     }
     
+    /**
+     * Permet de bien afficher 
+     */
+    private Vector3 positionToGrid(Vector3 position) {
+    	float s = BaboViolentGame.SIZE_MAP_CELL;
+    	Vector3 result = position.cpy();
+    	result.x -= s/2;
+    	result.z -= s/2;
+    	result.x = s * Math.round(result.x/s) + s/2;
+    	result.z = s * Math.round(result.z/s) + s/2;
+    	result.y = 0;
+		
+    	return result;
+    }
+    
+    /**
+     * Renvoie la position de la cellule 
+     */
     private Vector3 positionToCell(Vector3 position) {
     	float s = BaboViolentGame.SIZE_MAP_CELL;
-    	position.x -= s/2;
-		position.z -= s/2;
-        position.x = s * Math.round(position.x/s) + s/2;
-        position.z = s * Math.round(position.z/s) + s/2;
-        position.y = 0;
-		
-    	return position;
+    	Vector3 result = position.cpy();
+    	result.x = (float) Math.ceil(result.x/s);
+    	result.y = (float) Math.ceil(result.y/s);
+    	result.z = (float) Math.ceil(result.z/s);
+    	return result;
     }
 	
 	/**

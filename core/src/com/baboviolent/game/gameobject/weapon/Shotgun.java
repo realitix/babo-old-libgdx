@@ -52,13 +52,7 @@ public class Shotgun extends Weapon {
 		frequency = 1000;
 		distanceShoot = 1000;
 		power = 20;
-		
-	    friction = 0.1f;
-        rollingFriction = 0.1f;
-        linearDamping = 0.1f;
-        angularDamping = 0.1f;
-        restitution = 0.1f;
-        mass = 10;
+	    
         
         super.initInstance();
 	}

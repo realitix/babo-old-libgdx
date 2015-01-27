@@ -60,6 +60,8 @@ public class Babo extends GameObject {
 	private boolean manualDeath; // Si true, babo ne perd pas d'�nergie, bien pour multijoueur
 	private Babo lastShooter; // Dernier babo ayant touch� ce babo
 	private final BulletWorld world;
+	float maxSpeed;
+	float maxAcceleration;
 	
 	public Babo(String username, String skin, BaboParticleSystem particle, final BulletWorld world) {
 		this.particle = particle;
@@ -74,12 +76,16 @@ public class Babo extends GameObject {
 	    state = STATE_ALIVE;
 	    energy = ENERGY;
 	    manualDeath = false;
+	    
         friction = 100f;
-        rollingFriction = 150f;
+        rollingFriction = 0.1f;
         linearDamping = 0.8f;
-        angularDamping = 0.9f;
+        angularDamping = 0.4f;
         restitution = 0.5f;
-        mass = 2000;
+        mass = 20;
+        maxSpeed = 10;
+    	maxAcceleration = 200;
+        
         target = new Vector3();
         
         initInstance();
@@ -155,13 +161,17 @@ public class Babo extends GameObject {
     	state = STATE_ALIVE;
     	
     	// On rattache l'arme
-    	world.attachWeaponToBabo(this, weapon);
+    	if( weapon != null ) {
+    		world.attachWeaponToBabo(this, weapon);
+    	}
     }
     
     public void update() {
     	updateState();
     	if( state == STATE_ALIVE ) {
-    		updateWeapon();
+    		if( weapon != null ) {
+    			updateWeapon();
+    		}
     		updateMovement();
     	}
     }
@@ -190,11 +200,8 @@ public class Babo extends GameObject {
     }
     
     // Algo ici: http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=8487&view=previous
-    private void updateMovement() {
-    	float s1 = 10000000;
-    	float s2 = 200000000;
-    	
-    	if( instance.body.getAngularVelocity().len() < 1 && direction.isZero() ) {
+    private void updateMovement() {    	
+    	if( instance.body.getAngularVelocity().len2() < 1 && direction.isZero() ) {
     		moving = false;
     		return;
     	}
@@ -202,7 +209,7 @@ public class Babo extends GameObject {
     	
     	// velocity_factor est ma direction
     	btRigidBody b = instance.body;
-    	Vector3 maxVelocity = new Vector3(s1, s1, s1);
+    	Vector3 maxVelocity = new Vector3(maxSpeed, maxSpeed, maxSpeed);
 		Vector3 velocity = direction.cpy().scl(maxVelocity);
 		Vector3 currentVelocity = b.getAngularVelocity(); // TODO: check ang vel component and coord. systs
 		currentVelocity.set(currentVelocity.z, currentVelocity.y, currentVelocity.x);
@@ -215,8 +222,8 @@ public class Babo extends GameObject {
 			deltaVelocity.z = 0;
 		
 		// acceleration ne doit pas etre egal a zero sur aucun composant
-		Vector3 acceleration = new Vector3(s2,s2,s2);
-		// Inverse de l'accélération
+		Vector3 acceleration = new Vector3(maxAcceleration,maxAcceleration,maxAcceleration);
+		// Inverse de l'acceleration
 		Vector3 ai = acceleration.cpy();
 		ai.set(1/ai.x, 1/ai.y, 1/ai.y);
 		Vector3 dt = deltaVelocity.cpy().scl(ai);
@@ -232,9 +239,9 @@ public class Babo extends GameObject {
 		if (dt.z == 0) torque.z = 0;
 		else torque.z *= (dt.z < 0 ? -1 : 1);
 		
-		Matrix4 trans = new Matrix4();
+		/*Matrix4 trans = new Matrix4();
 		b.getMotionState().getWorldTransform(trans);
-		trans.setTranslation(0, 0, 0);
+		trans.setTranslation(0, 0, 0);*/
 		
 		// Le vecteur torque indique sur quel axe on tourne. Si on veut aller vers x, il faut tourner sur l'axe z
 		b.applyTorque(new Vector3(torque.z, torque.y, torque.x));
