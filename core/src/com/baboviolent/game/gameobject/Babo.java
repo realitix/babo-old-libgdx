@@ -6,6 +6,9 @@ import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.effect.BaboEffectSystem;
+import com.baboviolent.game.effect.group.Blood1;
+import com.baboviolent.game.effect.group.CursorHit;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
 import com.baboviolent.game.effect.particle.PoolParticle;
 import com.baboviolent.game.gameobject.weapon.Weapon;
@@ -46,6 +49,7 @@ public class Babo extends GameObject {
 	
     private long timeBeforeAppear;
     private long lastTimeDead;
+    private boolean player;
 	private String skin;
 	private String username;
 	private Vector3 direction;
@@ -54,7 +58,7 @@ public class Babo extends GameObject {
 	private int energy;
 	private boolean shooting = false;
 	private boolean moving = false;
-	private final BaboParticleSystem particle;
+	private final BaboEffectSystem effectSystem;
 	private int state;
 	private int score;
 	private boolean manualDeath; // Si true, babo ne perd pas d'�nergie, bien pour multijoueur
@@ -63,8 +67,8 @@ public class Babo extends GameObject {
 	float maxSpeed;
 	float maxAcceleration;
 	
-	public Babo(String username, String skin, BaboParticleSystem particle, final BulletWorld world) {
-		this.particle = particle;
+	public Babo(String username, String skin, BaboEffectSystem effectSystem, final BulletWorld world) {
+		this.effectSystem = effectSystem;
 	    this.skin = skin;
 	    this.username = username;
 	    this.world = world;
@@ -114,16 +118,11 @@ public class Babo extends GameObject {
         instance = new BulletInstance(model, body);
     }
     
-    public Babo hit(float power) {
-    	/*ParticleEffect effect = particules.get("blood").obtain();
-    	effect.init();
-    	effect.reset();
-        effect.start();
-        effect.setTransform(this.instance.transform);
-        ParticleSystem.get().add(effect);*/
+    public Babo hit(float damage) {
+    	effectSystem.get(Blood1.NAME).start(instance.transform, damage);
         
         if( !manualDeath ) {
-        	energy -= power;
+        	energy -= damage;
         }
     	return this;
     }
@@ -288,6 +287,14 @@ public class Babo extends GameObject {
         return direction.cpy();
     }
     
+    public BulletWorld getWorld() {
+        return world;
+    }
+    
+    public BaboEffectSystem getEffectSystem() {
+        return effectSystem;
+    }
+    
     public Babo setManualDeath(boolean d) {
         manualDeath = d;
         return this;
@@ -342,6 +349,15 @@ public class Babo extends GameObject {
     
     public boolean isMoving() {
     	return moving;
+    }
+    
+    public boolean isPlayer() {
+    	return player;
+    }
+    
+    public Babo setPlayer(boolean player) {
+    	this.player = player;
+    	return this;
     }
     
     public Vector3 getLinearVelocity() {

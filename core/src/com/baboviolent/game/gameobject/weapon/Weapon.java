@@ -21,7 +21,6 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 
 public class Weapon extends GameObject {
-	protected final BulletWorld world;
 	protected final Babo babo; // Babo tenant l'arme
 	protected float impulse; // Puissance de la balle
 	protected float frequency; // Temps en millisecond entre deux tirs
@@ -29,14 +28,11 @@ public class Weapon extends GameObject {
 	protected float distanceShoot; // Distance du tir
 	protected float power; // Puissance du tir
 	protected long lastShoot;
-	protected final BaboEffectSystem effectSystem;
 	
-	public Weapon(final Babo b, final BulletWorld w, final BaboEffectSystem e) {
+	public Weapon(final Babo b) {
 		super();
 		type = GameObject.TYPE_WEAPON;
 		babo = b;
-		world = w;
-		effectSystem = e;
 		
 		friction = 0.1f;
         rollingFriction = 0.1f;

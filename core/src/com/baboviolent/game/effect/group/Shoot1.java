@@ -20,8 +20,9 @@ public class Shoot1 extends GroupEffect {
 		super(s);
 	}
 
+	@Override
 	public void start(Matrix4 transform, Vector3 from, Vector3 to, Vector3 normalRay) {
-		BaboParticleSystem p = effectSystem.getParticleSystem();		
+		BaboParticleSystem p = effectSystem.getParticleSystem();
 		p.startWithWidth(Bullet1Effect.NAME, transform, from.dst(to));
 		p.startWithWidth(Smoke1Effect.NAME, transform, from.dst(to));
 		
@@ -31,8 +32,9 @@ public class Shoot1 extends GroupEffect {
 		p.startWithNormal(Smoke2Effect.NAME, impact, normalRay);
 	}
 	
+	@Override
 	public void startUnique(Matrix4 transform) {
 		effectSystem.getLightSystem().start(Light1Effect.NAME, transform);
 		effectSystem.getParticleSystem().start(MuzzleFlash1Effect.NAME, transform);
-	}	
+	}
 }

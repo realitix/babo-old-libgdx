@@ -8,6 +8,7 @@ import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletRayResult;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.effect.BaboEffectSystem;
+import com.baboviolent.game.effect.group.CursorHit;
 import com.baboviolent.game.effect.group.Shoot1;
 import com.baboviolent.game.effect.light.effects.Light1Effect;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
@@ -44,8 +45,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class Shotgun extends Weapon {
 	
-	public Shotgun(final Babo babo, final BulletWorld world, final BaboEffectSystem effectSystem) {
-		super(babo, world, effectSystem);
+	public Shotgun(final Babo babo) {
+		super(babo);
 		name = "Shotgun";
 		impulse = 100;
 		rotateImpulse = 200000;
@@ -95,7 +96,7 @@ public class Shotgun extends Weapon {
 			tmpV3.nor().scl(distanceShoot);
 			to.set(from).add(tmpV3);
 			
-			BulletRayResult result = world.getRayResult(from, to);
+			BulletRayResult result = getBabo().getWorld().getRayResult(from, to);
 			Vector3 normalRay = null;
 			if( result != null ) {
 				from.set(result.getStartRay());
@@ -113,14 +114,19 @@ public class Shotgun extends Weapon {
 					if( targetBabo != null ) {
 						targetBabo.setLastShooter(this.getBabo())
 						.hit(power);
+						
+						// Si on est le joueur, on met le curseur rouge
+						if( this.getBabo().isPlayer() ) {
+							getBabo().getEffectSystem().get(CursorHit.NAME).start();
+						}
 					}
 				}
 				
 				normalRay = result.getNormalRay();
 			}
-			effectSystem.get(Shoot1.NAME).start(tmpM, from, to, normalRay);
+			getBabo().getEffectSystem().get(Shoot1.NAME).start(tmpM, from, to, normalRay);
 		}
-    	effectSystem.get(Shoot1.NAME).startUnique(tmpMBase);
+    	getBabo().getEffectSystem().get(Shoot1.NAME).startUnique(tmpMBase);
     	
     	// On creer la force inverse
     	tmpMBase.getTranslation(tmpV3);

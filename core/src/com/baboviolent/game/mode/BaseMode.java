@@ -9,7 +9,7 @@ import com.baboviolent.game.ai.pfa.tiled.flat.BaboPathGenerator;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
-import com.baboviolent.game.camera.ChaseCamera2;
+import com.baboviolent.game.camera.BaboCamera;
 import com.baboviolent.game.controller.BaboController;
 import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
@@ -51,14 +51,13 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class BaseMode {
     protected Array<Babo> babos = new Array<Babo>();
     protected BulletWorld world;
-    protected ChaseCamera2 camera;
+    protected BaboCamera camera;
     protected Babo player;
     protected BaboEffectSystem effectSystem;
 	protected BaboController controller;
 	protected Map map;
 	protected int nbIa;
 	protected Vector3 tmpV = new Vector3();
-	protected Decal cursor;
 	protected Environment environment;
     
     public BaseMode(final String mapName) {
@@ -75,7 +74,7 @@ public class BaseMode {
     	environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1));
 		
     	// Initialisation de la camera
-    	camera = new ChaseCamera2(map);
+    	camera = new BaboCamera(map);
     			
         // Initialisation du monde
 		world = new BulletWorld();
@@ -95,27 +94,20 @@ public class BaseMode {
         
         // Initialisation de l'intelligence artificielle
         initIa();
-        
-        // Initialisation du curseur
-        cursor = Decal.newDecal(new TextureRegion(
-        		new Texture(Gdx.files.internal(BaboViolentGame.PATH_TEXTURE_OTHERS+"Cross01.png"))),
-        		true);
-        cursor.setDimensions(1.5f, 1.5f);
-        cursor.setRotation(Vector3.Y, Vector3.Y);
     }
     
     protected void initPlayer() {
-        Babo player = initBabo(Gdx.app.getPreferences("com.baboviolent.game").getString("username"));
+        Babo player = initBabo(Gdx.app.getPreferences("com.baboviolent.game").getString("username")).setPlayer(true);
         this.player = player;
         player.appear(generateBaboPosition());
         camera.init(this.player);
     }
     
     protected Babo initBabo(String username) {
-        Babo babo = new Babo(username, "skin22", effectSystem.getParticleSystem(), world);
+        Babo babo = new Babo(username, "skin22", effectSystem, world);
         world.add(babo);
         babos.add(babo);
-        Shotgun shotgun = new Shotgun(babo, world, effectSystem);
+        Shotgun shotgun = new Shotgun(babo);
         world.add(shotgun);
         babo.setWeapon(shotgun);
         BulletContactListener.addObject(babo);
@@ -129,10 +121,10 @@ public class BaseMode {
     	}
     	
     	for( int i = 0; i < nbIa; i++) {
-    		AiBabo ai = new AiBabo("ai1", "skin22", effectSystem.getParticleSystem(), world, babos, pathGenerator);
+    		AiBabo ai = new AiBabo("ai1", "skin22", effectSystem, world, babos, pathGenerator);
     		world.add(ai);
     		babos.add(ai);
-    		Shotgun shotgun = new Shotgun(ai, world, effectSystem);
+    		Shotgun shotgun = new Shotgun(ai);
     		world.add(shotgun);
     		ai.setWeapon(shotgun);
     		BulletContactListener.addObject(ai);
@@ -176,11 +168,7 @@ public class BaseMode {
     	modelBatch.begin(camera);
     	world.render(modelBatch, environment);
     	effectSystem.render(modelBatch, decalBatch, environment);
-    	modelBatch.end();
-    	
-    	// Le curseur
-    	decalBatch.add(cursor);
-    	
+    	modelBatch.end();    	
     	decalBatch.flush();
     }
     
@@ -193,7 +181,6 @@ public class BaseMode {
 		world.update();
 		
 		updateBabos();
-		updateCursor(target);
     }
     
     protected Vector3 getTarget() {
@@ -212,12 +199,6 @@ public class BaseMode {
     			babos.get(i).getLastShooter().addScore(1);
     		}
     	}
-    }
-    
-    protected void updateCursor(Vector3 target) {
-    	Vector3 tmp = target.cpy();
-    	tmp.y = BaboViolentGame.SIZE_MAP_CELL;
-    	cursor.setPosition(tmp);
     }
     
     /**

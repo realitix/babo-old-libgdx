@@ -4,6 +4,7 @@ import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.ai.fsm.AiBaboState;
 import com.baboviolent.game.ai.pfa.tiled.flat.BaboPathGenerator;
 import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
 import com.baboviolent.game.effect.particle.PoolParticle;
 import com.baboviolent.game.gameobject.Babo;
@@ -32,12 +33,12 @@ public class AiBabo extends Babo implements Steerable<Vector3> {
 	public AiBabo(
 			String username, 
 			String skin, 
-			final BaboParticleSystem particle, 
+			final BaboEffectSystem effectSystem, 
 			final BulletWorld world, 
 			final Array<Babo> babos,
 			final BaboPathGenerator pathGenerator) 
 	{
-		super(username, skin, particle, world);
+		super(username, skin, effectSystem, world);
 		this.babos = babos;
 		this.pathGenerator = pathGenerator;
 		stateMachine = new DefaultStateMachine<AiBabo>(this, AiBaboState.THINK);

@@ -14,7 +14,7 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 /**
  * A Camera that tends to chase an object in a natural way
  */
-public class ChaseCamera2 extends PerspectiveCamera {
+public class BaboCamera extends PerspectiveCamera {
 	/** Babo a suivre */
 	private Babo babo;
 	/** Distance par rapport a l'objet */ 
@@ -35,7 +35,7 @@ public class ChaseCamera2 extends PerspectiveCamera {
 	private Vector3 mapTopLeft;
 	private Vector3 mapTopRight;
 	
-	public ChaseCamera2(Map map) {
+	public BaboCamera(Map map) {
 		super(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		this.far = 10000;
 		this.near = 10;
@@ -83,6 +83,10 @@ public class ChaseCamera2 extends PerspectiveCamera {
 		startLook.set(position);
 		babo.getInstance().transform.getTranslation(tmp);
 		endLook.set(tmp.lerp(target, 0.43f));
+	}
+	
+	public Vector3 getTarget() {
+		return target;
 	}
 	
 	public Vector3 getMapBottomRight() {
