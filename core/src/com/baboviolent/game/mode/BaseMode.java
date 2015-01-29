@@ -41,6 +41,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -164,7 +165,14 @@ public class BaseMode {
         player.setDirection(direction);
     }
     
-    public void render(ModelBatch modelBatch, DecalBatch decalBatch) {
+    public void render(ModelBatch modelBatch, ModelBatch shadowBatch, DecalBatch decalBatch) {
+    	DirectionalShadowLight shadowLight = effectSystem.getLightSystem().getShadowLight();
+    	shadowLight.begin(Vector3.Zero, camera.direction);
+		shadowBatch.begin(shadowLight.getCamera());
+		world.render(shadowBatch);
+		shadowBatch.end();
+		shadowLight.end();
+    	
     	modelBatch.begin(camera);
     	world.render(modelBatch, environment);
     	effectSystem.render(modelBatch, decalBatch, environment);

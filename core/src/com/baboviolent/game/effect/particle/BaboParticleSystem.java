@@ -157,6 +157,7 @@ public class BaboParticleSystem {
 					batches.get(i).getEffects().get(j).draw();
 				}
 				batches.get(i).end();
+				
 				modelBatch.render(batches.get(i), environment);
 			}
 		}

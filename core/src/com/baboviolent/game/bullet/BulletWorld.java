@@ -164,6 +164,10 @@ public class BulletWorld implements Disposable {
 	public void render (final ModelBatch modelBatch, final Environment environment) {
 		modelBatch.render(instances, environment);
 	}
+	
+	public void render (final ModelBatch modelBatch) {
+		modelBatch.render(instances);
+	}
 
 	public void update () {
 		for( int i = 0; i < instancesToExpire.size; i++) {

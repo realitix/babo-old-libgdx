@@ -26,6 +26,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
@@ -45,6 +46,7 @@ public class BaboLightSystem {
 	private ObjectMap<String, PoolLight> pools;
 	private Environment environment;
 	private Camera camera;
+	private DirectionalShadowLight shadowLight;
 	private Array<BaboLightEffect> effects;
 	
 	public BaboLightSystem(Camera camera, Environment environment) {
@@ -55,7 +57,15 @@ public class BaboLightSystem {
 	}
 	
 	private void initLight() {
-		environment.add(new DirectionalLight().set(new Color(0.8f,0.8f,0.8f,0.5f), new Vector3(0,-1,0).nor()));
+		//environment.add(new DirectionalLight().set(new Color(0.8f,0.8f,0.8f,0.5f), new Vector3(0,-1,0).nor()));
+		shadowLight = new DirectionalShadowLight(
+				2048,
+				2048, 
+				100, 
+				100, 1f, 60f);
+		shadowLight.set(0.8f, 0.8f, 0.8f, new Vector3(-0.3f, -1, -0.3f).nor());
+		environment.add(shadowLight);
+		environment.shadowMap = shadowLight;
 	}
 	
 	private void initSystem() {
@@ -91,6 +101,10 @@ public class BaboLightSystem {
 				effects.get(i).update();
 			}
 		}
+	}
+	
+	public DirectionalShadowLight getShadowLight() {
+		return shadowLight;
 	}
 	
 	public void remove(BaboLightEffect effect) {

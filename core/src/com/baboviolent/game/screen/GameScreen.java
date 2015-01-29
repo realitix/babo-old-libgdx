@@ -57,6 +57,7 @@ public class GameScreen implements Screen {
 	final private BaboViolentGame game;
 	private ModelBatch modelBatch;
 	private DecalBatch decalBatch;
+	private ModelBatch shadowBatch;
 	private BaseMode mode;
 	private BulletContactListener bulletContactListener;
 	
@@ -66,8 +67,9 @@ public class GameScreen implements Screen {
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
 		modelBatch = new ModelBatch();
+		shadowBatch = new ModelBatch(new DepthShaderProvider());
 		
-		// Gestion des préférences
+		// Gestion des preferences
 		Preferences prefs = Gdx.app.getPreferences("com.baboviolent.game");
         prefs.putString("username", Utils.getRandomUsername());
         prefs.flush();
@@ -94,7 +96,7 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		mode.render(modelBatch, decalBatch);
+		mode.render(modelBatch, shadowBatch, decalBatch);
 		
 		// La mise a jour du controleur doit etre apres le rendu
 		// car affichage des touchpad
