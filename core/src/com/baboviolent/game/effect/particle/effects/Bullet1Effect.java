@@ -5,6 +5,7 @@ import com.baboviolent.game.effect.particle.influencers.PositionInfluencer;
 import com.baboviolent.game.effect.particle.influencers.RotationInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleHeightInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleWidthInfluencer;
+import com.baboviolent.game.effect.particle.influencers.TextureFaceDirectionInfluencer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
@@ -35,7 +36,6 @@ public class Bullet1Effect extends BaboParticleEffect {
 	public Bullet1Effect(BaboParticleBatch batch) {
 		super(batch);
 		name = NAME;
-		textureFaceDirection = true;
 		configure();
 	}
 	
@@ -108,9 +108,8 @@ public class Bullet1Effect extends BaboParticleEffect {
 		scaleHeightInfluencer.value.setLow(0.1f);
 		scaleHeightInfluencer.value.setHigh(0.5f);
 		
-		// Rotation qui sera mis a jour a chaque tir en fonction de l'angle
-		RotationInfluencer rotationInfluencer = new RotationInfluencer();
-		rotationInfluencer.value.setHigh(0);
+		// FaceDirection
+		TextureFaceDirectionInfluencer textureFaceInfluencer = new TextureFaceDirectionInfluencer();	
 		
 		//Color
 		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
@@ -139,7 +138,7 @@ public class Bullet1Effect extends BaboParticleEffect {
 			scaleWidthInfluencer,
 			scaleHeightInfluencer,
 			colorInfluencer,
-			rotationInfluencer,
+			textureFaceInfluencer,
 			positionInfluencer
 			));
 	}

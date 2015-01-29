@@ -15,7 +15,6 @@ import com.badlogic.gdx.utils.Array;
 public class BaboParticleEffect extends ParticleEffect {
 	protected BaboParticleBatch batch;
 	protected String name;
-	protected boolean textureFaceDirection;
 	
 	public BaboParticleEffect(BaboParticleBatch batch) {
 		super();
@@ -26,7 +25,6 @@ public class BaboParticleEffect extends ParticleEffect {
 		super(effect);
 		batch = effect.getBatch();
 		name = effect.getName();
-		textureFaceDirection = effect.getTextureFaceDirection();
 	}
 
 	public String getName() {
@@ -35,10 +33,6 @@ public class BaboParticleEffect extends ParticleEffect {
 	
 	public BaboParticleBatch getBatch() {
 		return batch;
-	}
-	
-	public boolean getTextureFaceDirection() {
-		return textureFaceDirection;
 	}
 	
 	@Override
@@ -58,41 +52,11 @@ public class BaboParticleEffect extends ParticleEffect {
 	}
 	
 	/**
-	 * Force la texture  prendre la direction actuelle
-	 */
-	protected void textureFaceDirection() {
-		Quaternion tmpQ = new Quaternion();
-		this.getControllers().get(0).transform.getRotation(tmpQ);
-		rotateTexture(getAngleFromQuaternion(tmpQ) - 90);
-	}
-	
-	/**
-	 * Ne recupere que le premier controleur
-	 * Suffisant pour l'instant
-	 */
-	protected void rotateTexture(float angle) {
-		for( int i = 0; i < getControllers().size; i++ ) {
-			ParticleController pc = getControllers().get(i);
-			
-			// Si l'influencer rotation n'existe pas on le cree
-			RotationInfluencer influencer = pc.findInfluencer(RotationInfluencer.class);
-			if( influencer == null ) {
-				influencer = new RotationInfluencer();
-				pc.influencers.add(influencer);
-			}
-			influencer.value.setHigh(angle%360);
-		}
-	}
-	
-	/**
 	 * Cette particule est toujours dirigee vers la direction
 	 */
 	@Override
 	public void setTransform(Matrix4 transform) {
 		super.setTransform(transform);
-		if( textureFaceDirection ) {
-			textureFaceDirection();
-		}
 	}
 	
 	/*

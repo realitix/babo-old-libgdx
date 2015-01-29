@@ -51,7 +51,6 @@ public class Blood {
 			Decal blood = Decal.newDecal(size, size, bloodAtlas.getRegions().random(), true);
 			blood.setPosition(pos);
 			blood.setRotation(Vector3.Y, Vector3.Y);
-			blood.rotateZ(MathUtils.random(0f, 360f)); // Attention Z vers le haut pour decalbatch
 			blood.setColor(MathUtils.random(0.25f, 0.5f), 0, 0, MathUtils.random(0.5f,1));
 			
 			if( bloodIndex >= MAX_BLOOD ) {

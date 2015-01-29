@@ -5,6 +5,7 @@ import com.baboviolent.game.effect.particle.influencers.PositionInfluencer;
 import com.baboviolent.game.effect.particle.influencers.RotationInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleHeightInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleWidthInfluencer;
+import com.baboviolent.game.effect.particle.influencers.TextureFaceDirectionInfluencer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
@@ -36,7 +37,6 @@ public class Smoke1Effect extends BaboParticleEffect {
 	public Smoke1Effect(BaboParticleBatch batch) {
 		super(batch);
 		name = NAME;
-		textureFaceDirection = true;
 		configure();
 	}
 	
@@ -62,8 +62,6 @@ public class Smoke1Effect extends BaboParticleEffect {
 		super.init();
 	}
 	
-	// @TODO
-	// test en modifiant la taille de la texture
 	public void configure() {
 		//Emitter
 		RegularEmitter emitter = new RegularEmitter();
@@ -118,9 +116,8 @@ public class Smoke1Effect extends BaboParticleEffect {
 		positionInfluencer.phiValue = 90;
 		positionInfluencer.thetaValue = 0;
 		
-		// Rotation qui sera mis a jour a chaque tir en fonction de l'angle
-		RotationInfluencer rotationInfluencer = new RotationInfluencer();
-		rotationInfluencer.value.setHigh(0);
+		// FaceDirection
+		TextureFaceDirectionInfluencer textureFaceInfluencer = new TextureFaceDirectionInfluencer();
 		
 		//Color
 		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
@@ -141,7 +138,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 			scaleWidthInfluencer,
 			scaleHeightInfluencer,
 			colorInfluencer,
-			rotationInfluencer,
+			textureFaceInfluencer,
 			positionInfluencer
 			));
 	}

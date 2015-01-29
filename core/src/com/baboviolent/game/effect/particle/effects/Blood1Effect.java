@@ -2,6 +2,7 @@ package com.baboviolent.game.effect.particle.effects;
 
 import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
 import com.baboviolent.game.effect.particle.influencers.PositionInfluencer;
+import com.baboviolent.game.effect.particle.influencers.RandomBloodColorInfluencer;
 import com.baboviolent.game.effect.particle.influencers.RotationInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleHeightInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleWidthInfluencer;
@@ -51,13 +52,6 @@ public class Blood1Effect extends BaboParticleEffect {
 		return new Blood1Effect(this);
 	}
 	
-	@Override
-	public void init() {
-		ColorInfluencer.Single c = getControllers().get(0).findInfluencer(ColorInfluencer.Single.class);
-		c.colorValue.setColors(new float[] {MathUtils.random(0.3f, 1f),0,0});
-		super.init();
-	}
-	
 	public void configure() {
 		//Emitter
 		RegularEmitter emitter = new RegularEmitter();
@@ -89,18 +83,16 @@ public class Blood1Effect extends BaboParticleEffect {
 		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
 		scaleInfluencer.value.setTimeline(new float[]{0, 1});
 		scaleInfluencer.value.setScaling(new float[]{0,1});
-		scaleInfluencer.value.setHigh(10);
-		scaleInfluencer.value.setHigh(50);
+		scaleInfluencer.value.setLow(0);
+		scaleInfluencer.value.setHigh(1);
 
 		//Color
-		ColorInfluencer.Single colorInfluencer = new ColorInfluencer.Single();
+		RandomBloodColorInfluencer colorInfluencer = new RandomBloodColorInfluencer();
 		colorInfluencer.alphaValue.setActive(true);
 		colorInfluencer.alphaValue.setLow(0);
 		colorInfluencer.alphaValue.setHigh(1);
 		colorInfluencer.alphaValue.setTimeline(new float[] {0, 1});
 		colorInfluencer.alphaValue.setScaling(new float[] {1, 0});
-		colorInfluencer.colorValue.setColors(new float[] {1,0,0});
-		colorInfluencer.colorValue.setTimeline(new float[] {0});
 		
 		// Region
 		Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();

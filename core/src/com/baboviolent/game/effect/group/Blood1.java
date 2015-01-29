@@ -27,5 +27,6 @@ public class Blood1 extends GroupEffect {
 	public void start(Matrix4 transform, float damage) {
 		transform.getTranslation(tmpV3);
 		effectSystem.getDecalSystem().generateBlood(tmpV3, damage);
+		effectSystem.getParticleSystem().start(Blood1Effect.NAME, transform);
 	}
 }
