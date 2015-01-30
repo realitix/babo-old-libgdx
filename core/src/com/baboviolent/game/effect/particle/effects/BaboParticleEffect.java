@@ -72,4 +72,5 @@ public class BaboParticleEffect extends ParticleEffect {
 	public void setWidth(float width) {}
 	public void setNormal(int normal) {}
 	public void setNormalRay(Vector3 normalRay) {}
+	public void setDamage(float damage) {}
 }

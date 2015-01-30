@@ -38,9 +38,12 @@ public class BaboEffectSystem {
 		return groups.get(name);
 	}
 	
-	public void render(ModelBatch modelBatch, DecalBatch decalBatch, Environment environment) {
+	public void render(ModelBatch modelBatch, Environment environment) {
 		particleSystem.render(modelBatch, environment);
 		lightSystem.render();
+	}
+	
+	public void render(DecalBatch decalBatch) {
 		decalSystem.render(decalBatch);
 	}
 	

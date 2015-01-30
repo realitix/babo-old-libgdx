@@ -165,6 +165,13 @@ public class BaseMode {
         player.setDirection(direction);
     }
     
+    /**
+     * Il faut afficher dans le bon sens car on a beacoup d'effet de transarence
+     * Donc il faut afficher du plus bas au plus haut
+     * On affiche d'abord le monde
+     * ensuite les decals (sang, marques au sol...)
+     * Puis enfin les particules
+     */
     public void render(ModelBatch modelBatch, ModelBatch shadowBatch, DecalBatch decalBatch) {
     	DirectionalShadowLight shadowLight = effectSystem.getLightSystem().getShadowLight();
     	shadowLight.begin(Vector3.Zero, camera.direction);
@@ -172,12 +179,17 @@ public class BaseMode {
 		world.render(shadowBatch);
 		shadowBatch.end();
 		shadowLight.end();
-    	
+		
     	modelBatch.begin(camera);
     	world.render(modelBatch, environment);
-    	effectSystem.render(modelBatch, decalBatch, environment);
     	modelBatch.end();    	
+    	
+    	effectSystem.render(decalBatch);
     	decalBatch.flush();
+    	
+    	modelBatch.begin(camera);
+    	effectSystem.render(modelBatch, environment);
+    	modelBatch.end();
     }
     
     public void update() {

@@ -34,6 +34,7 @@ public class Blood1Effect extends BaboParticleEffect {
 	public static final String NAME = "blood1";
 	
 	private TextureAtlas atlas;
+	private float damage;
 	
 	public Blood1Effect(BaboParticleBatch batch, TextureAtlas atlas) {
 		super(batch);
@@ -45,11 +46,19 @@ public class Blood1Effect extends BaboParticleEffect {
 	public Blood1Effect(Blood1Effect effect) {
 		super(effect);
 		this.atlas = effect.getAtlas();
+		this.damage = effect.getDamage();
 	}
 	
 	@Override
 	public Blood1Effect copy() {
 		return new Blood1Effect(this);
+	}
+	
+	@Override
+	public void init() {
+		RegularEmitter emitter = (RegularEmitter) getControllers().get(0).emitter;
+
+		super.init();
 	}
 	
 	public void configure() {
@@ -81,7 +90,7 @@ public class Blood1Effect extends BaboParticleEffect {
 		
 		// Scale
 		ScaleInfluencer scaleInfluencer = new ScaleInfluencer();
-		scaleInfluencer.value.setTimeline(new float[]{0, 1});
+		scaleInfluencer.value.setTimeline(new float[]{0,1});
 		scaleInfluencer.value.setScaling(new float[]{0,1});
 		scaleInfluencer.value.setLow(0);
 		scaleInfluencer.value.setHigh(1);
@@ -109,7 +118,7 @@ public class Blood1Effect extends BaboParticleEffect {
 		BrownianAcceleration modifier1 = new BrownianAcceleration();
 		modifier1.strengthValue.setTimeline(new float[]{0});
 		modifier1.strengthValue.setScaling(new float[]{1});
-		modifier1.strengthValue.setHigh(5000);
+		modifier1.strengthValue.setHigh(5);
 		
 		TangentialAcceleration modifier2 = new TangentialAcceleration();
 		modifier2.strengthValue.setTimeline(new float[]{0});
@@ -130,5 +139,14 @@ public class Blood1Effect extends BaboParticleEffect {
 	
 	public TextureAtlas getAtlas() {
 		return atlas;
+	}
+	
+	public float getDamage() {
+		return damage;
+	}
+	
+	@Override
+	public void setDamage(float damage) {
+		this.damage = damage;
 	}
 }

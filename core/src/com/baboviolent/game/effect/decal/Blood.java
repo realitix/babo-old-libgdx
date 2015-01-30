@@ -46,7 +46,7 @@ public class Blood {
 			float maxSize = 10f-(distance)/2.5f;
 			float size = MathUtils.random(0.2f, maxSize);
 			pos.set(position).add(distanceX,0,distanceZ);
-			pos.y = 0;
+			pos.y = 0.1f;
 			
 			Decal blood = Decal.newDecal(size, size, bloodAtlas.getRegions().random(), true);
 			blood.setPosition(pos);
