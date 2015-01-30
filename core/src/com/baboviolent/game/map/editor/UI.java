@@ -7,30 +7,20 @@ import com.baboviolent.game.map.Map;
 import com.baboviolent.game.map.optimizer.MapOptimizer;
 import com.baboviolent.game.screen.MapEditorScreen;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.SelectBox;
-import com.badlogic.gdx.scenes.scene2d.ui.Slider;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.Value;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -50,7 +40,7 @@ public final class UI {
 	private final MapEditorScreen screen;
 
 	// panel animator
-	private boolean comboBoxFlag, panelShown, usePanelAnimator;
+	private boolean comboBoxFlag, usePanelAnimator;
 	private TopPanelAnimator panelAnimator;
 	private String[] styles;
 	private String selectedStyle = new String();
@@ -102,12 +92,10 @@ public final class UI {
 		final float yWhenHidden = height - 60 + 13;
 				
 		if( usePanelAnimator ) {
-			panelShown = false;
 			panelAnimator = new TopPanelAnimator( topPanel, new Rectangle( 10, 5, width - 20, 60 ), yWhenShown, yWhenHidden );
 			topPanel.setY( yWhenHidden );
 			topPanel.setColor( 1f, 1f, 1f, 0.5f );
 		} else {
-			panelShown = true;
 			topPanel.setY( yWhenShown );
 		}
 		

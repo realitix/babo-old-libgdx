@@ -1,6 +1,5 @@
 package com.baboviolent.game.effect.light.effects;
 
-import com.baboviolent.game.effect.particle.effects.Collision1Effect;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Light1Effect extends BaboLightEffect {

@@ -8,7 +8,6 @@ import com.baboviolent.game.effect.group.GroupEffect;
 import com.baboviolent.game.effect.group.Shoot1;
 import com.baboviolent.game.effect.light.BaboLightSystem;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;

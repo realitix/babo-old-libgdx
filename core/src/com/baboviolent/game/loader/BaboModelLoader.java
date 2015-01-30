@@ -2,19 +2,11 @@ package com.baboviolent.game.loader;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.map.Map;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -110,7 +102,7 @@ public class BaboModelLoader {
      * Charge tous les modèles passés en paramètre
      */ 
     static public ObjectMap<String, ModelData> getModelDatas(Array<String> toLoad) {
-    	ModelLoader loader = new G3dModelLoader(new JsonReader());
+    	ModelLoader<?> loader = new G3dModelLoader(new JsonReader());
         String p = BaboViolentGame.PATH_MODELS;
 	    ObjectMap<String, ModelData> models = new ObjectMap<String, ModelData>();
 	    

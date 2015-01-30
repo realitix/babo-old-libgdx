@@ -27,7 +27,7 @@ import com.badlogic.gdx.graphics.g3d.model.data.ModelNodePart;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelTexture;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.g3d.utils.TextureProvider;
-import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.graphics.g3d.utils.TextureProvider.FileTextureProvider;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.math.collision.Ray;
@@ -36,7 +36,6 @@ import com.badlogic.gdx.physics.bullet.collision.btShapeHull;
 import com.badlogic.gdx.utils.BufferUtils;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.graphics.g3d.utils.TextureProvider.FileTextureProvider;
 
 public class Utils {
 	
@@ -103,7 +102,7 @@ public class Utils {
 						model.manageDisposable(texture);
 					}
 	
-					TextureDescriptor descriptor = new TextureDescriptor(texture);
+					TextureDescriptor<Texture> descriptor = new TextureDescriptor<Texture>(texture);
 					descriptor.minFilter = texture.getMinFilter();
 					descriptor.magFilter = texture.getMagFilter();
 					descriptor.uWrap = texture.getUWrap();

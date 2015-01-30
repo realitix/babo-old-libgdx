@@ -1,46 +1,14 @@
 package com.baboviolent.game.gameobject.weapon;
 
-import com.baboviolent.game.BaboViolentGame;
-import com.baboviolent.game.Utils;
-import com.baboviolent.game.bullet.BulletCollector;
-import com.baboviolent.game.bullet.BulletContactListener;
-import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletRayResult;
-import com.baboviolent.game.bullet.BulletWorld;
-import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.effect.group.CursorHit;
 import com.baboviolent.game.effect.group.Shoot1;
-import com.baboviolent.game.effect.light.effects.Light1Effect;
-import com.baboviolent.game.effect.particle.BaboParticleSystem;
-import com.baboviolent.game.effect.particle.PoolParticle;
-import com.baboviolent.game.effect.particle.effects.Smoke1Effect;
-import com.baboviolent.game.effect.particle.effects.Smoke2Effect;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
-import com.baboviolent.game.gameobject.ammo.SmallCalibre;
-import com.baboviolent.game.loader.TextureLoader;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
-import com.badlogic.gdx.graphics.g3d.particles.emitters.Emitter;
-import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsInfluencer;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.PolarAcceleration;
-import com.badlogic.gdx.graphics.g3d.particles.values.ScaledNumericValue;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
-import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Shotgun extends Weapon {

@@ -1,18 +1,8 @@
 package com.baboviolent.game;
 
-import com.baboviolent.game.controller.DesktopController;
-import com.baboviolent.game.controller.MobileController;
-import com.baboviolent.game.screen.GameScreen;
 import com.baboviolent.game.screen.MainMenuScreen;
-import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
 
 public class BaboViolentGame extends Game {
 	static public String DESKTOP_PREFIX = "./bin/";

@@ -2,18 +2,11 @@ package com.baboviolent.game.ai.manager;
 
 import com.baboviolent.game.ai.AiBabo;
 import com.baboviolent.game.ai.pfa.tiled.flat.BaboPathGenerator;
-import com.baboviolent.game.ai.pfa.tiled.flat.FlatTiledGraph;
-import com.baboviolent.game.ai.pfa.tiled.flat.FlatTiledManhattanDistance;
-import com.baboviolent.game.ai.pfa.tiled.flat.FlatTiledNode;
-import com.baboviolent.game.ai.pfa.tiled.flat.FlatTiledSmoothableGraphPath;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.map.Map;
-import com.badlogic.gdx.ai.pfa.PathSmoother;
-import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath.LinePathParam;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 

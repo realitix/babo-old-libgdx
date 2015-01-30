@@ -1,21 +1,11 @@
 package com.baboviolent.game.gameobject.ammo;
 
-import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.gameobject.GameObject;
 import com.baboviolent.game.gameobject.weapon.Weapon;
-import com.baboviolent.game.loader.BaboModelLoader;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.SWIGTYPE_p_float;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Ammo extends GameObject {

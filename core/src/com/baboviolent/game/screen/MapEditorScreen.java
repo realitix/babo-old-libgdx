@@ -1,7 +1,6 @@
 package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
-import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.map.Cell;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -23,17 +21,12 @@ import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
-import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
-import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -41,7 +34,6 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class MapEditorScreen implements Screen {
 	public static final Array<String> modelsToLoad = new Array<String>(new String[]{"flagpod"});
 	
-	private final BaboViolentGame game;
 	private Environment environment;
 	private DirectionalLight light;
 	private Array<Disposable> disposables = new Array<Disposable>();
@@ -60,8 +52,7 @@ public class MapEditorScreen implements Screen {
 	private boolean rotationInput = true;
 	
 	public MapEditorScreen(final BaboViolentGame g) {
-		game = g;        
-        environment = new Environment();
+		environment = new Environment();
 		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.3f, 0.3f, 0.3f, 1.f));
 		light = new DirectionalLight();
 		light.set(0.8f, 0.8f, 0.8f, -0.5f, -1f, 0.7f);

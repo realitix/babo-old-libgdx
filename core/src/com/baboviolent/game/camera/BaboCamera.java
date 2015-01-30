@@ -1,15 +1,11 @@
 package com.baboviolent.game.camera;
 
 import com.baboviolent.game.gameobject.Babo;
-import com.baboviolent.game.gameobject.GameObject;
 import com.baboviolent.game.map.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 
 /**
  * A Camera that tends to chase an object in a natural way

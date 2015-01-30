@@ -1,17 +1,10 @@
 package com.baboviolent.appwarp;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 
-import org.json.JSONObject;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.Json;
-import com.shephertz.app42.gaming.multiplayer.client.Constants;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
-import com.shephertz.app42.gaming.multiplayer.client.events.RoomData;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
 
 public class WarpController {
@@ -274,15 +267,18 @@ public class WarpController {
 		}
 	}
 	
-	public void onGetLiveRoomInfo(String[] liveUsers){
+	@SuppressWarnings("unused")
+	public void onGetLiveRoomInfo(String[] liveUsers) {
 		log("onGetLiveRoomInfo: "+liveUsers.length);
-		if(liveUsers!=null){
-			if(liveUsers.length==2){
+		if(liveUsers != null) {
+			if(liveUsers.length == 2) {
 				startGame(liveUsers);	
-			}else{
+			}
+			else{
 				waitForOtherUser();
 			}
-		}else{
+		}
+		else {
 			warpClient.disconnect();
 			handleError();
 		}

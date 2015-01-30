@@ -1,46 +1,19 @@
 package com.baboviolent.game.effect.light;
 
 
-import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.effect.light.effects.BaboLightEffect;
 import com.baboviolent.game.effect.light.effects.Light1Effect;
-import com.baboviolent.game.effect.particle.PoolParticle;
-import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
-import com.baboviolent.game.effect.particle.batches.BatchSpecific1;
-import com.baboviolent.game.effect.particle.batches.BatchSpecific2;
-import com.baboviolent.game.effect.particle.effects.BaboParticleEffect;
-import com.baboviolent.game.effect.particle.effects.Collision1Effect;
-import com.baboviolent.game.effect.particle.effects.MuzzleFlash1Effect;
-import com.baboviolent.game.effect.particle.effects.Smoke1Effect;
-import com.baboviolent.game.effect.particle.effects.Smoke2Effect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g3d.Environment;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.Renderable;
-import com.badlogic.gdx.graphics.g3d.RenderableProvider;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
-import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
-import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
-import com.badlogic.gdx.graphics.g3d.model.Node;
-import com.badlogic.gdx.graphics.g3d.model.NodePart;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleShader;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
-import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch;
-import com.badlogic.gdx.graphics.g3d.particles.batches.ParticleBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.math.collision.BoundingBox;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.badlogic.gdx.utils.Pool;
 
+@SuppressWarnings("deprecation")
 public class BaboLightSystem {
 	
 	private ObjectMap<String, PoolLight> pools;
@@ -57,13 +30,14 @@ public class BaboLightSystem {
 	}
 	
 	private void initLight() {
+		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.5f, 0.5f, 0.5f, 1));
 		//environment.add(new DirectionalLight().set(new Color(0.8f,0.8f,0.8f,0.5f), new Vector3(0,-1,0).nor()));
 		shadowLight = new DirectionalShadowLight(
-				2048,
-				2048, 
+				Gdx.graphics.getWidth()*2,
+				Gdx.graphics.getHeight()*2, 
 				100, 
 				100, 1f, 60f);
-		shadowLight.set(0.8f, 0.8f, 0.8f, new Vector3(-0.3f, -1, -0.3f).nor());
+		shadowLight.set(0.8f, 0.8f, 0.8f, new Vector3(-0.2f, -1, -0.2f).nor());
 		environment.add(shadowLight);
 		environment.shadowMap = shadowLight;
 	}

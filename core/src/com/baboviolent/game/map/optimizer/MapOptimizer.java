@@ -1,19 +1,8 @@
 package com.baboviolent.game.map.optimizer;
 
-import java.io.IOException;
-
-import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.map.Cell;
 import com.baboviolent.game.map.Map;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.g3d.Material;
-import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
 
 public class MapOptimizer {
 	// Cote en fonction de l'id dans le tableau

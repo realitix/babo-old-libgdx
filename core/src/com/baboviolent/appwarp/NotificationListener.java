@@ -1,7 +1,6 @@
 package com.baboviolent.appwarp;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 
 import com.shephertz.app42.gaming.multiplayer.client.events.ChatEvent;
 import com.shephertz.app42.gaming.multiplayer.client.events.LobbyData;

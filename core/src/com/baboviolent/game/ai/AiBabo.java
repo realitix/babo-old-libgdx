@@ -5,10 +5,7 @@ import com.baboviolent.game.ai.fsm.AiBaboState;
 import com.baboviolent.game.ai.pfa.tiled.flat.BaboPathGenerator;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.effect.BaboEffectSystem;
-import com.baboviolent.game.effect.particle.BaboParticleSystem;
-import com.baboviolent.game.effect.particle.PoolParticle;
 import com.baboviolent.game.gameobject.Babo;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.ai.steer.Steerable;
@@ -17,10 +14,8 @@ import com.badlogic.gdx.ai.steer.SteeringBehavior;
 import com.badlogic.gdx.ai.steer.behaviors.FollowPath;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath;
 import com.badlogic.gdx.ai.steer.utils.paths.LinePath.LinePathParam;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.ObjectMap;
 
 public class AiBabo extends Babo implements Steerable<Vector3> {
 
@@ -52,6 +47,7 @@ public class AiBabo extends Babo implements Steerable<Vector3> {
 	}
 	
 	public boolean reachedDestination() {
+		@SuppressWarnings("unchecked")
 		FollowPath<Vector3, LinePathParam> fp = (FollowPath<Vector3, LinePathParam>) steeringBehavior;
 		Vector3 end = fp.getPath().getEndPoint();
 		float t = fp.getArrivalTolerance();

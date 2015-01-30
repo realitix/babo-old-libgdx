@@ -1,8 +1,6 @@
 package com.baboviolent.game.effect.light.effects;
 
-import com.baboviolent.game.effect.particle.effects.BaboParticleEffect;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g3d.environment.BaseLight;
 import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;

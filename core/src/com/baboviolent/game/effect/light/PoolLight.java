@@ -1,10 +1,6 @@
 package com.baboviolent.game.effect.light;
 
 import com.baboviolent.game.effect.light.effects.BaboLightEffect;
-import com.baboviolent.game.effect.particle.effects.BaboParticleEffect;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
-import com.badlogic.gdx.graphics.g3d.particles.ParticleSystem;
-import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 
