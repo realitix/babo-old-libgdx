@@ -30,14 +30,14 @@ public class BaboLightSystem {
 	}
 	
 	private void initLight() {
-		environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.5f, 0.5f, 0.5f, 1));
+		//environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.5f, 0.5f, 0.5f, 1));
 		//environment.add(new DirectionalLight().set(new Color(0.8f,0.8f,0.8f,0.5f), new Vector3(0,-1,0).nor()));
 		shadowLight = new DirectionalShadowLight(
 				Gdx.graphics.getWidth()*2,
 				Gdx.graphics.getHeight()*2, 
 				100, 
 				100, 1f, 60f);
-		shadowLight.set(0.8f, 0.8f, 0.8f, new Vector3(-0.2f, -1, -0.2f).nor());
+		shadowLight.set(0.8f, 0.8f, 0.8f, new Vector3(-0.5f, -1, -0.5f).nor());
 		environment.add(shadowLight);
 		environment.shadowMap = shadowLight;
 	}
