@@ -140,14 +140,16 @@ public class BaboParticleSystem {
 		}
 	}
 	
+	public void update() {
+		updatePools();
+	}
+	
 	/**
 	 * Affiche les particules si visible a l'ecran
 	 * @param modelBatch
 	 * @param environment
 	 */
-	public void render(ModelBatch modelBatch, Environment environment) {
-		updatePools();
-		
+	public void render(ModelBatch modelBatch, Environment environment) {		
 		for( int i = 0; i < batches.size; i++ ) {
 			if( batches.get(i).getEffects().size > 0 ) {
 				batches.get(i).begin();

@@ -4,6 +4,7 @@ import com.baboviolent.game.BaboViolentGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -40,10 +41,10 @@ public class PixmapGenerator {
 				generateOneSide(result, p1, p2);
 				break;
 			case MapOptimizer.TYPE_TWOSIDE:
-				generateTwoSide(result, p1, p2);
+				//generateTwoSide(result, p1, p2);
 				break;
 			case MapOptimizer.TYPE_CORNER:
-				generateCorner(result, p1, p2);
+				//generateCorner(result, p1, p2);
 				break;
 		}
 		
@@ -54,17 +55,20 @@ public class PixmapGenerator {
 		int width = result.getWidth();
 		int height = result.getHeight();
 		
+		Interpolation interpolation = Interpolation.pow2In;
 		Color c1 = new Color();
 		Color c2 = new Color();
 		float t = 0;
 		for( int j = 0; j < height; j++) {
+			t = interpolation.apply((float)j/(float)height);
 			for( int i = 0; i < width; i++) {
 				c1.set(p1.getPixel(i, j));
 				c2.set(p2.getPixel(i, j));
-				result.setColor(c1.lerp(c2, t));
+				
+				result.setColor(c1.lerp(c2, t/2));
 				result.drawPixel(i, j);
 			}
-			t = ((float)j/(float)height)/2f;
+			//t = ((float)j/(float)height)/2f;
 		}
 	}
 	

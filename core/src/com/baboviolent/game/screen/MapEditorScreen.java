@@ -280,10 +280,9 @@ public class MapEditorScreen implements Screen {
             final ModelInstance instance = instances.get(i);
             instance.transform.getTranslation(position);
             Vector3 positionCenter = position.cpy();
-            positionCenter.add(BaboViolentGame.SIZE_MAP_CELL/2, 0, BaboViolentGame.SIZE_MAP_CELL/2);
      
             if (Intersector.intersectRaySphere(ray, positionCenter, BaboViolentGame.SIZE_MAP_CELL/2, null)) {
-            	map.removeCell(position);
+            	map.removeCell(position, true);
                 instances.removeIndex(i);
                 return;
             }
@@ -325,6 +324,7 @@ public class MapEditorScreen implements Screen {
 		Ray ray = camera.getPickRay(screenX, screenY);
         final float distance = -ray.origin.y / ray.direction.y;
         position.set(ray.direction).scl(distance).add(ray.origin);
+    	position.y = 0;
         return position;
 	}
 	
@@ -356,7 +356,7 @@ public class MapEditorScreen implements Screen {
     	for(int i = 0; i < map.getCells().size; i++ ) {
     		Cell c = map.getCells().get(i);
     		ModelInstance ci = new ModelInstance(models.get(c.getTextureName()));
-    		ci.transform.setTranslation(c.getPosition());
+    		ci.transform.setTranslation(c.getAbsolutePosition());
     		ci.userData = c.getType();
     		instances.add(ci);
     	}

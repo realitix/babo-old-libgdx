@@ -214,6 +214,8 @@ public class Map {
 	 * Sauvegarde la map
 	 **/
 	public static void save(Map map, String mapname, boolean optimized) {
+		map.setName(mapname);
+		
 		FileHandle file;
 		if( optimized )
 			file = Gdx.files.external(BaboViolentGame.PATH_MAPS_EXTERNAL_OPTIMIZED+mapname+"."+BaboViolentGame.EXTENSION_MAP);
@@ -336,10 +338,18 @@ public class Map {
 	    return cells;
 	}
 	
-	public Map removeCell(Vector3 position) {
+	public Map removeCell(Vector3 position, boolean absolute) {
 		for( int i = 0; i < cells.size; i++) {
-			if(cells.get(i).getPosition().equals(position)) {
-				cells.removeIndex(i);
+			Cell c = cells.get(i);
+			if(absolute) {
+				if(c.getAbsolutePosition().equals(position)) {
+					cells.removeIndex(i);
+				}
+			}
+			else {
+				if(c.getPosition().equals(position)) {
+					cells.removeIndex(i);
+				}
 			}
 		}
 		return this;

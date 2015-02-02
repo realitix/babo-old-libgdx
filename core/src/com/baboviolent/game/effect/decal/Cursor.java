@@ -76,5 +76,6 @@ public class Cursor {
 		if( hit ) {
 			decalBatch.add(cursorHit);
 		}
+		decalBatch.flush();
 	}
 }

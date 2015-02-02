@@ -68,7 +68,7 @@ public class BaboLightSystem {
         }
 	}
 	
-	public void render() {
+	public void update() {
 		updatePools();
 		if( effects.size > 0 ) {
 			for( int i = 0; i < effects.size; i++) {

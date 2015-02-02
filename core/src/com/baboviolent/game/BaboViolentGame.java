@@ -18,6 +18,7 @@ public class BaboViolentGame extends Game {
     static public String PATH_MAPS = "data/maps/";
     static public String PATH_MAPS_EXTERNAL = "babo/maps/";
     static public String PATH_MAPS_EXTERNAL_OPTIMIZED = "babo/maps/optimized/";
+    static public String PATH_SOUNDS = "data/sounds/";
     static public String BABO_MODEL_NAME = "babo";
     static public String EXTENSION_MAP = "babomap";
     static public final float SIZE_MAP_CELL = 2;

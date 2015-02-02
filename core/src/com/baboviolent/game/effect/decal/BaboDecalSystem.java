@@ -19,9 +19,16 @@ public class BaboDecalSystem {
 		blood = new Blood();
 	}
 	
+	public void update() {
+		
+	}
+	
 	public void render(DecalBatch decalBatch) {
-		cursor.render(decalBatch);
 		blood.render(decalBatch);
+	}
+	
+	public void renderCursor(DecalBatch decalBatch) {
+		cursor.render(decalBatch);
 	}
 	
 	public void cursorHit() {

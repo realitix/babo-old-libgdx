@@ -28,6 +28,7 @@ public class Blood {
 				decalBatch.add(blood);
 			}
 		}
+		decalBatch.flush();
 	}
 	
 	/**

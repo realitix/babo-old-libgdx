@@ -41,7 +41,11 @@ public class Cell {
 	}
 	
 	public Vector3 getAbsolutePosition() {
-		return position.cpy().scl(BaboViolentGame.SIZE_MAP_CELL);
+		float s = BaboViolentGame.SIZE_MAP_CELL;
+		Vector3 result = position.cpy().scl(s);
+		result.x -= s/2f;
+		result.z -= s/2f;
+		return result;
 	}
 	
 	public Cell setPosition(Vector3 position) {

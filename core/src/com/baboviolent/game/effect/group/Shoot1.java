@@ -8,6 +8,7 @@ import com.baboviolent.game.effect.particle.effects.Collision1Effect;
 import com.baboviolent.game.effect.particle.effects.MuzzleFlash1Effect;
 import com.baboviolent.game.effect.particle.effects.Smoke1Effect;
 import com.baboviolent.game.effect.particle.effects.Smoke2Effect;
+import com.baboviolent.game.effect.sound.BaboSoundSystem;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
@@ -34,5 +35,6 @@ public class Shoot1 extends GroupEffect {
 	public void startUnique(Matrix4 transform) {
 		effectSystem.getLightSystem().start(Light1Effect.NAME, transform);
 		effectSystem.getParticleSystem().start(MuzzleFlash1Effect.NAME, transform);
+		effectSystem.getSoundSystem().start(BaboSoundSystem.SHOTGUN);
 	}
 }

@@ -15,11 +15,12 @@ public class BatchSpecific1 extends BaboParticleBatch {
 		super(camera, texture);
 	}
 	
+	@Override
 	protected Renderable allocRenderable() {
 		Renderable renderable = super.allocRenderable();
 		renderable.material = null;
 		renderable.material = new Material(	new BlendingAttribute(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA, 1),
-				new DepthTestAttribute(GL20.GL_LEQUAL, false),
+				new DepthTestAttribute(GL20.GL_LEQUAL, true),
 				TextureAttribute.createDiffuse(texture));
 		return renderable;
 	}

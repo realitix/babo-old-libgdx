@@ -12,6 +12,7 @@ import com.baboviolent.game.controller.BaboController;
 import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.weapon.Shotgun;
+import com.baboviolent.game.hud.Hud;
 import com.baboviolent.game.map.Map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -32,6 +33,7 @@ public class BaseMode {
     protected BaboEffectSystem effectSystem;
 	protected BaboController controller;
 	protected Map map;
+	protected Hud hud;
 	protected int nbIa;
 	protected Vector3 tmpV = new Vector3();
 	protected Environment environment;
@@ -70,6 +72,9 @@ public class BaseMode {
         
         // Initialisation de l'intelligence artificielle
         initIa();
+        
+        // Initialisation du Hud
+        hud = new Hud();
     }
     
     protected void initPlayer() {
@@ -159,12 +164,15 @@ public class BaseMode {
     	world.render(modelBatch, environment);
     	modelBatch.end();    	
     	
-    	effectSystem.render(decalBatch);
-    	decalBatch.flush();
+    	effectSystem.renderDecals(decalBatch);
     	
     	modelBatch.begin(camera);
     	effectSystem.render(modelBatch, environment);
     	modelBatch.end();
+    	
+    	effectSystem.renderCursor(decalBatch);
+    	
+    	hud.render();
     }
     
     public void update() {
@@ -174,7 +182,8 @@ public class BaseMode {
     	
         camera.update();
 		world.update();
-		
+		effectSystem.update();
+		hud.update();
 		updateBabos();
     }
     

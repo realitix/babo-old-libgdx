@@ -8,6 +8,7 @@ import com.baboviolent.game.effect.group.GroupEffect;
 import com.baboviolent.game.effect.group.Shoot1;
 import com.baboviolent.game.effect.light.BaboLightSystem;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
+import com.baboviolent.game.effect.sound.BaboSoundSystem;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -17,6 +18,7 @@ public class BaboEffectSystem {
 	private BaboParticleSystem particleSystem;
 	private BaboLightSystem lightSystem;
 	private BaboDecalSystem decalSystem;
+	private BaboSoundSystem soundSystem;
 	private ObjectMap<String, GroupEffect> groups;
 	
 	public BaboEffectSystem(BaboCamera camera, Environment environment) {
@@ -24,6 +26,7 @@ public class BaboEffectSystem {
 		particleSystem = new BaboParticleSystem(camera);
 		decalSystem = new BaboDecalSystem(camera);
 		lightSystem = new BaboLightSystem(camera, environment);
+		soundSystem = new BaboSoundSystem();
 		initGroups();
 	}
 	
@@ -37,13 +40,21 @@ public class BaboEffectSystem {
 		return groups.get(name);
 	}
 	
-	public void render(ModelBatch modelBatch, Environment environment) {
-		particleSystem.render(modelBatch, environment);
-		lightSystem.render();
+	public void update() {
+		particleSystem.update();
+		lightSystem.update();
 	}
 	
-	public void render(DecalBatch decalBatch) {
+	public void render(ModelBatch modelBatch, Environment environment) {
+		particleSystem.render(modelBatch, environment);
+	}
+	
+	public void renderDecals(DecalBatch decalBatch) {
 		decalSystem.render(decalBatch);
+	}
+	
+	public void renderCursor(DecalBatch decalBatch) {
+		decalSystem.renderCursor(decalBatch);
 	}
 	
 	public BaboParticleSystem getParticleSystem() {
@@ -56,5 +67,9 @@ public class BaboEffectSystem {
 	
 	public BaboDecalSystem getDecalSystem() {
 		return decalSystem;
+	}
+	
+	public BaboSoundSystem getSoundSystem() {
+		return soundSystem;
 	}
 }
