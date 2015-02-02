@@ -9,7 +9,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		
 		
-		//TexturePacker.process("D:\\Users\\T0143947\\repo\\babo\\android\\assets\\data\\texture\\other\\blood", "D:\\Users\\T0143947\\repo\\babo\\android\\assets\\data\\texture\\other\\blood\\atlas", "blood");
+		//TexturePacker.process("D:\\Users\\T0143947\\repo\\babo\\android\\assets\\data\\texture\\other\\a_packer", "D:\\Users\\T0143947\\repo\\babo\\android\\assets\\data\\texture\\other\\a_packer\\atlas", "game_icon");
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		

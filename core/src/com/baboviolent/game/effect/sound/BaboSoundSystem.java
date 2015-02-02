@@ -3,9 +3,11 @@ package com.baboviolent.game.effect.sound;
 import com.baboviolent.game.BaboViolentGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.g3d.Material;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.ObjectMap;
 
-public class BaboSoundSystem {
+public class BaboSoundSystem implements Disposable {
 	public static final int SHOTGUN = 1;
 	
 	private ObjectMap<Integer, Sound> sounds;
@@ -23,5 +25,12 @@ public class BaboSoundSystem {
 	
 	public void start(int id) {
 		sounds.get(id).play(1);
+	}
+
+	@Override
+	public void dispose() {
+		for (ObjectMap.Entry<Integer, Sound> e : sounds.entries()) {
+			e.value.dispose();
+		}
 	}
 }

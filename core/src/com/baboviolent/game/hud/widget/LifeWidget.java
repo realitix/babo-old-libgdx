@@ -15,7 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Pools;
 
 public class LifeWidget extends Widget implements Disableable {
-	private ProgressBarStyle style;
+	private LifeWidgetStyle style;
 	private float min, max, stepSize;
 	private float value, animateFromValue;
 	float position;
@@ -28,11 +28,11 @@ public class LifeWidget extends Widget implements Disableable {
 	boolean shiftIgnoresSnap;
 
 	public LifeWidget (float min, float max, float stepSize, boolean vertical, Skin skin) {
-		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), ProgressBarStyle.class));
+		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), LifeWidgetStyle.class));
 	}
 
 	public LifeWidget (float min, float max, float stepSize, boolean vertical, Skin skin, String styleName) {
-		this(min, max, stepSize, vertical, skin.get(styleName, ProgressBarStyle.class));
+		this(min, max, stepSize, vertical, skin.get(styleName, LifeWidgetStyle.class));
 	}
 
 	/** Creates a new progress bar. It's width is determined by the given prefWidth parameter, its height is determined by the
@@ -45,7 +45,7 @@ public class LifeWidget extends Widget implements Disableable {
 	 * @param max the maximum value
 	 * @param stepSize the step size between values
 	 * @param style the {@link ProgressBarStyle} */
-	public LifeWidget (float min, float max, float stepSize, boolean vertical, ProgressBarStyle style) {
+	public LifeWidget (float min, float max, float stepSize, boolean vertical, LifeWidgetStyle style) {
 		if (min > max) throw new IllegalArgumentException("max must be > min. min,max: " + min + ", " + max);
 		if (stepSize <= 0) throw new IllegalArgumentException("stepSize must be > 0: " + stepSize);
 		setStyle(style);
@@ -57,7 +57,7 @@ public class LifeWidget extends Widget implements Disableable {
 		setSize(getPrefWidth(), getPrefHeight());
 	}
 
-	public void setStyle (ProgressBarStyle style) {
+	public void setStyle (LifeWidgetStyle style) {
 		if (style == null) throw new IllegalArgumentException("style cannot be null.");
 		this.style = style;
 		invalidateHierarchy();
@@ -65,7 +65,7 @@ public class LifeWidget extends Widget implements Disableable {
 
 	/** Returns the progress bar's style. Modifying the returned style may not have an effect until
 	 * {@link #setStyle(ProgressBarStyle)} is called. */
-	public ProgressBarStyle getStyle () {
+	public LifeWidgetStyle getStyle () {
 		return style;
 	}
 
@@ -81,83 +81,22 @@ public class LifeWidget extends Widget implements Disableable {
 
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
-		ProgressBarStyle style = this.style;
+		LifeWidgetStyle style = this.style;
 		boolean disabled = this.disabled;
-		final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
-		final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
-		final Drawable knobBefore = (disabled && style.disabledKnobBefore != null) ? style.disabledKnobBefore : style.knobBefore;
-		final Drawable knobAfter = (disabled && style.disabledKnobAfter != null) ? style.disabledKnobAfter : style.knobAfter;
-
+		final Drawable bg = style.background;
+		final Drawable top = style.top;
+		
 		Color color = getColor();
 		float x = getX();
 		float y = getY();
 		float width = getWidth();
 		float height = getHeight();
-		float knobHeight = knob == null ? 0 : knob.getMinHeight();
-		float knobWidth = knob == null ? 0 : knob.getMinWidth();
 		float value = getVisualValue();
 
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
 
-		if (vertical) {
-			bg.draw(batch, x + (int)((width - bg.getMinWidth()) * 0.5f), y, bg.getMinWidth(), height);
-
-			float positionHeight = height - (bg.getTopHeight() + bg.getBottomHeight());
-			float knobHeightHalf = 0;
-			if (min != max) {
-				if (knob == null) {
-					knobHeightHalf = knobBefore == null ? 0 : knobBefore.getMinHeight() * 0.5f;
-					position = (value - min) / (max - min) * (positionHeight - knobHeightHalf);
-					position = Math.min(positionHeight - knobHeightHalf, position);
-				} else {
-					knobHeightHalf = knobHeight * 0.5f;
-					position = (value - min) / (max - min) * (positionHeight - knobHeight);
-					position = Math.min(positionHeight - knobHeight, position) + bg.getBottomHeight();
-				}
-				position = Math.max(0, position);
-			}
-
-			if (knobBefore != null) {
-				float offset = 0;
-				if (bg != null) offset = bg.getTopHeight();
-				knobBefore.draw(batch, x + (int)((width - knobBefore.getMinWidth()) * 0.5f), y + offset, knobBefore.getMinWidth(),
-					(int)(position + knobHeightHalf));
-			}
-			if (knobAfter != null) {
-				knobAfter.draw(batch, x + (int)((width - knobAfter.getMinWidth()) * 0.5f), y + (int)(position + knobHeightHalf),
-					knobAfter.getMinWidth(), height - (int)(position + knobHeightHalf));
-			}
-			if (knob != null) knob.draw(batch, x + (int)((width - knobWidth) * 0.5f), (int)(y + position), knobWidth, knobHeight);
-		} else {
-			bg.draw(batch, x, y + (int)((height - bg.getMinHeight()) * 0.5f), width, bg.getMinHeight());
-
-			float positionWidth = width - (bg.getLeftWidth() + bg.getRightWidth());
-			float knobWidthHalf = 0;
-			if (min != max) {
-				if (knob == null) {
-					knobWidthHalf = knobBefore == null ? 0 : knobBefore.getMinWidth() * 0.5f;
-					position = (value - min) / (max - min) * (positionWidth - knobWidthHalf);
-					position = Math.min(positionWidth - knobWidthHalf, position);
-				} else {
-					knobWidthHalf = knobWidth * 0.5f;
-					position = (value - min) / (max - min) * (positionWidth - knobWidth);
-					position = Math.min(positionWidth - knobWidth, position) + bg.getLeftWidth();
-				}
-				position = Math.max(0, position);
-			}
-
-			if (knobBefore != null) {
-				float offset = 0;
-				if (bg != null) offset = bg.getLeftWidth();
-				knobBefore.draw(batch, x + offset, y + (int)((height - knobBefore.getMinHeight()) * 0.5f),
-					(int)(position + knobWidthHalf), knobBefore.getMinHeight());
-			}
-			if (knobAfter != null) {
-				knobAfter.draw(batch, x + (int)(position + knobWidthHalf), y + (int)((height - knobAfter.getMinHeight()) * 0.5f),
-					width - (int)(position + knobWidthHalf), knobAfter.getMinHeight());
-			}
-			if (knob != null) knob.draw(batch, (int)(x + position), (int)(y + (height - knobHeight) * 0.5f), knobWidth, knobHeight);
-		}
+		bg.draw(batch, x, y + (int)((height - bg.getMinHeight()) * 0.5f), width, height);
+		top.draw(batch, x, y + (int)((height - bg.getMinHeight()) * 0.5f), width, height);		
 	}
 
 	public float getValue () {
@@ -168,11 +107,6 @@ public class LifeWidget extends Widget implements Disableable {
 	public float getVisualValue () {
 		if (animateTime > 0) return animateInterpolation.apply(animateFromValue, value, 1 - animateTime / animateDuration);
 		return value;
-	}
-
-	/** Returns progress bar visual position within the range. */
-	protected float getKnobPosition () {
-		return this.position;
 	}
 
 	/** Sets the progress bar position, rounded to the nearest step size and clamped to the minimum and maximum values.
@@ -220,22 +154,14 @@ public class LifeWidget extends Widget implements Disableable {
 	}
 
 	public float getPrefWidth () {
-		if (vertical) {
-			final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
-			final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
-			return Math.max(knob == null ? 0 : knob.getMinWidth(), bg.getMinWidth());
-		} else
-			return 140;
+		final Drawable bg = style.background;
+		return bg.getMinWidth();
+		
 	}
 
 	public float getPrefHeight () {
-		if (vertical)
-			return 140;
-		else {
-			final Drawable knob = (disabled && style.disabledKnob != null) ? style.disabledKnob : style.knob;
-			final Drawable bg = (disabled && style.disabledBackground != null) ? style.disabledBackground : style.background;
-			return Math.max(knob == null ? 0 : knob.getMinHeight(), bg.getMinHeight());
-		}
+		final Drawable bg = style.background;
+		return bg.getMinHeight();
 	}
 
 	public float getMinValue () {
@@ -287,33 +213,23 @@ public class LifeWidget extends Widget implements Disableable {
 	/** The style for a progress bar, see {@link ProgressBar}.
 	 * @author mzechner
 	 * @author Nathan Sweet */
-	static public class ProgressBarStyle {
+	static public class LifeWidgetStyle {
 		/** The progress bar background, stretched only in one direction. */
 		public Drawable background;
 		/** Optional. **/
-		public Drawable disabledBackground;
-		/** Optional, centered on the background. */
-		public Drawable knob, disabledKnob;
-		/** Optional. */
-		public Drawable knobBefore, knobAfter, disabledKnobBefore, disabledKnobAfter;
-
-		public ProgressBarStyle () {
+		public Drawable top;
+		
+		public LifeWidgetStyle () {
 		}
 
-		public ProgressBarStyle (Drawable background, Drawable knob) {
+		public LifeWidgetStyle (Drawable background, Drawable top) {
 			this.background = background;
-			this.knob = knob;
+			this.top = top;
 		}
 
-		public ProgressBarStyle (ProgressBarStyle style) {
+		public LifeWidgetStyle (LifeWidgetStyle style) {
 			this.background = style.background;
-			this.disabledBackground = style.disabledBackground;
-			this.knob = style.knob;
-			this.disabledKnob = style.disabledKnob;
-			this.knobBefore = style.knobBefore;
-			this.knobAfter = style.knobAfter;
-			this.disabledKnobBefore = style.disabledKnobBefore;
-			this.disabledKnobAfter = style.disabledKnobAfter;
+			this.top = style.top;
 		}
 	}
 }

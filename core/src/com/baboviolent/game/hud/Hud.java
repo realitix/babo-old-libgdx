@@ -1,5 +1,6 @@
 package com.baboviolent.game.hud;
 
+import com.baboviolent.game.hud.widget.LifeWidget;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -17,8 +18,8 @@ public class Hud {
  		
  		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
  		
- 		// Bar de vie
- 		ProgressBar pb = new ProgressBar(0, 100, 1, false, skin);
+ 		// Barre de vie
+ 		LifeWidget pb = new LifeWidget(0, 100, 1, false, skin);
  		pb.setBounds(100, 900, 300, 300);
  		pb.setValue(50);
  		stage.addActor(pb);
