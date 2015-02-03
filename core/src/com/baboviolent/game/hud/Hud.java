@@ -1,6 +1,9 @@
 package com.baboviolent.game.hud;
 
+import com.baboviolent.game.hud.widget.CartridgeWidget;
+import com.baboviolent.game.hud.widget.GrenadeWidget;
 import com.baboviolent.game.hud.widget.LifeWidget;
+import com.baboviolent.game.hud.widget.MolotovWidget;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -10,19 +13,54 @@ import com.badlogic.gdx.utils.viewport.FillViewport;
 
 public class Hud {
 	private Stage stage;
+	private LifeWidget lifeWidget;
+	private CartridgeWidget cartridgeWidget;
+	private GrenadeWidget grenadeWidget;
+	private MolotovWidget molotovWidget;
 	
 	public Hud() {
 		int width = 1920;
  		int height = 1080;
  		stage = new Stage(new FillViewport(width, height));
  		
- 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+ 		Skin skin = new Skin(Gdx.files.internal("data/skin/game/skin.json"));
  		
  		// Barre de vie
- 		LifeWidget pb = new LifeWidget(0, 100, 1, false, skin);
- 		pb.setBounds(100, 900, 300, 300);
- 		pb.setValue(50);
- 		stage.addActor(pb);
+ 		lifeWidget = new LifeWidget(skin);
+ 		lifeWidget.setBounds(735, 50, 450, 40);
+ 		lifeWidget.setValue(100);
+ 		stage.addActor(lifeWidget);
+ 		
+ 		// Cartouches
+ 		cartridgeWidget = new CartridgeWidget("0", skin);
+ 		cartridgeWidget.setBounds(790, 100, 64, 64);
+ 		stage.addActor(cartridgeWidget);
+ 		
+ 		// Grenades
+ 		grenadeWidget = new GrenadeWidget("0", skin);
+ 		grenadeWidget.setBounds(940, 100, 64, 64);
+ 		stage.addActor(grenadeWidget);
+ 		
+ 		// Molotovs
+ 		molotovWidget = new MolotovWidget("0", skin);
+ 		molotovWidget.setBounds(1090, 100, 64, 64);
+ 		stage.addActor(molotovWidget);
+	}
+	
+	public void setLife(float life) {
+		lifeWidget.setValue(life);
+	}
+	
+	public void setCartrdige(int nb) {
+		cartridgeWidget.setText(Integer.toString(nb));
+	}
+	
+	public void setGrenade(int nb) {
+		grenadeWidget.setText(Integer.toString(nb));
+	}
+	
+	public void setMolotov(int nb) {
+		molotovWidget.setText(Integer.toString(nb));
 	}
 	
 	public Stage getStage() {

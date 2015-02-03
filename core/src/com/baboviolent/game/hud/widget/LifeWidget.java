@@ -16,23 +16,21 @@ import com.badlogic.gdx.utils.Pools;
 
 public class LifeWidget extends Widget implements Disableable {
 	private LifeWidgetStyle style;
-	private float min, max, stepSize;
+	private float min = 0, max = 100, stepSize = 1;
 	private float value, animateFromValue;
 	float position;
-	final boolean vertical;
-	private float animateDuration, animateTime;
+	private float animateDuration = 1, animateTime;
 	private Interpolation animateInterpolation = Interpolation.linear;
 	private float[] snapValues;
 	private float threshold;
 	boolean disabled;
-	boolean shiftIgnoresSnap;
-
-	public LifeWidget (float min, float max, float stepSize, boolean vertical, Skin skin) {
-		this(min, max, stepSize, vertical, skin.get("default-" + (vertical ? "vertical" : "horizontal"), LifeWidgetStyle.class));
+	
+	public LifeWidget (Skin skin) {
+		this(skin.get("default", LifeWidgetStyle.class));
 	}
 
-	public LifeWidget (float min, float max, float stepSize, boolean vertical, Skin skin, String styleName) {
-		this(min, max, stepSize, vertical, skin.get(styleName, LifeWidgetStyle.class));
+	public LifeWidget (Skin skin, String styleName) {
+		this(skin.get(styleName, LifeWidgetStyle.class));
 	}
 
 	/** Creates a new progress bar. It's width is determined by the given prefWidth parameter, its height is determined by the
@@ -45,14 +43,8 @@ public class LifeWidget extends Widget implements Disableable {
 	 * @param max the maximum value
 	 * @param stepSize the step size between values
 	 * @param style the {@link ProgressBarStyle} */
-	public LifeWidget (float min, float max, float stepSize, boolean vertical, LifeWidgetStyle style) {
-		if (min > max) throw new IllegalArgumentException("max must be > min. min,max: " + min + ", " + max);
-		if (stepSize <= 0) throw new IllegalArgumentException("stepSize must be > 0: " + stepSize);
+	public LifeWidget (LifeWidgetStyle style) {
 		setStyle(style);
-		this.min = min;
-		this.max = max;
-		this.stepSize = stepSize;
-		this.vertical = vertical;
 		this.value = min;
 		setSize(getPrefWidth(), getPrefHeight());
 	}
@@ -79,12 +71,15 @@ public class LifeWidget extends Widget implements Disableable {
 		}
 	}
 
+	/**
+	 * On dessine dans l'ordre,
+	 * le blanc, le noir et ensuite le vert
+	 */
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
 		LifeWidgetStyle style = this.style;
 		boolean disabled = this.disabled;
-		final Drawable bg = style.background;
-		final Drawable top = style.top;
+		final Drawable pixel = style.pixel;
 		
 		Color color = getColor();
 		float x = getX();
@@ -93,10 +88,21 @@ public class LifeWidget extends Widget implements Disableable {
 		float height = getHeight();
 		float value = getVisualValue();
 
-		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-
-		bg.draw(batch, x, y + (int)((height - bg.getMinHeight()) * 0.5f), width, height);
-		top.draw(batch, x, y + (int)((height - bg.getMinHeight()) * 0.5f), width, height);		
+		// Blanc
+		batch.setColor(1, 1, 1, parentAlpha);
+		pixel.draw(batch, x, y, width, height);
+		
+		// Noir - petit espace
+		batch.setColor(0, 0, 0, parentAlpha);
+		pixel.draw(batch, x+3, y+2, width-4, height-3);
+		
+		// Vert - espace un peu pus grand
+		// Faible -> rouge, eleve -> vert
+		float red = animateInterpolation.apply(min, max, 1f - (value+min)/max)/max;
+		float green = 1f - red;
+		width = (width - 12) * (value/max);
+		batch.setColor(red, green, 0, parentAlpha);
+		pixel.draw(batch, x+6, y+6, width, height-12);
 	}
 
 	public float getValue () {
@@ -105,7 +111,7 @@ public class LifeWidget extends Widget implements Disableable {
 
 	/** If {@link #setAnimateDuration(float) animating} the progress bar value, this returns the value current displayed. */
 	public float getVisualValue () {
-		if (animateTime > 0) return animateInterpolation.apply(animateFromValue, value, 1 - animateTime / animateDuration);
+		if (animateTime > 0) return animateInterpolation.apply(animateFromValue, value, 1f - animateTime / animateDuration);
 		return value;
 	}
 
@@ -114,22 +120,15 @@ public class LifeWidget extends Widget implements Disableable {
 	 * @return false if the value was not changed because the progress bar already had the value or it was canceled by a listener. */
 	public boolean setValue (float value) {
 		value = clamp(Math.round(value / stepSize) * stepSize);
-		if (!shiftIgnoresSnap || (!Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && !Gdx.input.isKeyPressed(Keys.SHIFT_RIGHT)))
-			value = snap(value);
 		float oldValue = this.value;
 		if (value == oldValue) return false;
 		float oldVisualValue = getVisualValue();
 		this.value = value;
-		ChangeEvent changeEvent = Pools.obtain(ChangeEvent.class);
-		boolean cancelled = fire(changeEvent);
-		if (cancelled)
-			this.value = oldValue;
-		else if (animateDuration > 0) {
+		if (animateDuration > 0) {
 			animateFromValue = oldVisualValue;
 			animateTime = animateDuration;
 		}
-		Pools.free(changeEvent);
-		return !cancelled;
+		return true;
 	}
 
 	/** Clamps the value to the progress bar's min/max range. This can be overridden to allow a range different from the progress
@@ -154,13 +153,13 @@ public class LifeWidget extends Widget implements Disableable {
 	}
 
 	public float getPrefWidth () {
-		final Drawable bg = style.background;
+		final Drawable bg = style.pixel;
 		return bg.getMinWidth();
 		
 	}
 
 	public float getPrefHeight () {
-		final Drawable bg = style.background;
+		final Drawable bg = style.pixel;
 		return bg.getMinHeight();
 	}
 
@@ -187,21 +186,6 @@ public class LifeWidget extends Widget implements Disableable {
 		this.animateInterpolation = animateInterpolation;
 	}
 
-	/** Will make this progress bar snap to the specified values, if the knob is within the threshold. */
-	public void setSnapToValues (float[] values, float threshold) {
-		this.snapValues = values;
-		this.threshold = threshold;
-	}
-
-	/** Returns a snapped value. */
-	private float snap (float value) {
-		if (snapValues == null) return value;
-		for (int i = 0; i < snapValues.length; i++) {
-			if (Math.abs(value - snapValues[i]) <= threshold) return snapValues[i];
-		}
-		return value;
-	}
-
 	public void setDisabled (boolean disabled) {
 		this.disabled = disabled;
 	}
@@ -210,26 +194,19 @@ public class LifeWidget extends Widget implements Disableable {
 		return disabled;
 	}
 
-	/** The style for a progress bar, see {@link ProgressBar}.
-	 * @author mzechner
-	 * @author Nathan Sweet */
+	
 	static public class LifeWidgetStyle {
-		/** The progress bar background, stretched only in one direction. */
-		public Drawable background;
-		/** Optional. **/
-		public Drawable top;
+		public Drawable pixel;
 		
 		public LifeWidgetStyle () {
 		}
 
-		public LifeWidgetStyle (Drawable background, Drawable top) {
-			this.background = background;
-			this.top = top;
+		public LifeWidgetStyle (Drawable pixel) {
+			this.pixel = pixel;
 		}
 
 		public LifeWidgetStyle (LifeWidgetStyle style) {
-			this.background = style.background;
-			this.top = style.top;
+			this.pixel = style.pixel;
 		}
 	}
 }

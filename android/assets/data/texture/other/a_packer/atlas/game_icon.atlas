@@ -4,24 +4,31 @@ size: 256,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-CartridgeIcon
+cartridge
+  rotate: false
+  xy: 2, 5
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+grenade
+  rotate: false
+  xy: 68, 5
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+molotov
+  rotate: false
+  xy: 134, 5
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+pixel_white
   rotate: false
   xy: 2, 2
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-GrenadeIcon
-  rotate: false
-  xy: 68, 2
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-molotovIcon
-  rotate: false
-  xy: 134, 2
-  size: 64, 64
-  orig: 64, 64
+  size: 1, 1
+  orig: 1, 1
   offset: 0, 0
   index: -1
