@@ -38,10 +38,10 @@ public class MobileController extends BaseController {
 		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		
 		int size = width/5;
-		left = new BaboTouchpad(size/5, skin);
+		left = new BaboTouchpad(0, skin);
 		left.setBounds(width/10, height/10, size, size);
 		
-		right = new BaboTouchpad(size/5, skin);
+		right = new BaboTouchpad(0, skin);
 		right.setBounds(width - width/10 - size, height/10, size, size);
 		
 		stage.addActor(left);
