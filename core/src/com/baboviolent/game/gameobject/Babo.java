@@ -7,6 +7,7 @@ import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.effect.group.Blood1;
 import com.baboviolent.game.gameobject.weapon.Weapon;
+import com.baboviolent.game.hud.Hud;
 import com.baboviolent.game.loader.TextureLoader;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -42,8 +43,9 @@ public class Babo extends GameObject {
 	private boolean manualDeath; // Si true, babo ne perd pas d'�nergie, bien pour multijoueur
 	private Babo lastShooter; // Dernier babo ayant touch� ce babo
 	private final BulletWorld world;
-	float maxSpeed;
-	float maxAcceleration;
+	private float maxSpeed;
+	private float maxAcceleration;
+	private Hud hud;
 	
 	public Babo(String username, String skin, BaboEffectSystem effectSystem, final BulletWorld world) {
 		this.effectSystem = effectSystem;
@@ -336,6 +338,15 @@ public class Babo extends GameObject {
     public Babo setPlayer(boolean player) {
     	this.player = player;
     	return this;
+    }
+    
+    public Babo setHud(Hud hud) {
+    	this.hud = hud;
+    	return this;
+    }
+    
+    public Hud getHud() {
+    	return hud;
     }
     
     public Vector3 getLinearVelocity() {

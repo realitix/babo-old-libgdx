@@ -13,7 +13,11 @@ public class Weapon extends GameObject {
 	protected float rotateImpulse; // Impulsion pour faire tourner l'arme
 	protected float distanceShoot; // Distance du tir
 	protected float power; // Puissance du tir
+	protected int nbCartridge; // Nombre de cartouche dans le chargeur
+	protected int currentNbCartridge;
+	protected int timeReload; // Temps en millisecond pour recharger
 	protected long lastShoot;
+	protected long lastReload;
 	
 	public Weapon(final Babo b) {
 		super();
@@ -91,6 +95,15 @@ public class Weapon extends GameObject {
         		rand.nextInt(max2 + 1) - max2/2
         	)
         );
+	}
+	
+	protected void updateHud() {
+		if( babo.getHud() != null ) {
+			babo.getHud().setCartridge(currentNbCartridge);
+			if( currentNbCartridge <= 0 ) {
+				babo.getHud().reload(timeReload);
+			}
+		}
 	}
 	
 	public Babo getBabo() {

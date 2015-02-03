@@ -67,25 +67,30 @@ public class BaseMode {
 		// Initialisation du controller
 		controller = new BaboController(this, camera);
 		
+		// Initialisation du Hud
+        hud = new Hud();
+		
 		// Initialisation du joueur
 		initPlayer();
         
         // Initialisation de l'intelligence artificielle
         initIa();
-        
-        // Initialisation du Hud
-        hud = new Hud();
     }
     
     protected void initPlayer() {
-        Babo player = initBabo(Gdx.app.getPreferences("com.baboviolent.game").getString("username")).setPlayer(true);
+    	String name = Gdx.app.getPreferences("com.baboviolent.game").getString("username");
+        Babo player = initBabo(name, true);
         this.player = player;
         player.appear(generateBaboPosition());
         camera.init(this.player);
     }
     
-    protected Babo initBabo(String username) {
+    protected Babo initBabo(String username, boolean player) {
         Babo babo = new Babo(username, "skin22", effectSystem, world);
+        if(player) {
+        	babo.setPlayer(true).setHud(hud);
+        }
+        
         world.add(babo);
         babos.add(babo);
         Shotgun shotgun = new Shotgun(babo);

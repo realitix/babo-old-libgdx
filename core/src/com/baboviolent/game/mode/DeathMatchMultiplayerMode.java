@@ -44,7 +44,7 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
     }
     
     private Babo initEnnemy(String username) {
-    	return super.initBabo(username).setManualDeath(true);
+    	return super.initBabo(username, false).setManualDeath(true);
     }
     
     public void update() {

@@ -11,6 +11,10 @@
 	"default": { "pixel": "pixel_white" }
 },
 
+"com.baboviolent.game.hud.widget.ReloadWidget$ReloadWidgetStyle": {
+	"default": { "pixel": "pixel_white" }
+},
+
 "com.baboviolent.game.hud.widget.CartridgeWidget$CartridgeWidgetStyle": {
 	"default": { "font": "default-font", "fontColor": "white", "background": "cartridge" }
 },

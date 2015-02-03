@@ -21,13 +21,21 @@ public class Shotgun extends Weapon {
 		frequency = 1000;
 		distanceShoot = 10;
 		power = 20;
-	    
+		nbCartridge = 4;
+		currentNbCartridge = nbCartridge;
+		timeReload = 3000;
         
+		updateHud();
         super.initInstance();
 	}
 	
 	public void shoot(Vector3 target) {
+		// On test le dernier tir
 		if( TimeUtils.millis() - lastShoot < frequency )
+			return;
+		
+		// On test le rechargement
+		if( TimeUtils.millis() - lastReload < timeReload )
 			return;
 
 		// Applique la direction
@@ -102,6 +110,15 @@ public class Shotgun extends Weapon {
     	
     	// On enregistre la date du tir
     	lastShoot = TimeUtils.millis();
+    	currentNbCartridge--;
+    	updateHud();
+
+    	// Si plus de balle
+    	if( currentNbCartridge <= 0 ) {
+    		currentNbCartridge = nbCartridge;
+    		lastReload = TimeUtils.millis();
+    		updateHud();
+    	}
 	}
 	
 	/**

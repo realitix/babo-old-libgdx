@@ -4,6 +4,7 @@ import com.baboviolent.game.hud.widget.CartridgeWidget;
 import com.baboviolent.game.hud.widget.GrenadeWidget;
 import com.baboviolent.game.hud.widget.LifeWidget;
 import com.baboviolent.game.hud.widget.MolotovWidget;
+import com.baboviolent.game.hud.widget.ReloadWidget;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -17,6 +18,7 @@ public class Hud {
 	private CartridgeWidget cartridgeWidget;
 	private GrenadeWidget grenadeWidget;
 	private MolotovWidget molotovWidget;
+	private ReloadWidget reloadWidget;
 	
 	public Hud() {
 		int width = 1920;
@@ -45,13 +47,18 @@ public class Hud {
  		molotovWidget = new MolotovWidget("0", skin);
  		molotovWidget.setBounds(1090, 100, 64, 64);
  		stage.addActor(molotovWidget);
+ 		
+ 		// Barre de recharge
+ 		reloadWidget = new ReloadWidget(skin);
+ 		reloadWidget.setBounds(810, 200, 300, 30);
+ 		stage.addActor(reloadWidget);
 	}
 	
 	public void setLife(float life) {
 		lifeWidget.setValue(life);
 	}
 	
-	public void setCartrdige(int nb) {
+	public void setCartridge(int nb) {
 		cartridgeWidget.setText(Integer.toString(nb));
 	}
 	
@@ -61,6 +68,10 @@ public class Hud {
 	
 	public void setMolotov(int nb) {
 		molotovWidget.setText(Integer.toString(nb));
+	}
+	
+	public void reload(int time) {
+		reloadWidget.start(time);
 	}
 	
 	public Stage getStage() {
