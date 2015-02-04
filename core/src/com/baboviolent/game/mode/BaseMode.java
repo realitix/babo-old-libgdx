@@ -159,7 +159,7 @@ public class BaseMode {
      */
     public void render(ModelBatch modelBatch, ModelBatch shadowBatch, DecalBatch decalBatch) {
     	DirectionalShadowLight shadowLight = effectSystem.getLightSystem().getShadowLight();
-    	shadowLight.begin(Vector3.Zero, camera.direction);
+    	shadowLight.begin(camera.position, camera.direction);
 		shadowBatch.begin(shadowLight.getCamera());
 		world.render(shadowBatch);
 		shadowBatch.end();
@@ -222,7 +222,7 @@ public class BaseMode {
     	float max = 0;
     	for( int i = 0; i < map.getCells().size; i++ ) {
     	    if( map.getCells().get(i).getType().equals(Map.TYPE_GROUND) ) {
-    	        Vector3 cp = map.getCells().get(i).getAbsolutePosition();
+    	        Vector3 cp = map.getCells().get(i).getPosition();
     	        float sumTmp = 0;
         	    for( int j = 0; j < babos.size; j++ ) {
         	        if( babos.get(j).getState() == Babo.STATE_ALIVE ) {

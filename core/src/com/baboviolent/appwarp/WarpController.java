@@ -3,6 +3,7 @@ package com.baboviolent.appwarp;
 import java.util.HashMap;
 
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient;
 import com.shephertz.app42.gaming.multiplayer.client.command.WarpResponseResultCode;
 import com.shephertz.app42.gaming.multiplayer.client.events.RoomEvent;
@@ -34,6 +35,9 @@ public class WarpController {
 	
 	private boolean isConnected = false;
 	boolean isUDPEnabled = false;
+	boolean udp = false;
+	private long latency;
+	private long lastTimeSent;
 	
 	private WarpListener warpListener ;
 	
@@ -57,6 +61,7 @@ public class WarpController {
 		warpClient.addZoneRequestListener(new ZoneListener(this));
 		warpClient.addRoomRequestListener(new RoomListener(this));
 		warpClient.addNotificationListener(new NotificationListener(this));
+		warpClient.addUpdateRequestListener(new UpdateListener(this));
 	}
 	
 	public static WarpController getInstance(){
@@ -130,12 +135,14 @@ public class WarpController {
 	
 	public void sendGameUpdate(String msg){
 		if(isConnected){
+			String message = Long.toString(latency)+SEPARATOR+localUser+SEPARATOR+msg;
 			if( isUDPEnabled ) {
-				warpClient.sendUDPUpdatePeers((localUser+SEPARATOR+msg).getBytes());
+				warpClient.sendUDPUpdatePeers(message.getBytes());
 			}
 			else {
-				warpClient.sendUpdatePeers((localUser+SEPARATOR+msg).getBytes());
+				warpClient.sendUpdatePeers(message.getBytes());
 			}
+			lastTimeSent = TimeUtils.millis();
 		}
 	}
 	
@@ -144,9 +151,10 @@ public class WarpController {
 	 */
 	public void onGameUpdateReceived(String message){
         String[] datas = message.split(SEPARATOR);
-		String username = datas[0];
-		String action = datas[1];
-		String value = datas[2];
+        long latency = Long.parseLong(datas[0]);
+        String username = datas[1];
+		String action = datas[2];
+		String value = datas[3];
 		
 		if( !localUser.equals(username) ) {
 	    	if( action.equals(ACTION_DIRECTION) ) {
@@ -218,8 +226,10 @@ public class WarpController {
 	}
 	
 	public void onConnectDone(boolean status){
-		if(status){
-			warpClient.initUDP();
+		if(status) {
+			if(udp) {
+				warpClient.initUDP();
+			}
 			warpClient.joinRoomInRange(1, 1, false);
 		}else{
 			isConnected = false;
@@ -313,6 +323,10 @@ public class WarpController {
 		if(STATE==STARTED && !localUser.equals(userName)){// Game Started and other user left the room
 			warpListener.onGameFinished(ENEMY_LEFT, true);
 		}
+	}
+	
+	public void onSendUpdateDone(byte arg0) {
+		latency = TimeUtils.timeSinceMillis(lastTimeSent);
 	}
 	
 	public int getState(){

@@ -32,11 +32,20 @@ public class BaboLightSystem {
 	private void initLight() {
 		//environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.5f, 0.5f, 0.5f, 1));
 		//environment.add(new DirectionalLight().set(new Color(0.8f,0.8f,0.8f,0.5f), new Vector3(0,-1,0).nor()));
+		
+		/**
+		 * Les deux premiers arguments sont la resolution de l'ombre
+		 * Plus c'est faible moins ca consomme en memoire
+		 * Les deux arguments suivants sont la taille de l'ombre sur l'image
+		 * 37 est la valeur min.
+		 * Modifie les 3 et 4 eme argument impacte les deux premiers
+		 * Plus la taille de la camera est grande et plus la taille de la
+		 * shadow map doit etre grande.
+		 * Il faut donc mettre ces deux valeurs aux plus petites possibles
+		 * Les deux dernieres sont la distance par rapport a la camera
+		 */
 		shadowLight = new DirectionalShadowLight(
-				Gdx.graphics.getWidth()*2,
-				Gdx.graphics.getHeight()*2, 
-				100, 
-				100, 1f, 60f);
+				512, 512, 37, 37, 1f, 30f);
 		shadowLight.set(0.8f, 0.8f, 0.8f, new Vector3(-0.5f, -1, -0.5f).nor());
 		environment.add(shadowLight);
 		environment.shadowMap = shadowLight;

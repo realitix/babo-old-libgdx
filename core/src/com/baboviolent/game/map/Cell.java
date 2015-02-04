@@ -40,14 +40,6 @@ public class Cell {
 		return position.cpy();
 	}
 	
-	public Vector3 getAbsolutePosition() {
-		float s = BaboViolentGame.SIZE_MAP_CELL;
-		Vector3 result = position.cpy().scl(s);
-		result.x -= s/2f;
-		result.z -= s/2f;
-		return result;
-	}
-	
 	public Cell setPosition(Vector3 position) {
 		this.position.set(position);
 		return this;

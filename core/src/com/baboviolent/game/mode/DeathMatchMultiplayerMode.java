@@ -12,6 +12,8 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
 	private Vector3 lastTarget;
 	private long lastSynchronization = 0;
 	private final long synchronizationInterval = 1000;
+	private long lastTargetSent = 0;
+	private final long targetInterval = 1000;
 	
 	public DeathMatchMultiplayerMode(final String mapName) {
 		super(mapName);
@@ -73,10 +75,13 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
      * On envoie l'info
      */
     private void updatePlayerTarget() {
-    	Vector3 currentTarget = super.getTarget();
-    	if( !lastTarget.equals(currentTarget) ) {
-    		lastTarget.set(currentTarget);
-    		wc.sendTarget(currentTarget);
+    	if( TimeUtils.millis() - lastTargetSent > targetInterval ) {
+    		lastTargetSent = TimeUtils.millis();
+	    	Vector3 currentTarget = super.getTarget();
+	    	if( !lastTarget.equals(currentTarget) ) {
+	    		lastTarget.set(currentTarget);
+	    		wc.sendTarget(currentTarget);
+	    	}
     	}
     }
     

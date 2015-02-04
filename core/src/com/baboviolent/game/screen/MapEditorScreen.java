@@ -356,7 +356,7 @@ public class MapEditorScreen implements Screen {
     	for(int i = 0; i < map.getCells().size; i++ ) {
     		Cell c = map.getCells().get(i);
     		ModelInstance ci = new ModelInstance(models.get(c.getTextureName()));
-    		ci.transform.setTranslation(c.getAbsolutePosition());
+    		ci.transform.setTranslation(c.getPosition());
     		ci.userData = c.getType();
     		instances.add(ci);
     	}

@@ -162,7 +162,7 @@ public class Map {
         	Material material = materials.get(cells.get(i).getTextureName());
             Node node = modelBuilder.node();
             node.id = "cell"+i;
-            node.translation.set(cells.get(i).getAbsolutePosition());
+            node.translation.set(cells.get(i).getPosition());
             node.rotation.set(new Quaternion().set(up, cells.get(i).getAngle()));
             modelBuilder.part(
             	meshPart, 
@@ -342,7 +342,7 @@ public class Map {
 		for( int i = 0; i < cells.size; i++) {
 			Cell c = cells.get(i);
 			if(absolute) {
-				if(c.getAbsolutePosition().equals(position)) {
+				if(c.getPosition().equals(position)) {
 					cells.removeIndex(i);
 				}
 			}
