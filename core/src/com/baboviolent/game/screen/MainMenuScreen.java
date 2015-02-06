@@ -1,6 +1,7 @@
 package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.menu.mainmenu.MainMenu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -22,8 +23,10 @@ public class MainMenuScreen implements Screen {
 	final BaboViolentGame game;
     private PerspectiveCamera camera;
     private Stage stage;
+    private MainMenu menu;
     
     public MainMenuScreen(final BaboViolentGame g) {
+    	menu = new MainMenu();
         game = g;
         camera = new PerspectiveCamera();
         
@@ -103,7 +106,7 @@ public class MainMenuScreen implements Screen {
         
         foreground.addActor(table);
         
-        Gdx.input.setInputProcessor(stage);
+        //Gdx.input.setInputProcessor(stage);
          
     }
     
@@ -112,8 +115,10 @@ public class MainMenuScreen implements Screen {
     	Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        stage.act(Gdx.graphics.getDeltaTime());        
-        stage.draw();
+        menu.update();
+        menu.render();
+        /*stage.act(Gdx.graphics.getDeltaTime());        
+        stage.draw();*/
     }
     
 	@Override

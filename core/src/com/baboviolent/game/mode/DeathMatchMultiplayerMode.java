@@ -11,7 +11,7 @@ public class DeathMatchMultiplayerMode extends DeathMatchMode implements WarpLis
 	private WarpController wc;
 	private Vector3 lastTarget;
 	private long lastSynchronization = 0;
-	private final long synchronizationInterval = 1000;
+	private final long synchronizationInterval = 5000;
 	private long lastTargetSent = 0;
 	private final long targetInterval = 1000;
 	
