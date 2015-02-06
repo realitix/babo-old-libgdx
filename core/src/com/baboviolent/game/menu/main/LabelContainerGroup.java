@@ -1,4 +1,4 @@
-package com.baboviolent.game.menu.mainmenu;
+package com.baboviolent.game.menu.main;
 
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 

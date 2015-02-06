@@ -1,4 +1,4 @@
-package com.baboviolent.game.menu.mainmenu;
+package com.baboviolent.game.menu.main;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
@@ -147,7 +147,7 @@ public class MenuLabel {
 		// Si c'est le niveau suivant
 		if( oldSelectedLabel == null || level == oldSelectedLabel.getLevel() + 1 ) {
 			label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
-			parent.childrenGroup.addAction(Actions.alpha(0.7f, MainMenu2.animationTime));
+			parent.childrenGroup.addAction(Actions.alpha(0.7f, MainMenu.animationTime));
 
 			ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
 			LabelContainerGroup pg = parent.getChildrenGroup();

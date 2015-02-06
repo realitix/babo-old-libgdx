@@ -1,7 +1,7 @@
 package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
-import com.baboviolent.game.menu.mainmenu.MainMenu;
+import com.baboviolent.game.menu.main.MainMenu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;

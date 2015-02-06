@@ -1,10 +1,11 @@
-package com.baboviolent.game.menu.mainmenu;
+package com.baboviolent.game.menu.main;
 
 import com.baboviolent.game.hud.widget.CartridgeWidget;
 import com.baboviolent.game.hud.widget.GrenadeWidget;
 import com.baboviolent.game.hud.widget.LifeWidget;
 import com.baboviolent.game.hud.widget.MolotovWidget;
 import com.baboviolent.game.hud.widget.ReloadWidget;
+import com.baboviolent.game.menu.extra.AnimatedText;
 import com.baboviolent.game.screen.GameScreen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -22,30 +23,21 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 
-/**
- * La selection des groupes est un peu particuliere
- * On utilise le numero du groupe suivi de l'element du groupe 
- * comme intermediaire et ainsi de suite
- * Par exemple:
- * group1 = 1
- * group2 en passant par 1 = 112
- * group3 en passant par 3 puis par 2= 13223
- * Si le nombre de chiffres est impair, c'est un groupe
- * Si le nombre de chiffres est pair, c'est un label
- */
-public class MainMenu2 {
+public class MainMenu {
 	private Stage stage;
-	private HorizontalGroup container;
+	private ContainerGroup container;
 	private Skin skin;
+	private MenuLabel root;
 	
 	// Taille
-	private int width = 1920;
-	private int height = 1080;
+	public static final int width = 1920;
+	public static final int height = 1080;
 	
 	// Animation
 	public static final float animationTime = 1;
-	public static final float animationMoveX = 400;
+	public static final float animationMoveX = 100;
 	
 	// Goupes
 	private VerticalGroup group1;
@@ -60,16 +52,53 @@ public class MainMenu2 {
 	// Menu selectionne
 	private int selected;
 	
-	public MainMenu2() {
+	public MainMenu() {
  		stage = new Stage(new FillViewport(width, height));
  		Gdx.input.setInputProcessor(stage);
  		
- 		container = new HorizontalGroup();
+ 		container = new ContainerGroup();
  		container.space(100);
- 		container.setPosition(1300, 575);
+ 		
+ 		container.setFillParent(true);
+ 		container.setPosition(0, 0);
  		stage.addActor(container);
  		skin = new Skin(Gdx.files.internal("data/skin/main_menu/skin.json"));
- 		addGroup1();
+ 		
+ 		initMenuLabel();
+ 		startMenu();
+ 		
+ 		// Ajout du titre
+ 		AnimatedText title = new AnimatedText("BaboViolent2", skin);
+ 		title.setPosition(300, 1000);
+ 		stage.addActor(title);
+ 		
+ 		//container.debugAll();
+	}
+	
+	private void initMenuLabel() {
+		root = new MenuLabel(skin);
+		MenuLabel labelSolo = new MenuLabel("Solo", root);
+		MenuLabel labelMulti = new MenuLabel("Multi", root);
+		MenuLabel labelOptions = new MenuLabel("Options", root);
+		
+		MenuLabel labelTraining = new MenuLabel("Entrainement", labelSolo);
+		MenuLabel labelLevels = new MenuLabel("Niveaux", labelSolo);
+		
+		MenuLabel labelOnline = new MenuLabel("En ligne", labelMulti);
+		MenuLabel labelLocal = new MenuLabel("En local", labelMulti);
+		
+		MenuLabel lvl1 = new MenuLabel("Niveau 1", labelLevels);
+		MenuLabel lvl2 = new MenuLabel("Niveau 2", labelLevels);
+		MenuLabel lvl3 = new MenuLabel("Niveau 3", labelLevels);
+		MenuLabel lvl4 = new MenuLabel("Niveau 4", labelLevels);
+		MenuLabel lvl5 = new MenuLabel("Niveau 5", labelLevels);
+	}
+	
+	private void startMenu() {
+		root.compute();
+		root.computeGroup();
+		container.addActor(root.getChildrenGroup());
+		root.computeInitX();
 	}
 	
 	/**
