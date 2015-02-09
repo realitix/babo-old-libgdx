@@ -2,6 +2,7 @@ package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.menu.main.MainMenu;
+import com.baboviolent.game.shader.MenuShader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,6 +10,8 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
+import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 
 public class MainMenuScreen implements Screen {
@@ -24,14 +28,22 @@ public class MainMenuScreen implements Screen {
     private PerspectiveCamera camera;
     private Stage stage;
     private MainMenu menu;
+    private MenuShader menuShader;
+    private RenderContext renderContext;
+    private long startTime;
     
     public MainMenuScreen(final BaboViolentGame g) {
     	menu = new MainMenu();
         game = g;
         camera = new PerspectiveCamera();
+        startTime = TimeUtils.millis();
+        renderContext = new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.WEIGHTED, 1));
+        menuShader = new MenuShader();
+        menuShader.init(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        
         
         // Batch
- 		SpriteBatch batch = new SpriteBatch();
+ 		/*SpriteBatch batch = new SpriteBatch();
  		
  		// Create stage
  		int width = 1920;
@@ -104,7 +116,7 @@ public class MainMenuScreen implements Screen {
 
         table.add(optionsButton).center();        
         
-        foreground.addActor(table);
+        foreground.addActor(table);*/
         
         //Gdx.input.setInputProcessor(stage);
          
@@ -114,6 +126,12 @@ public class MainMenuScreen implements Screen {
     public void render(float delta) {
     	Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
+        renderContext.begin();
+        menuShader.begin(TimeUtils.timeSinceMillis(startTime));
+        menuShader.render();
+        menuShader.end();
+        renderContext.end();
 
         menu.update();
         menu.render();
@@ -123,7 +141,7 @@ public class MainMenuScreen implements Screen {
     
 	@Override
 	public void resize(int width, int height) {
-		stage.getViewport().update(width, height, true);
+		//stage.getViewport().update(width, height, true);
 	}
 	 
 	@Override
