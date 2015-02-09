@@ -17,8 +17,8 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'Babo Violent'
-        gdxVersion = '1.5.0'
-        roboVMVersion = '1.0-beta-01'
+        gdxVersion = '1.5.3'
+        roboVMVersion = '1.0-beta-03'
         box2DLightsVersion = '1.3'
         ashleyVersion = '1.3.1'
         aiVersion = '1.5.0'
@@ -117,7 +117,6 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
-        // On utilise le master du ai mais a verifier que lestable soit dispo pour la prod
         compile "com.badlogicgames.gdx:gdx-ai:$aiVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
