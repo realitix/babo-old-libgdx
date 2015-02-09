@@ -15,6 +15,13 @@ varying vec2 v_texCoords;
 float snoise(vec3 uv, float res);
 
 void main() {
+	// On affiche rien si le pixel est noir
+	vec4 textureColor = texture2D(u_texture, v_texCoords);
+	if (textureColor.x == 0.0 && textureColor.y == 0.0 && textureColor.z == 0.0) {
+		gl_FragColor = vec4(0);
+		return;
+	}
+	
 	// FEU
 	float fireSize = 1.5;
 	
@@ -32,14 +39,7 @@ void main() {
 		color += (1.5 / power) * snoise(coord + vec3(0.,-u_time*.05, u_time*.01), power*16.);
 	}
 	
-	// On affiche que si le pixel n'est pas noir
-	vec4 textureColor = texture2D(u_texture, v_texCoords);
-	if (textureColor.x != 0 || textureColor.y != 0 || textureColor.z != 0) {
-		gl_FragColor = vec4( color, pow(max(color,0.),2.)*0.4, pow(max(color,0.),3.)*0.15 , textureColor.w) * v_color;
-	}
-	else {
-		gl_FragColor = vec4(0);
-	}
+	gl_FragColor = vec4( color, pow(max(color,0.),2.)*0.4, pow(max(color,0.),3.)*0.15 , textureColor.w) * v_color;
 }
 
 

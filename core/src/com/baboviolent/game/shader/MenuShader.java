@@ -25,8 +25,8 @@ public class MenuShader {
 	
 	public void init(float width, float height) {
 		String p = BaboViolentGame.PATH_SHADERS;
-        String vert = Gdx.files.internal(p+"/menu.vertex.glsl").readString();
-        String frag = Gdx.files.internal(p+"/menu.fragment.glsl").readString();
+        String vert = Gdx.files.internal(p+"/menu2.vertex.glsl").readString();
+        String frag = Gdx.files.internal(p+"/menu2.fragment.glsl").readString();
         program = new ShaderProgram(vert, frag);
         if (!program.isCompiled())
             throw new GdxRuntimeException(program.getLog());
@@ -36,7 +36,7 @@ public class MenuShader {
         this.width = width;
         this.height = height;
         
-        mesh = new Mesh(false, 6, 6, new VertexAttribute(Usage.Position, 2, "a_position"));
+        mesh = new Mesh(true, 6, 6, new VertexAttribute(Usage.Position, 2, "a_position"));
         // On fait deux triangles pour former un carre
         // L'origine est le milieu de l'ecran
         mesh.setVertices(new float[] { -width/2, -height/2,
@@ -60,6 +60,7 @@ public class MenuShader {
 	}
 
 	public void render() {
+		//mesh.render(program, GL20.GL_TRIANGLES);
 		mesh.render(program, GL20.GL_TRIANGLES, 0, 6);
 	}
 

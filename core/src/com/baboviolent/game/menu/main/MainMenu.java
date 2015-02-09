@@ -59,6 +59,7 @@ public class MainMenu {
 	
 	public MainMenu() {        
  		stage = new Stage(new FillViewport(width, height), new BurningSpriteBatch());
+ 		//stage = new Stage(new FillViewport(width, height));
  		Gdx.input.setInputProcessor(stage);
  		
  		container = new ContainerGroup();
