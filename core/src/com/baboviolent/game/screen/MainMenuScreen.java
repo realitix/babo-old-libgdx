@@ -1,6 +1,7 @@
 package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.menu.extra.MenuBackground;
 import com.baboviolent.game.menu.main.MainMenu;
 import com.baboviolent.game.shader.MenuShader;
 import com.badlogic.gdx.Gdx;
@@ -28,18 +29,13 @@ public class MainMenuScreen implements Screen {
     private PerspectiveCamera camera;
     private Stage stage;
     private MainMenu menu;
-    private MenuShader menuShader;
-    private RenderContext renderContext;
-    private long startTime;
+    private MenuBackground mb;
     
     public MainMenuScreen(final BaboViolentGame g) {
     	menu = new MainMenu();
         game = g;
         camera = new PerspectiveCamera();
-        startTime = TimeUtils.millis();
-        renderContext = new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.WEIGHTED, 1));
-        menuShader = new MenuShader();
-        menuShader.init(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        mb = new MenuBackground();
         
         
         // Batch
@@ -127,11 +123,7 @@ public class MainMenuScreen implements Screen {
     	Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         
-        renderContext.begin();
-        menuShader.begin(TimeUtils.timeSinceMillis(startTime));
-        menuShader.render();
-        menuShader.end();
-        renderContext.end();
+        mb.render();
 
         menu.update();
         menu.render();

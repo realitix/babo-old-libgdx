@@ -21,6 +21,7 @@ public class MenuShader {
 	private float width;
 	private float height;
 	private Mesh mesh;
+	private float slowAnimation = 3;
 	
 	public void init(float width, float height) {
 		String p = BaboViolentGame.PATH_SHADERS;
@@ -52,6 +53,7 @@ public class MenuShader {
 	}
 
 	public void begin(float time) {
+		time = time/slowAnimation;
 		program.begin();
 		program.setUniformf(u_time, time/1000f);
 		program.setUniformf(u_resolution, width, height);

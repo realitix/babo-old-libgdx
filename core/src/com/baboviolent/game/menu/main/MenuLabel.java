@@ -143,126 +143,185 @@ public class MenuLabel {
 		if( oldSelectedLabel == this ) {
 			return;
 		}
-		
-		// Si c'est le niveau suivant
-		if( oldSelectedLabel == null || level == oldSelectedLabel.getLevel() + 1 ) {
-			label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
-			parent.childrenGroup.addAction(Actions.alpha(0.7f, MainMenu.animationTime));
-
-			ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
-			LabelContainerGroup pg = parent.getChildrenGroup();
-			container.addActor(childrenGroup);
-			childrenGroup.setColor(1, 1, 1, 1);
-			float xMove = container.getX() - childrenGroup.getPrefWidth() - container.getSpace();
-			container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
-			pg.addAction(Actions.moveTo(pg.getX(), getCenterY(), MainMenu.animationTime, Interpolation.pow2));
-			pg.setManual(true);
+		// Si pas d'enfants, c'est la feuille de l'arbre,
+		// On le positionne en haut a gauche pour laisser de la place
+		if( children.size == 0 ) {
+			action5();
 		}
-		
+		// Si c'est le niveau suivant
+		else if( oldSelectedLabel == null || level == oldSelectedLabel.getLevel() + 1 ) {
+			action1();
+		}
 		// Si c'est le meme niveau
 		else if( level == oldSelectedLabel.getLevel() ) {
-			label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
-			oldSelectedLabel.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
-			
-			final HorizontalGroup container = (HorizontalGroup) parent.getChildrenGroup().getParent();
-			
-			// On deplace container de la difference entre l'ancien et le nouveau bloc
-			float diffSize = oldSelectedLabel.getChildrenGroup().getPrefWidth() -
-					childrenGroup.getPrefWidth();
-			float xMove = container.getX() + diffSize;
-			container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
-			
-			// On fait disparaitre le menu actuel
-			Action completeAction = new Action(){
-			    public boolean act( float delta ) {
-			    	container.removeActor(oldSelectedLabel.childrenGroup);
-			    	childrenGroup.setColor(1,1,1,0);
-			    	container.addActor(childrenGroup);
-			    	childrenGroup.addAction(Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2));
-			        return true;
-			    }
-			};
-			
-			oldSelectedLabel.childrenGroup.addAction(Actions.sequence(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2),
-					completeAction));
-
-			VerticalGroup pg = parent.getChildrenGroup();
-			pg.addAction(Actions.moveTo(pg.getX(), getCenterY(), MainMenu.animationTime/2, Interpolation.pow2));
+			action2();
 		}
-		
 		// Si c'est le niveau precedent
 		else if( level == oldSelectedLabel.getLevel() - 1 ) {
-			label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
-			oldSelectedLabel.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
-			oldSelectedLabel.parent.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
-			final ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
-			
-			// On supprime les deux sous menu precedement ouvert
-			Action completeAction = new Action(){
-			    public boolean act( float delta ) {
-			    	container.removeActor(oldSelectedLabel.childrenGroup);
-			    	container.removeActor(oldSelectedLabel.parent.childrenGroup);
-			    	childrenGroup.setColor(1,1,1,0);
-			    	container.addActor(childrenGroup);
-			    	childrenGroup.addAction(Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2));
-			        return true;
-			    }
-			};
-			oldSelectedLabel.childrenGroup.addAction(Actions.sequence(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2),
-					completeAction));
-			oldSelectedLabel.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
-			
-			float oSize1 = oldSelectedLabel.childrenGroup.getPrefWidth();
-			float oSize2 = oldSelectedLabel.parent.childrenGroup.getPrefWidth();
-			float xMove = container.getX() + oSize1 + oSize2 + 2*container.getSpace();
-			xMove = xMove - childrenGroup.getPrefWidth() - container.getSpace();
-			container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
-			
-			// On aligne le menu
-			LabelContainerGroup pg = parent.getChildrenGroup();
-			pg.addAction(Actions.moveTo(pg.getX(), getCenterY(), MainMenu.animationTime/2, Interpolation.pow2));
+			action3();
 		}
-		
 		// Si c'est le niveau deux fois precedent
 		else if( level == oldSelectedLabel.getLevel() - 2 ) {
-			label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
-			oldSelectedLabel.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
-			oldSelectedLabel.parent.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
-			oldSelectedLabel.parent.parent.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
-			final ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
-			
-			// On supprime les trois sous menu precedement ouvert
-			Action completeAction = new Action(){
-			    public boolean act( float delta ) {
-			    	container.removeActor(oldSelectedLabel.childrenGroup);
-			    	container.removeActor(oldSelectedLabel.parent.childrenGroup);
-			    	container.removeActor(oldSelectedLabel.parent.parent.childrenGroup);
-			    	childrenGroup.setColor(1,1,1,0);
-			    	container.addActor(childrenGroup);
-			    	childrenGroup.addAction(Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2));
-			        return true;
-			    }
-			};
-			oldSelectedLabel.childrenGroup.addAction(Actions.sequence(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2),
-					completeAction));
-			oldSelectedLabel.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
-			oldSelectedLabel.parent.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
-			
-			float oSize1 = oldSelectedLabel.childrenGroup.getPrefWidth();
-			float oSize2 = oldSelectedLabel.parent.childrenGroup.getPrefWidth();
-			float oSize3 = oldSelectedLabel.parent.parent.childrenGroup.getPrefWidth();
-			float xMove = container.getX() + oSize1 + oSize2 + oSize3 + 3*container.getSpace();
-			xMove = xMove - childrenGroup.getPrefWidth() - container.getSpace();
-			container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
-			
-			// On aligne le menu
-			LabelContainerGroup pg = parent.getChildrenGroup();
-			pg.addAction(Actions.moveTo(pg.getX(), getCenterY(), MainMenu.animationTime/2, Interpolation.pow2));
+			action4();
 		}
 		
 		// @TODO A tester le niveau trois fois precedant mais la proba est faible
-		
 		setSelectedLabel(this);
+	}
+	
+	/**
+	 * Action1
+	 * NIVEAU SUIVANT
+	 */
+	private void action1() {
+		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
+		parent.childrenGroup.addAction(Actions.alpha(0.7f, MainMenu.animationTime));
+
+		ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
+		LabelContainerGroup pg = parent.getChildrenGroup();
+		container.addActor(childrenGroup);
+		childrenGroup.setColor(1, 1, 1, 0);
+		childrenGroup.addAction(Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2));
+		float xMove = container.getX() - childrenGroup.getPrefWidth() - container.getSpace();
+		container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
+		pg.addAction(Actions.moveTo(pg.getX(), getCenterY(), MainMenu.animationTime, Interpolation.pow2));
+		pg.setManual(true);
+	}
+	
+	/**
+	 * Action2
+	 * MENUA MEME NIVEAU
+	 */
+	private void action2() {
+		final MenuLabel oldSelectedLabel = getSelectedLabel();
+		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
+		oldSelectedLabel.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
+		
+		final HorizontalGroup container = (HorizontalGroup) parent.getChildrenGroup().getParent();
+		
+		// On deplace container de la difference entre l'ancien et le nouveau bloc
+		float diffSize = oldSelectedLabel.getChildrenGroup().getPrefWidth() -
+				childrenGroup.getPrefWidth();
+		float xMove = container.getX() + diffSize;
+		container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
+		
+		// On fait disparaitre le menu actuel
+		Action completeAction = new Action(){
+		    public boolean act( float delta ) {
+		    	container.removeActor(oldSelectedLabel.childrenGroup);
+		    	childrenGroup.setColor(1,1,1,0);
+		    	container.addActor(childrenGroup);
+		    	childrenGroup.addAction(Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2));
+		        return true;
+		    }
+		};
+		
+		oldSelectedLabel.childrenGroup.addAction(Actions.sequence(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2),
+				completeAction));
+
+		VerticalGroup pg = parent.getChildrenGroup();
+		pg.addAction(Actions.moveTo(pg.getX(), getCenterY(), MainMenu.animationTime/2, Interpolation.pow2));
+	}
+	
+	/**
+	 * Action3
+	 * NIVEAU PRECEDENT
+	 */
+	private void action3() {
+		final MenuLabel oldSelectedLabel = getSelectedLabel();
+		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
+		oldSelectedLabel.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
+		oldSelectedLabel.parent.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
+		final ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
+		
+		// On supprime les deux sous menu precedement ouvert
+		Action completeAction = new Action(){
+		    public boolean act( float delta ) {
+		    	container.removeActor(oldSelectedLabel.childrenGroup);
+		    	container.removeActor(oldSelectedLabel.parent.childrenGroup);
+		    	childrenGroup.setColor(1,1,1,0);
+		    	container.addActor(childrenGroup);
+		    	childrenGroup.addAction(Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2));
+		        return true;
+		    }
+		};
+		oldSelectedLabel.childrenGroup.addAction(Actions.sequence(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2),
+				completeAction));
+		oldSelectedLabel.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
+		
+		float oSize1 = oldSelectedLabel.childrenGroup.getPrefWidth();
+		float oSize2 = oldSelectedLabel.parent.childrenGroup.getPrefWidth();
+		float xMove = container.getX() + oSize1 + oSize2 + 2*container.getSpace();
+		xMove = xMove - childrenGroup.getPrefWidth() - container.getSpace();
+		container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
+		
+		// On aligne le menu
+		LabelContainerGroup pg = parent.getChildrenGroup();
+		pg.addAction(Actions.moveTo(pg.getX(), getCenterY(), MainMenu.animationTime/2, Interpolation.pow2));
+	}
+	
+	/**
+	 * Action4
+	 * NIVEAU 2 FOIS PRECEDENT
+	 */
+	private void action4() {
+		final MenuLabel oldSelectedLabel = getSelectedLabel();
+		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
+		oldSelectedLabel.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
+		oldSelectedLabel.parent.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
+		oldSelectedLabel.parent.parent.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
+		final ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
+		
+		// On supprime les trois sous menu precedement ouvert
+		Action completeAction = new Action(){
+		    public boolean act( float delta ) {
+		    	container.removeActor(oldSelectedLabel.childrenGroup);
+		    	container.removeActor(oldSelectedLabel.parent.childrenGroup);
+		    	container.removeActor(oldSelectedLabel.parent.parent.childrenGroup);
+		    	childrenGroup.setColor(1,1,1,0);
+		    	container.addActor(childrenGroup);
+		    	childrenGroup.addAction(Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2));
+		        return true;
+		    }
+		};
+		oldSelectedLabel.childrenGroup.addAction(Actions.sequence(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2),
+				completeAction));
+		oldSelectedLabel.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
+		oldSelectedLabel.parent.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
+		
+		float oSize1 = oldSelectedLabel.childrenGroup.getPrefWidth();
+		float oSize2 = oldSelectedLabel.parent.childrenGroup.getPrefWidth();
+		float oSize3 = oldSelectedLabel.parent.parent.childrenGroup.getPrefWidth();
+		float xMove = container.getX() + oSize1 + oSize2 + oSize3 + 3*container.getSpace();
+		xMove = xMove - childrenGroup.getPrefWidth() - container.getSpace();
+		container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
+		
+		// On aligne le menu
+		LabelContainerGroup pg = parent.getChildrenGroup();
+		pg.addAction(Actions.moveTo(pg.getX(), getCenterY(), MainMenu.animationTime/2, Interpolation.pow2));
+	}
+	
+	/**
+	 * Action5
+	 * DERNIER NIVEAU, FEUILLE
+	 */
+	private void action5() {
+		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
+		
+		// On met tous les enfants du meme groupe transparent
+		for( int i = 0; i < parent.children.size; i++) {
+			if( parent.children.get(i) != this ) {
+				parent.children.get(i).label.addAction(Actions.fadeOut(MainMenu.animationTime));
+			}
+		}
+
+		ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
+		LabelContainerGroup pg = parent.getChildrenGroup();
+		
+		float xMove = container.getX() - ( MainMenu.width - 1.7f*this.label.getPrefWidth());
+		container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
+		pg.addAction(Actions.moveTo(pg.getX(), getTopY(), MainMenu.animationTime, Interpolation.pow2));
+		pg.setManual(true);
 	}
 	
 	private float getCenterY() {
@@ -271,5 +330,13 @@ public class MenuLabel {
 		float elemSize = totalSize/nbInGroup;
 		
 		return MainMenu.height/2 - totalSize + elemSize/2 + elemSize*positionInGroup;
+	}
+	
+	private float getTopY() {
+		VerticalGroup pg = parent.getChildrenGroup();
+		float totalSize = pg.getPrefHeight();
+		float elemSize = totalSize/nbInGroup;
+		
+		return MainMenu.height - totalSize + elemSize/2 + elemSize*positionInGroup - 1.2f*elemSize;
 	}
 }
