@@ -70,7 +70,6 @@ public class Cursor {
 	}
 	
 	public void render(DecalBatch decalBatch) {
-		update();
 		decalBatch.add(cursor);
 		
 		if( hit ) {

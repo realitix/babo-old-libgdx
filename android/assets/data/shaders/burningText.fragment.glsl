@@ -21,15 +21,14 @@ void main() {
 		gl_FragColor = vec4(0);
 		return;
 	}
-	
 	// FEU
-	float fireSize = 1.5;
+	float fireSize = 6.0;
 	
 	vec2 p = -.5 + gl_FragCoord.xy / u_resolution.xy;
 	p = p / fireSize;
 	p.x *= u_resolution.x/u_resolution.y;
 	
-	float color = 3.0 - (3.*length(2.*p));
+	float color = 1.0 - (3.*length(2.*p));
 	
 	vec3 coord = vec3(atan(p.x,p.y)/6.2832+.5, length(p)*.4, .5);
 	

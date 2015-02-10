@@ -43,6 +43,7 @@ public class BaboEffectSystem {
 	public void update() {
 		particleSystem.update();
 		lightSystem.update();
+		decalSystem.update();
 	}
 	
 	public void render(ModelBatch modelBatch, Environment environment) {

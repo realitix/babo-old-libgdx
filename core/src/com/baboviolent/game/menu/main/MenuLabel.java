@@ -14,33 +14,47 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
 public class MenuLabel {
-	private MenuLabel parent;
-	private Array<MenuLabel> children;
-	private String name;
-	private Label label;
-	private boolean root;
-	private LabelContainerGroup childrenGroup;
-	private Skin skin;
-	private boolean selected;
-	private MenuLabel selectedLabel;
-	private int nbInGroup; // Nombre d'lement dans mon groupe
-	private int positionInGroup; // Ma position dans le groupe a partir de 0
+	protected MenuLabel parent;
+	protected MenuLabelRoot root;
+	protected Array<MenuLabel> children;
+	protected String name;
+	protected Label label;
+	protected LabelContainerGroup childrenGroup;
+	protected Skin skin;
+	protected int nbInGroup; // Nombre d'lement dans mon groupe
+	protected int positionInGroup; // Ma position dans le groupe a partir de 0
 	
-	// Constructeur du noeud root
-	public MenuLabel(Skin skin) {
-		children = new Array<MenuLabel>();
-		childrenGroup = new LabelContainerGroup();
-		root = true;
-		this.skin = skin;
+	public MenuLabel() {
 	}
 	
 	public MenuLabel(String name, MenuLabel parent) {
+		init(name, parent);
+		root = parent.getRoot();
+	}
+	
+	public MenuLabel(String name, MenuLabelRoot root) {
+		init(name, root);
+		this.root = root;
+	}
+	
+	private void init(String name, MenuLabel parent) {
 		children = new Array<MenuLabel>();
 		this.name = name;
 		this.parent = parent;
-		root =  false;
 		parent.addChild(this);
 		childrenGroup = new LabelContainerGroup();
+	}
+	
+	protected boolean isRoot() {
+		return false;
+	}
+	
+	// Est ce que c'est une feuille
+	protected boolean isEnd() {
+		if(children.size == 0) {
+			return true;
+		}
+		return false;
 	}
 	
 	public MenuLabel addChild(MenuLabel child) {
@@ -57,6 +71,23 @@ public class MenuLabel {
 		return label;
 	}
 	
+	public MenuLabel getParent() {
+		return parent;
+	}
+	
+	// Renvoie tous les children groups jusqu'a lui
+	private Array<LabelContainerGroup> getChildrenGroups() {
+		Array<LabelContainerGroup> results = new Array<LabelContainerGroup>();
+		
+		results.add(childrenGroup);
+		MenuLabel parentIter = this.parent;
+		while( parentIter != null ) {
+			results.add(parentIter.childrenGroup);
+			parentIter = parentIter.getParent();
+		}
+		return results;
+	}
+	
 	// Niveau dans l'arbre
 	public int getLevel() {
 		return getLevel(0);
@@ -70,39 +101,19 @@ public class MenuLabel {
 		return l;
 	}
 	
-	private MenuLabel getRoot() {
-		if(parent == null) {
-			return this;
-		}
-		return parent.getRoot();
+	private MenuLabelRoot getRoot() {
+		return root;
 	}
 	
 	public LabelContainerGroup getChildrenGroup() {
 		return childrenGroup;
 	}
 	
-	// Dedie a root
-	public void setSelectedLabel(MenuLabel l) {
-		if( parent == null )
-			this.selectedLabel = l;
-		else
-			parent.setSelectedLabel(l);
-	}
-	
-	// Dedie a root
-	public MenuLabel getSelectedLabel() {
-		if( parent == null )
-			return selectedLabel;
-		return parent.getSelectedLabel();
-	}
-	
 	public void compute() {
-		if( !root ) {
-			label = new Label(name, skin);
-			label.addListener( new ClickListener() { public void clicked (InputEvent event, float x, float y) {
-				click();
-	     	}});
-		}
+		label = new Label(name, skin);
+		label.addListener( new ClickListener() { public void clicked (InputEvent event, float x, float y) {
+			click();
+     	}});
 		
 		childrenGroup.align(Align.left);
 		for( int i = 0; i < children.size; i++ ) {
@@ -113,13 +124,11 @@ public class MenuLabel {
 	}
 	
 	public void computeGroup() {
-		if( !root ) {
-			// On va chercher dans l'ordre tous les elements de mon pere
-			nbInGroup = parent.children.size;
-			for( int i = 0; i < parent.children.size; i++ ) {
-				if( parent.children.get(i) == this ) {
-					positionInGroup = i;
-				}
+		// On va chercher dans l'ordre tous les elements de mon pere
+		nbInGroup = parent.children.size;
+		for( int i = 0; i < parent.children.size; i++ ) {
+			if( parent.children.get(i) == this ) {
+				positionInGroup = i;
 			}
 		}
 		
@@ -128,17 +137,9 @@ public class MenuLabel {
 		}
 	}
 	
-	// Root positionne le premier groupe au demarrage
-	public void computeInitX() {
-		ContainerGroup container = (ContainerGroup) childrenGroup.getParent();
-		// @TODO a definir en fonction du ratio
-		float offsetX = 250;
-		container.setX(MainMenu.width - childrenGroup.getPrefWidth() - offsetX);
-	}
-	
-	private void click() {
+	public void click() {
 		int level = getLevel();
-		final MenuLabel oldSelectedLabel = getSelectedLabel();
+		final MenuLabel oldSelectedLabel = root.getSelectedLabel();
 		
 		if( oldSelectedLabel == this ) {
 			return;
@@ -166,7 +167,7 @@ public class MenuLabel {
 		}
 		
 		// @TODO A tester le niveau trois fois precedant mais la proba est faible
-		setSelectedLabel(this);
+		root.setSelectedLabel(this);
 	}
 	
 	/**
@@ -182,28 +183,25 @@ public class MenuLabel {
 		container.addActor(childrenGroup);
 		childrenGroup.setColor(1, 1, 1, 0);
 		childrenGroup.addAction(Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2));
-		float xMove = container.getX() - childrenGroup.getPrefWidth() - container.getSpace();
-		container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
+		float targetX = MainMenu.width - getWidthAllGroup();
+		container.addAction(Actions.moveTo(targetX, container.getY(), MainMenu.animationTime, Interpolation.pow2));
 		pg.addAction(Actions.moveTo(pg.getX(), getCenterY(), MainMenu.animationTime, Interpolation.pow2));
 		pg.setManual(true);
 	}
 	
 	/**
 	 * Action2
-	 * MENUA MEME NIVEAU
+	 * MENU AU MEME NIVEAU
 	 */
 	private void action2() {
-		final MenuLabel oldSelectedLabel = getSelectedLabel();
+		final MenuLabel oldSelectedLabel = root.getSelectedLabel();
 		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
 		oldSelectedLabel.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
 		
 		final HorizontalGroup container = (HorizontalGroup) parent.getChildrenGroup().getParent();
 		
-		// On deplace container de la difference entre l'ancien et le nouveau bloc
-		float diffSize = oldSelectedLabel.getChildrenGroup().getPrefWidth() -
-				childrenGroup.getPrefWidth();
-		float xMove = container.getX() + diffSize;
-		container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
+		float targetX = MainMenu.width - getWidthAllGroup();
+		container.addAction(Actions.moveTo(targetX, container.getY(), MainMenu.animationTime, Interpolation.pow2));
 		
 		// On fait disparaitre le menu actuel
 		Action completeAction = new Action(){
@@ -228,32 +226,52 @@ public class MenuLabel {
 	 * NIVEAU PRECEDENT
 	 */
 	private void action3() {
-		final MenuLabel oldSelectedLabel = getSelectedLabel();
+		final MenuLabel oldSelectedLabel = root.getSelectedLabel();
 		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
 		oldSelectedLabel.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
-		oldSelectedLabel.parent.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
+		
+		if( oldSelectedLabel.parent != this ) {
+			oldSelectedLabel.parent.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
+		}
+		
+		// Si le dernier selectionne etait une feuille, on les raffiche
+		if( oldSelectedLabel.isEnd() ) {
+			Array<MenuLabel> a = oldSelectedLabel.parent.children;
+			for( int i = 0; i < a.size; i++) {
+				if( a.get(i) != this ) {
+					a.get(i).label.addAction(Actions.fadeIn(MainMenu.animationTime));
+				}
+			}
+			oldSelectedLabel.parent.getChildrenGroup().addAction(
+					Actions.moveTo(
+							oldSelectedLabel.parent.childrenGroup.getX(),
+							MainMenu.height/2 - oldSelectedLabel.parent.childrenGroup.getPrefHeight()/2,
+							MainMenu.animationTime/2, Interpolation.pow2));		}
+		
 		final ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
 		
 		// On supprime les deux sous menu precedement ouvert
+		final MenuLabel me = this;
 		Action completeAction = new Action(){
 		    public boolean act( float delta ) {
 		    	container.removeActor(oldSelectedLabel.childrenGroup);
-		    	container.removeActor(oldSelectedLabel.parent.childrenGroup);
-		    	childrenGroup.setColor(1,1,1,0);
-		    	container.addActor(childrenGroup);
+		    	if( oldSelectedLabel.parent != me ) {
+		    		container.removeActor(oldSelectedLabel.parent.childrenGroup);
+		    		childrenGroup.setColor(1,1,1,0);
+		    		container.addActor(childrenGroup);
+		    	}
 		    	childrenGroup.addAction(Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2));
 		        return true;
 		    }
 		};
 		oldSelectedLabel.childrenGroup.addAction(Actions.sequence(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2),
 				completeAction));
-		oldSelectedLabel.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
+		if( oldSelectedLabel.parent != this ) {
+			oldSelectedLabel.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
+		}
 		
-		float oSize1 = oldSelectedLabel.childrenGroup.getPrefWidth();
-		float oSize2 = oldSelectedLabel.parent.childrenGroup.getPrefWidth();
-		float xMove = container.getX() + oSize1 + oSize2 + 2*container.getSpace();
-		xMove = xMove - childrenGroup.getPrefWidth() - container.getSpace();
-		container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
+		float targetX = MainMenu.width - getWidthAllGroup();
+		container.addAction(Actions.moveTo(targetX, container.getY(), MainMenu.animationTime, Interpolation.pow2));
 		
 		// On aligne le menu
 		LabelContainerGroup pg = parent.getChildrenGroup();
@@ -265,7 +283,7 @@ public class MenuLabel {
 	 * NIVEAU 2 FOIS PRECEDENT
 	 */
 	private void action4() {
-		final MenuLabel oldSelectedLabel = getSelectedLabel();
+		final MenuLabel oldSelectedLabel = root.getSelectedLabel();
 		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
 		oldSelectedLabel.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
 		oldSelectedLabel.parent.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
@@ -289,12 +307,13 @@ public class MenuLabel {
 		oldSelectedLabel.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
 		oldSelectedLabel.parent.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
 		
-		float oSize1 = oldSelectedLabel.childrenGroup.getPrefWidth();
+		/*float oSize1 = oldSelectedLabel.childrenGroup.getPrefWidth();
 		float oSize2 = oldSelectedLabel.parent.childrenGroup.getPrefWidth();
 		float oSize3 = oldSelectedLabel.parent.parent.childrenGroup.getPrefWidth();
 		float xMove = container.getX() + oSize1 + oSize2 + oSize3 + 3*container.getSpace();
-		xMove = xMove - childrenGroup.getPrefWidth() - container.getSpace();
-		container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
+		xMove = xMove - childrenGroup.getPrefWidth() - container.getSpace();*/
+		float targetX = MainMenu.width - getWidthAllGroup();
+		container.addAction(Actions.moveTo(targetX, container.getY(), MainMenu.animationTime, Interpolation.pow2));
 		
 		// On aligne le menu
 		LabelContainerGroup pg = parent.getChildrenGroup();
@@ -318,8 +337,8 @@ public class MenuLabel {
 		ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
 		LabelContainerGroup pg = parent.getChildrenGroup();
 		
-		float xMove = container.getX() - ( MainMenu.width - 1.7f*this.label.getPrefWidth());
-		container.addAction(Actions.moveTo(xMove, container.getY(), MainMenu.animationTime, Interpolation.pow2));
+		float targetX = -getWidthAllGroup() + this.label.getPrefWidth()*1.7f + container.getSpace();
+		container.addAction(Actions.moveTo(targetX, container.getY(), MainMenu.animationTime, Interpolation.pow2));
 		pg.addAction(Actions.moveTo(pg.getX(), getTopY(), MainMenu.animationTime, Interpolation.pow2));
 		pg.setManual(true);
 	}
@@ -338,5 +357,16 @@ public class MenuLabel {
 		float elemSize = totalSize/nbInGroup;
 		
 		return MainMenu.height - totalSize + elemSize/2 + elemSize*positionInGroup - 1.2f*elemSize;
+	}
+	
+	private float getWidthAllGroup() {
+		float result = 0;
+		ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
+		Array<LabelContainerGroup> groups = getChildrenGroups();
+		for( int i = 0; i < groups.size; i++ ) {
+			result += groups.get(i).getPrefWidth();
+			result += container.getSpace();
+		}
+		return result;
 	}
 }

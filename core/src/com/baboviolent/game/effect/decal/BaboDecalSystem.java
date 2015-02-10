@@ -20,7 +20,7 @@ public class BaboDecalSystem {
 	}
 	
 	public void update() {
-		
+		cursor.update();
 	}
 	
 	public void render(DecalBatch decalBatch) {

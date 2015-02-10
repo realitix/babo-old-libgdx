@@ -10,6 +10,7 @@ import com.baboviolent.game.menu.extra.AnimatedText;
 import com.baboviolent.game.menu.extra.BurningSpriteBatch;
 import com.baboviolent.game.screen.GameScreen;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -34,7 +35,7 @@ public class MainMenu {
 	private Stage stage;
 	private ContainerGroup container;
 	private Skin skin;
-	private MenuLabel root;
+	private MenuLabelRoot root;
 	
 	// Taille
 	public static final int width = 1920;
@@ -58,9 +59,13 @@ public class MainMenu {
 	private int selected;
 	
 	public MainMenu() {        
- 		stage = new Stage(new FillViewport(width, height), new BurningSpriteBatch());
- 		//stage = new Stage(new FillViewport(width, height));
- 		Gdx.input.setInputProcessor(stage);
+ 		//stage = new Stage(new FillViewport(width, height), new BurningSpriteBatch());
+ 		stage = new Stage(new FillViewport(width, height));
+ 		
+ 		Gdx.input.setInputProcessor(new InputMultiplexer(
+ 				stage,
+ 				new MenuInputListener(this)));
+ 		Gdx.input.setCatchBackKey(true);
  		
  		container = new ContainerGroup();
  		container.space(100);
@@ -83,12 +88,12 @@ public class MainMenu {
 	}
 	
 	private void initMenuLabel() {
-		root = new MenuLabel(skin);
+		root = new MenuLabelRoot(skin);
 		MenuLabel labelSolo = new MenuLabel("Solo", root);
 		MenuLabel labelMulti = new MenuLabel("Multi", root);
 		MenuLabel labelOptions = new MenuLabel("Options", root);
 		
-		MenuLabel labelTraining = new MenuLabel("Entrainement", labelSolo);
+		MenuLabel labelTraining = new MenuLabel("Entrain", labelSolo);
 		MenuLabel labelLevels = new MenuLabel("Niveaux", labelSolo);
 		
 		MenuLabel labelOnline = new MenuLabel("En ligne", labelMulti);
@@ -114,5 +119,21 @@ public class MainMenu {
 	
 	public void render() {
 		stage.draw();
+	}
+	
+	public void left() {
+		root.left();
+	}
+	
+	public void right() {
+		root.right();
+	}
+	
+	public void up() {
+		root.up();
+	}
+	
+	public void down() {
+		root.down();
 	}
 }

@@ -60,8 +60,7 @@ public class MenuShader {
 	}
 
 	public void render() {
-		//mesh.render(program, GL20.GL_TRIANGLES);
-		mesh.render(program, GL20.GL_TRIANGLES, 0, 6);
+		mesh.render(program, GL20.GL_TRIANGLES);
 	}
 
 	public void end() {
