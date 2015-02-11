@@ -32,6 +32,7 @@ public class AnimatedText extends HorizontalGroup {
 	
 	@Override
 	public void act(float delta) {
+		super.act(delta);
 		time += delta;
 		boolean complete = time >= animationTime;
 		float percent;

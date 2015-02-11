@@ -83,6 +83,7 @@ public class MainMenu {
  		AnimatedText title = new AnimatedText("Babo Violent 2", skinTitle);
  		title.setPosition(200, height - title.getPrefHeight()/3f);
  		stage.addActor(title);
+ 		root.setTitle(title);
  		
  		//container.debugAll();
 	}
@@ -90,20 +91,34 @@ public class MainMenu {
 	private void initMenuLabel() {
 		root = new MenuLabelRoot(skin);
 		MenuLabel labelSolo = new MenuLabel("Solo", root);
-		MenuLabel labelMulti = new MenuLabel("Multi", root);
+		MenuLabel labelMulti = new MenuLabel("Multijoueur", root);
 		MenuLabel labelOptions = new MenuLabel("Options", root);
 		
-		MenuLabel labelTraining = new MenuLabel("Entrain", labelSolo);
+		// Solo
+		new MenuLabel("Partie rapide", labelSolo);
 		MenuLabel labelLevels = new MenuLabel("Niveaux", labelSolo);
+			new MenuLabel("Niveau 1", labelLevels);
+			new MenuLabel("Niveau 2", labelLevels);
+			new MenuLabel("Niveau 3", labelLevels);
+			new MenuLabel("Niveau 4", labelLevels);
+			new MenuLabel("Niveau 5", labelLevels);
+		new MenuLabel("Personnalisé", labelSolo);
+		new MenuLabel("Editeur", labelSolo);
 		
+		// Multi
 		MenuLabel labelOnline = new MenuLabel("En ligne", labelMulti);
+			new MenuLabel("Partie rapide", labelOnline);
+			new MenuLabel("Duel", labelOnline);
+			new MenuLabel("Massacre", labelOnline);
 		MenuLabel labelLocal = new MenuLabel("En local", labelMulti);
+			new MenuLabel("Créer une partie", labelLocal);
+			new MenuLabel("Rejoindre une partie", labelLocal);
 		
-		MenuLabel lvl1 = new MenuLabel("Niveau 1", labelLevels);
-		MenuLabel lvl2 = new MenuLabel("Niveau 2", labelLevels);
-		MenuLabel lvl3 = new MenuLabel("Niveau 3", labelLevels);
-		MenuLabel lvl4 = new MenuLabel("Niveau 4", labelLevels);
-		MenuLabel lvl5 = new MenuLabel("Niveau 5", labelLevels);
+		// Options
+		new MenuLabel("Mon Babo", labelOptions);
+		new MenuLabel("Son", labelOptions);
+		new MenuLabel("Affichage", labelOptions);
+		new MenuLabel("Contrôle", labelOptions);
 	}
 	
 	private void startMenu() {

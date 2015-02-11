@@ -1,5 +1,6 @@
 package com.baboviolent.game.menu.main;
 
+import com.baboviolent.game.menu.extra.AnimatedText;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -12,9 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class MenuLabelRoot extends MenuLabel {
 	private MenuLabel selectedLabel;
+	private long lastMoving;
+	private AnimatedText title;
+	private boolean titleHidden;
 	
 	// Constructeur du noeud root
 	public MenuLabelRoot(Skin skin) {
@@ -27,8 +32,34 @@ public class MenuLabelRoot extends MenuLabel {
 		return this;
 	}
 	
+	public void hideTitle() {
+		if( title != null && !titleHidden ) {
+			titleHidden = true;
+			title.addAction(Actions.moveBy(0, 300, MainMenu.animationTime, Interpolation.pow2));
+		}
+	}
+	
+	public void showTitle() {
+		if( title != null && titleHidden ) {
+			titleHidden = false;
+			title.addAction(Actions.moveBy(0, -300, MainMenu.animationTime, Interpolation.pow2));
+		}
+	}
+	
 	@Override
 	protected boolean isRoot() {
+		return true;
+	}
+	
+	public void setTitle(AnimatedText title) {
+		this.title = title;
+	}
+	
+	public boolean canMove() {
+		if(TimeUtils.timeSinceMillis(lastMoving) < MainMenu.animationTime*1000) {
+			return false;
+		}
+		lastMoving = TimeUtils.millis();
 		return true;
 	}
 

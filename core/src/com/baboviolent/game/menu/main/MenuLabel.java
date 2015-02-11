@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.TimeUtils;
 
 public class MenuLabel {
 	protected MenuLabel parent;
@@ -76,13 +77,19 @@ public class MenuLabel {
 	}
 	
 	// Renvoie tous les children groups jusqu'a lui
-	private Array<LabelContainerGroup> getChildrenGroups() {
+	private Array<LabelContainerGroup> getChildrenGroups(boolean me) {
 		Array<LabelContainerGroup> results = new Array<LabelContainerGroup>();
 		
-		results.add(childrenGroup);
+		if( me ) {
+			results.add(childrenGroup);
+		}
+		boolean first = true;
 		MenuLabel parentIter = this.parent;
 		while( parentIter != null ) {
-			results.add(parentIter.childrenGroup);
+			if( !first || me ) {
+				results.add(parentIter.childrenGroup);
+			}
+			first = false;
 			parentIter = parentIter.getParent();
 		}
 		return results;
@@ -138,6 +145,9 @@ public class MenuLabel {
 	}
 	
 	public void click() {
+		if( !root.canMove() ) {
+			return;
+		}
 		int level = getLevel();
 		final MenuLabel oldSelectedLabel = root.getSelectedLabel();
 		
@@ -175,18 +185,11 @@ public class MenuLabel {
 	 * NIVEAU SUIVANT
 	 */
 	private void action1() {
-		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
-		parent.childrenGroup.addAction(Actions.alpha(0.7f, MainMenu.animationTime));
-
-		ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
-		LabelContainerGroup pg = parent.getChildrenGroup();
-		container.addActor(childrenGroup);
-		childrenGroup.setColor(1, 1, 1, 0);
-		childrenGroup.addAction(Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2));
-		float targetX = MainMenu.width - getWidthAllGroup();
-		container.addAction(Actions.moveTo(targetX, container.getY(), MainMenu.animationTime, Interpolation.pow2));
-		pg.addAction(Actions.moveTo(pg.getX(), getCenterY(), MainMenu.animationTime, Interpolation.pow2));
-		pg.setManual(true);
+		iBecomeRed();
+		myGroupBecomeSemiTransparent();
+		iAddMyChildrenGroup();
+		iMoveForMyChildren();
+		iCenterVertical();
 	}
 	
 	/**
@@ -194,31 +197,11 @@ public class MenuLabel {
 	 * MENU AU MEME NIVEAU
 	 */
 	private void action2() {
-		final MenuLabel oldSelectedLabel = root.getSelectedLabel();
-		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
-		oldSelectedLabel.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
-		
-		final HorizontalGroup container = (HorizontalGroup) parent.getChildrenGroup().getParent();
-		
-		float targetX = MainMenu.width - getWidthAllGroup();
-		container.addAction(Actions.moveTo(targetX, container.getY(), MainMenu.animationTime, Interpolation.pow2));
-		
-		// On fait disparaitre le menu actuel
-		Action completeAction = new Action(){
-		    public boolean act( float delta ) {
-		    	container.removeActor(oldSelectedLabel.childrenGroup);
-		    	childrenGroup.setColor(1,1,1,0);
-		    	container.addActor(childrenGroup);
-		    	childrenGroup.addAction(Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2));
-		        return true;
-		    }
-		};
-		
-		oldSelectedLabel.childrenGroup.addAction(Actions.sequence(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2),
-				completeAction));
-
-		VerticalGroup pg = parent.getChildrenGroup();
-		pg.addAction(Actions.moveTo(pg.getX(), getCenterY(), MainMenu.animationTime/2, Interpolation.pow2));
+		myGroupBecomeWhite();
+		iBecomeRed();
+		iMoveForMyChildren();
+		iRemoveTheGroupOfLastSelected(root.getSelectedLabel().isEnd(), true);
+		iCenterVertical();
 	}
 	
 	/**
@@ -226,13 +209,12 @@ public class MenuLabel {
 	 * NIVEAU PRECEDENT
 	 */
 	private void action3() {
-		final MenuLabel oldSelectedLabel = root.getSelectedLabel();
-		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
-		oldSelectedLabel.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
+		myGroupBecomeWhite();
+		lastSelectedGroupBecomeWhite();
+		iBecomeRed();
 		
-		if( oldSelectedLabel.parent != this ) {
-			oldSelectedLabel.parent.getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
-		}
+		final MenuLabel oldSelectedLabel = root.getSelectedLabel();
+
 		
 		// Si le dernier selectionne etait une feuille, on les raffiche
 		if( oldSelectedLabel.isEnd() ) {
@@ -246,7 +228,8 @@ public class MenuLabel {
 					Actions.moveTo(
 							oldSelectedLabel.parent.childrenGroup.getX(),
 							MainMenu.height/2 - oldSelectedLabel.parent.childrenGroup.getPrefHeight()/2,
-							MainMenu.animationTime/2, Interpolation.pow2));		}
+							MainMenu.animationTime/2, Interpolation.pow2));
+		}
 		
 		final ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
 		
@@ -268,6 +251,11 @@ public class MenuLabel {
 				completeAction));
 		if( oldSelectedLabel.parent != this ) {
 			oldSelectedLabel.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
+		}
+		else {
+			for( int i = 0; i < children.size; i++) {
+				children.get(i).label.addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
+			}
 		}
 		
 		float targetX = MainMenu.width - getWidthAllGroup();
@@ -325,7 +313,11 @@ public class MenuLabel {
 	 * DERNIER NIVEAU, FEUILLE
 	 */
 	private void action5() {
+		iHideTitle();
+		final MenuLabel oldSelectedLabel = root.getSelectedLabel();
 		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
+		final ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
+		LabelContainerGroup pg = parent.getChildrenGroup();
 		
 		// On met tous les enfants du meme groupe transparent
 		for( int i = 0; i < parent.children.size; i++) {
@@ -333,11 +325,22 @@ public class MenuLabel {
 				parent.children.get(i).label.addAction(Actions.fadeOut(MainMenu.animationTime));
 			}
 		}
-
-		ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
-		LabelContainerGroup pg = parent.getChildrenGroup();
 		
-		float targetX = -getWidthAllGroup() + this.label.getPrefWidth()*1.7f + container.getSpace();
+		// On fait disparaitre le menu actuel
+		Action completeAction = new Action(){
+		    public boolean act( float delta ) {
+		    	container.removeActor(oldSelectedLabel.childrenGroup);
+		    	return true;
+		    }
+		};
+				
+		if( !oldSelectedLabel.isEnd() && oldSelectedLabel != this.parent ) {
+			oldSelectedLabel.childrenGroup.addAction(Actions.sequence(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2),
+				completeAction));
+		}
+		
+		float targetX = -getWidthAllGroup(false) + container.getSpace();
+		
 		container.addAction(Actions.moveTo(targetX, container.getY(), MainMenu.animationTime, Interpolation.pow2));
 		pg.addAction(Actions.moveTo(pg.getX(), getTopY(), MainMenu.animationTime, Interpolation.pow2));
 		pg.setManual(true);
@@ -356,17 +359,97 @@ public class MenuLabel {
 		float totalSize = pg.getPrefHeight();
 		float elemSize = totalSize/nbInGroup;
 		
-		return MainMenu.height - totalSize + elemSize/2 + elemSize*positionInGroup - 1.2f*elemSize;
+		return MainMenu.height - totalSize + elemSize/2 + elemSize*positionInGroup - 0.5f*elemSize;
 	}
 	
 	private float getWidthAllGroup() {
+		return getWidthAllGroup(true);
+	
+	}
+	// si me = true, mon groupe est compris
+	private float getWidthAllGroup(boolean me) {
 		float result = 0;
 		ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
-		Array<LabelContainerGroup> groups = getChildrenGroups();
+		Array<LabelContainerGroup> groups = getChildrenGroups(me);
 		for( int i = 0; i < groups.size; i++ ) {
 			result += groups.get(i).getPrefWidth();
 			result += container.getSpace();
 		}
 		return result;
+	}
+	
+	private void myGroupBecomeWhite() {
+		for( int i = 0; i < parent.children.size; i++ ) {
+			parent.children.get(i).getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
+		}
+	}
+	
+	private void lastSelectedGroupBecomeWhite() {
+		final MenuLabel old = root.getSelectedLabel();
+		for( int i = 0; i < old.getParent().children.size; i++ ) {
+			old.getParent().children.get(i).getLabel().addAction(Actions.color(new Color(1,1,1,1), MainMenu.animationTime));
+		}
+	}
+	
+	private void myGroupBecomeSemiTransparent() {
+		parent.childrenGroup.addAction(Actions.alpha(0.7f, MainMenu.animationTime));
+	}
+	
+	private void iBecomeRed() {
+		label.addAction(Actions.color(new Color(1,0,0,1), MainMenu.animationTime));
+	}
+	
+	private void iMoveForMyChildren() {
+		final HorizontalGroup container = (HorizontalGroup) parent.getChildrenGroup().getParent();
+		float targetX = MainMenu.width - getWidthAllGroup();
+		container.addAction(Actions.moveTo(targetX, container.getY(), MainMenu.animationTime, Interpolation.pow2));
+	}
+	
+	private void iRemoveTheGroupOfLastSelected() {
+		iRemoveTheGroupOfLastSelected(false, true);
+	}
+	
+	private void iHideTitle() {
+		root.hideTitle();
+	}
+	
+	private void iShowTitle() {
+		root.showTitle();
+	}
+	
+	private void iCenterVertical() {
+		LabelContainerGroup pg = parent.getChildrenGroup();
+		pg.addAction(Actions.moveTo(pg.getX(), getCenterY(), MainMenu.animationTime/2, Interpolation.pow2));
+		pg.setManual(true);
+	}
+	
+	private void iAddMyChildrenGroup() {
+		ContainerGroup container = (ContainerGroup) parent.getChildrenGroup().getParent();
+		container.addActor(childrenGroup);
+		childrenGroup.setColor(1, 1, 1, 0);
+		childrenGroup.addAction(Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2));
+	}
+	
+	// force = n'attend pas l'animation, mine = fait appraitre mon groupe ensuite
+	private void iRemoveTheGroupOfLastSelected(boolean force, final boolean mine) {
+		final HorizontalGroup container = (HorizontalGroup) parent.getChildrenGroup().getParent();
+		final MenuLabel oldSelectedLabel = root.getSelectedLabel();
+		// On fait disparaitre le menu actuel
+		Action completeAction = new Action(){
+		    public boolean act( float delta ) {
+		    	container.removeActor(oldSelectedLabel.childrenGroup);
+		    	if(mine) {
+		    		iAddMyChildrenGroup();
+		    	}
+		    	return true;
+		    }
+		};
+		if( force ) {
+			completeAction.act(0);
+		}
+		else {
+		oldSelectedLabel.childrenGroup.addAction(Actions.sequence(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2),
+			completeAction));
+		}
 	}
 }
