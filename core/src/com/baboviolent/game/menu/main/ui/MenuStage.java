@@ -1,23 +1,35 @@
-package com.baboviolent.game.menu.main;
+package com.baboviolent.game.menu.main.ui;
 
+import com.baboviolent.game.menu.main.MainMenu;
 import com.baboviolent.game.screen.MapEditorScreen;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MenuStage extends Stage {
-	public float maxTouchdistance = 20;
+	public final static float maxTouchdistance = 20;
+	private final MainMenu menu;
 	
-	public MenuStage() {
+	public MenuStage(final MainMenu menu) {
 		super();
+		this.menu = menu;
 	}
 	
-	public MenuStage(Viewport viewport, Batch batch) {
+	public MenuStage(Viewport viewport, Batch batch, final MainMenu menu) {
 		super(viewport, batch);
+		this.menu = menu;
 	}
 
-	public MenuStage(Viewport viewport) {
+	public MenuStage(Viewport viewport, final MainMenu menu) {
 		super(viewport);
+		this.menu = menu;
+	}
+	
+	@Override
+	public void act(float delta) {
+		super.act(delta);
+		// Si l'opacite du stage diminue, on diminue l'opacite de l'ecran anime
+		menu.getMenuScreen().setAlphaBackground(getRoot().getColor().a);
 	}
 
 	@Override

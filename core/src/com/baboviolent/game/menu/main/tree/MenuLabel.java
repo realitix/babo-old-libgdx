@@ -1,5 +1,9 @@
-package com.baboviolent.game.menu.main;
+package com.baboviolent.game.menu.main.tree;
 
+import com.baboviolent.game.menu.main.MainMenu;
+import com.baboviolent.game.menu.main.submenu.SubMenu;
+import com.baboviolent.game.menu.main.ui.ContainerGroup;
+import com.baboviolent.game.menu.main.ui.LabelContainerGroup;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Action;
@@ -12,9 +16,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.TimeUtils;
 
-public class MenuLabel {
+public class MenuLabel implements Disposable {
 	protected MenuLabel parent;
 	protected MenuLabelRoot root;
 	protected Array<MenuLabel> children;
@@ -22,26 +27,33 @@ public class MenuLabel {
 	protected Label label;
 	protected LabelContainerGroup childrenGroup;
 	protected Skin skin;
-	protected int nbInGroup; // Nombre d'lement dans mon groupe
+	protected int nbInGroup; // Nombre d'elements dans mon groupe
 	protected int positionInGroup; // Ma position dans le groupe a partir de 0
+	protected SubMenu submenu; // Sous menu a lance quand on clique sur une feuille
 	
 	public MenuLabel() {
 	}
 	
 	public MenuLabel(String name, MenuLabel parent) {
-		init(name, parent);
+		init(name, parent, null);
+		root = parent.getRoot();
+	}
+	
+	public MenuLabel(String name, MenuLabel parent, SubMenu submenu) {
+		init(name, parent, submenu);
 		root = parent.getRoot();
 	}
 	
 	public MenuLabel(String name, MenuLabelRoot root) {
-		init(name, root);
+		init(name, root, null);
 		this.root = root;
 	}
 	
-	private void init(String name, MenuLabel parent) {
+	private void init(String name, MenuLabel parent, SubMenu submenu) {
 		children = new Array<MenuLabel>();
 		this.name = name;
 		this.parent = parent;
+		this.submenu = submenu;
 		parent.addChild(this);
 		childrenGroup = new LabelContainerGroup();
 	}
@@ -158,6 +170,13 @@ public class MenuLabel {
 		// On le positionne en haut a gauche pour laisser de la place
 		if( children.size == 0 ) {
 			action5();
+			if( submenu != null ) {
+				submenu.getColor().a = 0;
+				submenu.addAction(Actions.delay(MainMenu.animationTime/2f, 
+						Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2)
+						));
+				this.label.getStage().addActor(submenu);
+			}
 		}
 		// Si c'est le niveau suivant
 		else if( oldSelectedLabel == null || level == oldSelectedLabel.getLevel() + 1 ) {
@@ -452,6 +471,18 @@ public class MenuLabel {
 				oldSelectedLabel.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
 				oldSelectedLabel.parent.parent.childrenGroup.addAction(Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2));
 			}
+		}
+	}
+
+	@Override
+	public void dispose() {
+		for( int i = 0; i < children.size; i++ ) {
+			children.get(i).dispose();
+		}
+		
+		// On ne dispose pas le skin car deja fait dans le main menu
+		if( submenu != null ) {
+			submenu.dispose();
 		}
 	}
 }

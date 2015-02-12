@@ -1,5 +1,6 @@
-package com.baboviolent.game.menu.main;
+package com.baboviolent.game.menu.main.input;
 
+import com.baboviolent.game.menu.main.MainMenu;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;

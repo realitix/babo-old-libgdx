@@ -4,6 +4,7 @@ precision mediump float;
 
 uniform float u_time;
 uniform vec2 u_resolution;
+uniform float u_alpha;
 
 void main( void )
 {
@@ -39,6 +40,7 @@ void main( void )
 	texColor.rgb *= (1.0 / (1.0 - (c + 0.05)));
 	texColor *= smoothstep(0.5, 0.0, d);
 	texColor *= smoothstep(0.6, 0.0, e);
+	texColor.rgba *= u_alpha;
 	
 	gl_FragColor = texColor;
 }

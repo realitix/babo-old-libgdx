@@ -11,13 +11,15 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 
-public class MenuShader {
+public class MenuShader implements Disposable {
 	private ShaderProgram program;
 	private int u_time;
 	private int u_resolution;
+	private int u_alpha;
 	private float width;
 	private float height;
 	private Mesh mesh;
@@ -33,6 +35,7 @@ public class MenuShader {
         
         u_time = program.getUniformLocation("u_time");
         u_resolution = program.getUniformLocation("u_resolution");
+        u_alpha = program.getUniformLocation("u_alpha");
         this.width = width;
         this.height = height;
         
@@ -48,14 +51,19 @@ public class MenuShader {
         mesh.setIndices(new short[] { 0, 1, 2, 3, 4, 5 });
 	}
 
-	public void dispose() {
-		program.dispose();
-	}
-
 	public void begin(float time) {
+		begin(time, 1f);
+	}
+	
+	public void begin(float time, float alpha) {
+		if( alpha < 0 ) {
+			alpha = 0;
+		}
+		
 		time = time/slowAnimation;
 		program.begin();
 		program.setUniformf(u_time, time/1000f);
+		program.setUniformf(u_alpha, alpha);
 		program.setUniformf(u_resolution, width, height);
 	}
 
@@ -65,5 +73,11 @@ public class MenuShader {
 
 	public void end() {
 		program.end();
+	}
+	
+	@Override
+	public void dispose() {
+		mesh.dispose();
+		program.dispose();
 	}
 }
