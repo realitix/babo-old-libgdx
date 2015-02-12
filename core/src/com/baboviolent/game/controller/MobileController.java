@@ -35,13 +35,13 @@ public class MobileController extends BaseController {
 		stage = new Stage(v);
 		int width = v.getScreenWidth();
 		int height = v.getScreenHeight();
-		Skin skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		Skin skin = new Skin(Gdx.files.internal("data/skin/game/joysticks/joysticks.json"));
 		
 		int size = width/5;
-		left = new BaboTouchpad(0, skin);
+		left = new BaboTouchpad(0, skin, "move");
 		left.setBounds(width/10, height/10, size, size);
 		
-		right = new BaboTouchpad(0, skin);
+		right = new BaboTouchpad(0, skin, "fire");
 		right.setBounds(width - width/10 - size, height/10, size, size);
 		
 		stage.addActor(left);

@@ -10,6 +10,7 @@ public class DesktopLauncher {
 		
 		
 		//TexturePacker.process("D:\\Users\\T0143947\\repo\\babo\\android\\assets\\data\\texture\\other\\a_packer", "D:\\Users\\T0143947\\repo\\babo\\android\\assets\\data\\texture\\other\\a_packer\\atlas", "game_icon");
+		//TexturePacker.process("/home/realitix/git/baboviolent/design/images/joysticks/a_packer", "/home/realitix/git/baboviolent/design/images/joysticks/a_packer/atlas", "joysticks");
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		
