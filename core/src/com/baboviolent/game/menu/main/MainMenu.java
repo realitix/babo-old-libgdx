@@ -14,6 +14,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -45,26 +46,14 @@ public class MainMenu {
 	public static final float animationTime = 1;
 	public static final float animationMoveX = 100;
 	
-	// Goupes
-	private VerticalGroup group1;
-	private VerticalGroup group2;
-	
-	// Labels
-	private Label label11;
-	private Label label12;
-	private Label label1121;
-	private Label label1122;
-	
-	// Menu selectionne
-	private int selected;
-	
 	public MainMenu() {        
  		//stage = new Stage(new FillViewport(width, height), new BurningSpriteBatch());
- 		stage = new Stage(new FillViewport(width, height));
- 		
+ 		stage = new MenuStage(new FillViewport(width, height));
  		Gdx.input.setInputProcessor(new InputMultiplexer(
  				stage,
- 				new MenuInputListener(this)));
+ 				new MenuInputListener(this),
+ 				new GestureDetector(new MenuGestureListener(this))
+ 				));
  		Gdx.input.setCatchBackKey(true);
  		
  		container = new ContainerGroup();
