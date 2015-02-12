@@ -170,13 +170,6 @@ public class MenuLabel implements Disposable {
 		// On le positionne en haut a gauche pour laisser de la place
 		if( children.size == 0 ) {
 			action5();
-			if( submenu != null ) {
-				submenu.getColor().a = 0;
-				submenu.addAction(Actions.delay(MainMenu.animationTime/2f, 
-						Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2)
-						));
-				this.label.getStage().addActor(submenu);
-			}
 		}
 		// Si c'est le niveau suivant
 		else if( oldSelectedLabel == null || level == oldSelectedLabel.getLevel() + 1 ) {
@@ -237,6 +230,7 @@ public class MenuLabel implements Disposable {
 		if( oldSelectedLabel.isEnd() ) {
 			iFadeInChildren();
 			iCenterVerticalChildrenGroup();
+			iHideLastSubmenu();
 		}
 		iRemoveTheGroupOfLastSelected(false, true, 1);
 		if( oldSelectedLabel.parent != this ) {
@@ -280,6 +274,7 @@ public class MenuLabel implements Disposable {
 		}
 		iMoveLeftSide();
 		iTopVertical();
+		iShowSubmenu();
 	}
 	
 	private float getCenterY() {
@@ -401,6 +396,32 @@ public class MenuLabel implements Disposable {
 		LabelContainerGroup pg = parent.getChildrenGroup();
 		pg.addAction(Actions.moveTo(pg.getX(), getTopY(), MainMenu.animationTime, Interpolation.pow2));
 		pg.setManual(true);
+	}
+	
+	private void iShowSubmenu() {
+		if( submenu != null ) {
+			submenu.getColor().a = 0;
+			submenu.addAction(Actions.delay(MainMenu.animationTime/2f, 
+					Actions.fadeIn(MainMenu.animationTime/2, Interpolation.pow2)
+					));
+			label.getStage().addActor(submenu);
+		}
+	}
+	
+	private void iHideLastSubmenu() {
+		final MenuLabel o = root.getSelectedLabel();
+		if( o.submenu != null ) {
+			Action completeAction = new Action(){
+			    public boolean act( float delta ) {
+			    	o.submenu.remove();
+			    	return true;
+			    }
+			};
+			o.submenu.addAction(Actions.sequence( 
+					Actions.fadeOut(MainMenu.animationTime/2, Interpolation.pow2),
+					completeAction
+					));
+		}
 	}
 	
 	private void iCenterVerticalChildrenGroup() {

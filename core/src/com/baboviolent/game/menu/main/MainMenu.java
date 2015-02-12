@@ -13,6 +13,7 @@ import com.baboviolent.game.menu.main.input.MenuInputListener;
 import com.baboviolent.game.menu.main.submenu.Loading;
 import com.baboviolent.game.menu.main.submenu.SubMenu;
 import com.baboviolent.game.menu.main.submenu.solo.FastGame;
+import com.baboviolent.game.menu.main.submenu.solo.personalized.PersonalizedSolo;
 import com.baboviolent.game.menu.main.tree.MenuLabel;
 import com.baboviolent.game.menu.main.tree.MenuLabelRoot;
 import com.baboviolent.game.menu.main.ui.ContainerGroup;
@@ -110,7 +111,7 @@ public class MainMenu implements Disposable {
 			new MenuLabel("Niveau 3", labelLevels);
 			new MenuLabel("Niveau 4", labelLevels);
 			new MenuLabel("Niveau 5", labelLevels);
-		new MenuLabel("Personnalisé", labelSolo);
+		new MenuLabel("Personnalisé", labelSolo, new PersonalizedSolo(this));
 		new MenuLabel("Editeur", labelSolo);
 		
 		// Multi
