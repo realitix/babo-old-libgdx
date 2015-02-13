@@ -1,5 +1,6 @@
-package com.baboviolent.game.bullet;
+package com.baboviolent.game.bullet.instance;
 
+import com.baboviolent.game.camera.BaboCamera;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -20,10 +21,10 @@ public class BulletInstance extends ModelInstance implements Disposable {
 	public BulletInstance.MotionState motionState;
 	public btRigidBody body;
 	private long expire; // Moment de l'expiration en milliseconde
-	private Camera camera = null;
-	private Vector3 tmp = new Vector3();
-	private float radius;
-	private Vector3 center;
+	protected Camera camera = null;
+	protected Vector3 tmp = new Vector3();
+	protected float radius;
+	protected Vector3 center;
 	
 	public BulletInstance (Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
 		super(model);
@@ -84,26 +85,30 @@ public class BulletInstance extends ModelInstance implements Disposable {
      * On surcharge afin de n'afficher que les objets visibles a la camera (optimisation)
      */
     @Override
-    protected void getRenderables (Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
+    protected void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
     	if( camera == null ) {
     		super.getRenderables(node, renderables, pool);
     	}
     	else {
-    		// Si c'est la map, on calcul la distance a chaque node
-    		if( this.userData != null && this.userData.equals("map") ) tmp.set(node.translation);
-    		else this.transform.getTranslation(tmp).add(center);
-    		
-    		if (camera.frustum.sphereInFrustum(tmp, radius) && node.parts.size > 0) {
-        		for (NodePart nodePart : node.parts) {
-        			if (nodePart.enabled) renderables.add(getRenderable(pool.obtain(), node, nodePart));
-        		}
-        	}
-        	
-        	for (Node child : node.children) {
-        		getRenderables(child, renderables, pool);
-        	}
+    		getRenderablesWithFrustrum(node, renderables, pool);
     	}
 	}
+    
+    protected void getRenderablesWithFrustrum(Node node, Array<Renderable> renderables, Pool<Renderable> pool) {
+    	// Si c'est la map, on calcul la distance a chaque node
+		if( this.userData != null && this.userData.equals("map") ) tmp.set(node.translation);
+		else this.transform.getTranslation(tmp).add(center);
+		
+		if (camera.frustum.sphereInFrustum(tmp, radius) && node.parts.size > 0) {
+    		for (NodePart nodePart : node.parts) {
+    			if (nodePart.enabled) renderables.add(getRenderable(pool.obtain(), node, nodePart));
+    		}
+    	}
+    	
+    	for (Node child : node.getChildren()) {
+    		getRenderables(child, renderables, pool);
+    	}
+    }
 
 	@Override
 	public void dispose () {

@@ -2,7 +2,7 @@ package com.baboviolent.game.gameobject;
 
 import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletCollector;
-import com.baboviolent.game.bullet.BulletInstance;
+import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.baboviolent.game.loader.BaboModelLoader;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;

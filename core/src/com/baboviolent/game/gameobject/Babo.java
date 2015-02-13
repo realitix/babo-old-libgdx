@@ -2,8 +2,8 @@ package com.baboviolent.game.gameobject;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.BulletContactListener;
-import com.baboviolent.game.bullet.BulletInstance;
 import com.baboviolent.game.bullet.BulletWorld;
+import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.effect.group.Blood1;
 import com.baboviolent.game.gameobject.weapon.Weapon;

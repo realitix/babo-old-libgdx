@@ -2,7 +2,7 @@ package com.baboviolent.game;
 
 import java.util.Random;
 
-import com.baboviolent.game.bullet.BulletInstance;
+import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;

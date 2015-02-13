@@ -41,6 +41,11 @@ public class MainMenuScreen implements Screen {
     	dispose();
     }
     
+    public void startEditor() {
+    	game.setScreen(new MapEditorScreen(game));
+    	dispose();
+    }
+    
     public void setAlphaBackground(float alpha) {
     	alphaBackground = alpha;
     }

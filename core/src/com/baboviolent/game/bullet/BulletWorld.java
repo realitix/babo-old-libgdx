@@ -1,5 +1,6 @@
 package com.baboviolent.game.bullet;
 
+import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
 import com.baboviolent.game.gameobject.weapon.Weapon;

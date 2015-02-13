@@ -1,7 +1,8 @@
 package com.baboviolent.game.map;
 
 import com.baboviolent.game.BaboViolentGame;
-import com.baboviolent.game.bullet.BulletInstance;
+import com.baboviolent.game.bullet.instance.BulletInstance;
+import com.baboviolent.game.bullet.instance.map.BulletMapInstance;
 import com.baboviolent.game.loader.TextureLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -108,9 +109,9 @@ public class Map {
         btRigidBody.btRigidBodyConstructionInfo constructionInfo = 
             new btRigidBody.btRigidBodyConstructionInfo(0, null, shape);
             
-        BulletInstance instance = new BulletInstance(model, constructionInfo);
-        instance.userData = "map";
-        instance.setRadius(BaboViolentGame.SIZE_MAP_CELL);
+        BulletMapInstance instance = new BulletMapInstance(model, constructionInfo);
+        //instance.userData = "map";
+        //instance.setRadius(BaboViolentGame.SIZE_MAP_CELL);
         return instance;
 	}
 	
@@ -126,6 +127,7 @@ public class Map {
 	 */ 
 	static public Model loadModel(Map map) {
 		// @TODO Pouvoir vider les textures une fois le modele detruit
+		// @TODO Utiliser un atlas pour les textures afin d'ameliorer les performances
 	    ObjectMap<String, Material> materials = TextureLoader.getMaterialsFromMap(map);
 	    
 	    // Creation du mesh cellule
