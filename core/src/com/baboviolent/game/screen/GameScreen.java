@@ -9,6 +9,7 @@ import com.baboviolent.game.mode.DeathMatchMultiplayerMode;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
@@ -26,6 +27,7 @@ public class GameScreen implements Screen {
 	private ModelBatch shadowBatch;
 	private BaseMode mode;
 	private BulletContactListener bulletContactListener;
+	private FPSLogger fps;
 	
 	public GameScreen(final BaboViolentGame g, int type) {
 		Bullet.init();
@@ -53,10 +55,13 @@ public class GameScreen implements Screen {
 		bulletContactListener = new BulletContactListener();
 		
 		decalBatch = new DecalBatch(new CameraGroupStrategy(mode.getCamera()));
+		
+		fps = new FPSLogger();
 	}
 	
 	@Override
 	public void render(float delta) {
+		fps.log();
 		mode.update();
 		
 		Gdx.gl.glClearColor(255, 255, 255, 1);

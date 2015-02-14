@@ -77,8 +77,7 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 		if (camera.frustum.sphereInFrustum(tmp, radius) && 
 			node.parts.size > 0) {
     		for (NodePart nodePart : node.parts) {
-    			if (nodePart.enabled) renderables.add(getRenderable(
-    					pool.obtain(), node, nodePart));
+    			if (nodePart.enabled) renderables.add(getRenderable(pool.obtain(), node, nodePart));
     		}
     	}
 	}
