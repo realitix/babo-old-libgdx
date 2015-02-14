@@ -1,5 +1,7 @@
 package com.baboviolent.game.bullet.instance.map;
 
+import com.baboviolent.game.BaboViolentGame;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
@@ -26,14 +28,14 @@ public class Zone {
 	public Zone() {
 	}
 	
-	public void getNodesAt(Vector3 position, Array<Node> out) {
+	public void getNodesInCamera(Camera camera, Array<Node> out) {
 		if( children.size == 0 ) {
 			out.addAll(nodes);
 		}
 		
 		for( Zone zone: children ) {
-			if( zone.in(position) ) {
-				zone.getNodesAt(position, out);
+			if( camera.frustum.boundsInFrustum(zone.getBoundingBox()) ) {
+				zone.getNodesInCamera(camera, out);
 			}
 		}
 	}
@@ -75,6 +77,7 @@ public class Zone {
 	}
 	
 	public boolean in(Node node) {
+		//@TODO a tester
 		return in(node.translation);
 	}
 	

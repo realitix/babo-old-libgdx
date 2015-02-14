@@ -110,8 +110,9 @@ public class Map {
             new btRigidBody.btRigidBodyConstructionInfo(0, null, shape);
             
         BulletMapInstance instance = new BulletMapInstance(model, constructionInfo);
-        //instance.userData = "map";
-        //instance.setRadius(BaboViolentGame.SIZE_MAP_CELL);
+        /*BulletInstance instance = new BulletInstance(model, constructionInfo);
+        instance.userData = "map";
+        instance.setRadius(BaboViolentGame.SIZE_MAP_CELL);*/
         return instance;
 	}
 	

@@ -42,6 +42,9 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 	@Override
 	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
 		if( camera != null ) {
+			/*for (Node node : nodes) {
+				getRenderables(node, renderables, pool);
+			}*/
 			getRenderablesWithFilter(renderables, pool);
 		}
 		else {
@@ -51,16 +54,22 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 		}
 	}
 	
-	public void getRenderablesWithFilter (Array<Renderable> renderables, Pool<Renderable> pool) {
-		Vector3 cameraPosition = camera.position.cpy();
-		cameraPosition.y = 0;
+	public void getRenderablesWithFilter(Array<Renderable> renderables, Pool<Renderable> pool) {
 		filteredNodes.clear();
-		rootZone.getNodesAt(cameraPosition, filteredNodes);
+		rootZone.getNodesInCamera(camera, filteredNodes);
 		for (Node node : filteredNodes) {
 			getRenderables(node, renderables, pool);
 		}
 	}
 	
+	/**
+	 * @TODO creer un shader dedie a la map
+	 * Ce shader doit rendre la map en une fois plutot que de parcourir les cellules une par une
+	 * De plus, cela permmetra de faire des effets de fondu entre les textures
+	 * Il faudra un seul mesh dedie contenant les extremites de la map visible
+	 * et un shader a qui on envoie les coordonnes des cellules dans un tableau
+	 * Actuellement, sur mon mobile il y a 126 noeuds a afficher donc 126 pass dans le shader
+	 */
 	@Override
     protected void getRenderablesWithFrustrum (Node node, 
     		Array<Renderable> renderables, Pool<Renderable> pool) {

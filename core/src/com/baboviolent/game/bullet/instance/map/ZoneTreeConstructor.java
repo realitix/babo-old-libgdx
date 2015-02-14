@@ -21,23 +21,24 @@ public class ZoneTreeConstructor {
 	private Zone initZone() {
 		float mapWidth = getMapWidth();
 		float mapHeight = getMapHeight();
+		float s = BaboViolentGame.SIZE_MAP_CELL;
 		float offsetMapX = getBottomRight().x;
 		float offsetMapY = getBottomRight().y;
 		int nbZoneX = (int) Math.ceil(mapWidth/Zone.ZONE_SIZE);
 		int nbZoneY = (int) Math.ceil(mapHeight/Zone.ZONE_SIZE);
 		
 		Array<Zone> zones = new Array<Zone>(nbZoneX*nbZoneY);
-		float s = BaboViolentGame.SIZE_MAP_CELL;
-		Vector3 min = new Vector3(offsetMapX, 0, offsetMapY);
-		Vector3 max = new Vector3(offsetMapX + s, 0, offsetMapY + s);
+		Vector3 tmp = new Vector3(offsetMapX-1, 0, offsetMapY-1);
+		tmp.set(0,0,0);
 		
 		// On cree les zones
 		for( int i = 0; i < nbZoneX; i++ ) {
 			for( int j = 0; j < nbZoneY; j++ ) {
 				BoundingBox bb = new BoundingBox(
-						min.cpy().add(Zone.ZONE_SIZE*i, 0, Zone.ZONE_SIZE*j),
-						max.cpy().add(Zone.ZONE_SIZE*i, 0, Zone.ZONE_SIZE*j)
+						tmp.cpy().add(Zone.ZONE_SIZE*i, 0, Zone.ZONE_SIZE*j),
+						tmp.cpy().add(Zone.ZONE_SIZE*(i+1), 0, Zone.ZONE_SIZE*(j+1))
 						);
+				System.out.println("BB: "+bb);
 				zones.add(new Zone().setBoundingBox(bb));
 			}
 		}
@@ -51,6 +52,15 @@ public class ZoneTreeConstructor {
 			}
 		}
 		
+		// @TODO a supprimer, test juste les zones initiales
+		/*Zone root = new Zone();
+		for( Zone z : zones ) {
+			root.add(z);
+		}
+		return root;*/
+		
+		// @TODO tester l'arbre car non tester
+		// La partie precedente fonctionne mais arbre non teste
 		return computeTreeBoundingBox(getZoneTree(zones));
 	}
 	
@@ -106,39 +116,40 @@ public class ZoneTreeConstructor {
 		return Math.abs(t.y - b.y);
 	}
 	
+	// Les cellules sont positionne par le centre donc il faut ajouter la moitie
 	private Vector2 getBottomRight() {
-		float r = 9999999, b = 9999999;
+		float r = 9999999, b = 9999999, s = BaboViolentGame.SIZE_MAP_CELL/2;
 		for( Node n : nodes ) {
 			if( n.translation.x < r ) r = n.translation.x;
 			if( n.translation.z < b ) b = n.translation.z;
 		}
-		return new Vector2(r,b);
+		return new Vector2(r,b).add(-s, -s);
 	}
 	
 	private Vector2 getBottomLeft() {
-		float l = -9999999, b = 9999999;
+		float l = -9999999, b = 9999999, s = BaboViolentGame.SIZE_MAP_CELL/2;
 		for( Node n : nodes ) {
 			if( n.translation.x > l ) l = n.translation.x;
 			if( n.translation.z < b ) b = n.translation.z;
 		}
-		return new Vector2(l,b);
+		return new Vector2(l,b).add(s, -s);
 	}
 	
 	private Vector2 getTopLeft() {
-		float l = -9999999, t = -9999999;
+		float l = -9999999, t = -9999999, s = BaboViolentGame.SIZE_MAP_CELL/2;
 		for( Node n : nodes ) {
 			if( n.translation.x > l ) l = n.translation.x;
 			if( n.translation.z > t ) t = n.translation.z;
 		}
-		return new Vector2(l,t);
+		return new Vector2(l,t).add(s, s);
 	}
 	
 	private Vector2 getTopRight() {
-		float r = 9999999, t = -9999999;
+		float r = 9999999, t = -9999999, s = BaboViolentGame.SIZE_MAP_CELL/2;
 		for( Node n : nodes ) {
 			if( n.translation.x < r ) r = n.translation.x;
 			if( n.translation.z > t ) t = n.translation.z;
 		}
-		return new Vector2(r,t);
+		return new Vector2(r,t).add(-s, s);
 	}
 }

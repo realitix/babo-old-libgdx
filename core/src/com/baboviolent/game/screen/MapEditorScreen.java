@@ -250,7 +250,8 @@ public class MapEditorScreen implements Screen {
     		type = Map.TYPE_WALL;
     	
     	i.userData = type;
-    	map.addCell(new Cell().setPosition(positionToCell(mousePosition)).setTextureName(currentCellTexture).setType(type));
+    	//map.addCell(new Cell().setPosition(positionToCell(mousePosition)).setTextureName(currentCellTexture).setType(type));
+    	map.addCell(new Cell().setPosition(positionToGrid(mousePosition)).setTextureName(currentCellTexture).setType(type));
     }
     
     /**
