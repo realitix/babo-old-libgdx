@@ -1,6 +1,6 @@
 package com.baboviolent.game.menu.extra;
 
-import com.baboviolent.game.shader.MenuShader;
+import com.baboviolent.game.menu.main.MenuShader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;

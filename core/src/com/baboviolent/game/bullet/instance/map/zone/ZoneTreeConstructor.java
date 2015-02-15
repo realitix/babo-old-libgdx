@@ -1,4 +1,4 @@
-package com.baboviolent.game.bullet.instance.map;
+package com.baboviolent.game.bullet.instance.map.zone;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.badlogic.gdx.graphics.g3d.model.Node;

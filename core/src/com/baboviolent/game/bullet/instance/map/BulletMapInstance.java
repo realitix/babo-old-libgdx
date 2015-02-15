@@ -2,6 +2,8 @@ package com.baboviolent.game.bullet.instance.map;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.instance.BulletInstance;
+import com.baboviolent.game.bullet.instance.map.zone.Zone;
+import com.baboviolent.game.bullet.instance.map.zone.ZoneTreeConstructor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;

@@ -3,7 +3,7 @@ package com.baboviolent.game.screen;
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.menu.extra.MenuBackground;
 import com.baboviolent.game.menu.main.MainMenu;
-import com.baboviolent.game.shader.MenuShader;
+import com.baboviolent.game.menu.main.MenuShader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;

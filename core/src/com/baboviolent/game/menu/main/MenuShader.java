@@ -1,4 +1,4 @@
-package com.baboviolent.game.shader;
+package com.baboviolent.game.menu.main;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.badlogic.gdx.Gdx;
