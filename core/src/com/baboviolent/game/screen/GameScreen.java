@@ -1,6 +1,7 @@
 package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.Configuration.ConfigurationAdapter;
 import com.baboviolent.game.Utils;
 import com.baboviolent.game.batch.BaboModelBatch;
 import com.baboviolent.game.bullet.BulletContactListener;
@@ -32,6 +33,7 @@ public class GameScreen implements Screen {
 	private BulletContactListener bulletContactListener;
 	private FPSLogger fps;
 	private RenderContext renderContext;
+	private ConfigurationAdapter configAdapter;
 	
 	public GameScreen(final BaboViolentGame g, int type) {
 		Bullet.init();
@@ -65,12 +67,15 @@ public class GameScreen implements Screen {
 		decalBatch = new DecalBatch(new CameraGroupStrategy(mode.getCamera()));
 		
 		fps = new FPSLogger();
+		configAdapter = new ConfigurationAdapter();
 	}
 	
 	@Override
 	public void render(float delta) {
-		fps.log();
+		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		mode.update();
+		//configAdapter.update();
+		fps.log();
 		
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);

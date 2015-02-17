@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLTexture;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
@@ -23,6 +24,9 @@ public class MapShader implements Shader {
 	private int u_projTrans;
 	private int u_worldTrans;
 	private int u_diffuseTexture;
+	private int u_shadowMapProjViewTrans;
+	private int u_shadowTexture;
+	private int u_shadowPCFOffset;
 	private int i;
 	
 	@Override
@@ -37,6 +41,9 @@ public class MapShader implements Shader {
         u_projTrans = program.getUniformLocation("u_projViewTrans");
         u_worldTrans = program.getUniformLocation("u_worldTrans");
         u_diffuseTexture = program.getUniformLocation("u_diffuseTexture");
+        u_shadowMapProjViewTrans = program.getUniformLocation("u_shadowMapProjViewTrans");
+        u_shadowTexture = program.getUniformLocation("u_shadowTexture");
+        u_shadowPCFOffset = program.getUniformLocation("u_shadowPCFOffset");
 	}	
 
 	@Override
@@ -54,25 +61,30 @@ public class MapShader implements Shader {
 		context.setCullFace(GL20.GL_BACK);
 		context.setBlending(false, GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		context.setDepthMask(true);
-		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
-		renderable.mesh.render(program,
-		renderable.primitiveType,
-		renderable.meshPartOffset,
-		renderable.meshPartSize);
 		
 		TextureDescriptor<Texture> t = ((TextureAttribute)(renderable.material
 				.get(TextureAttribute.Diffuse))).textureDescription;
 		
+		
+		program.setUniformMatrix(u_worldTrans, renderable.worldTransform);
 		program.setUniformi(u_diffuseTexture, context.textureBinder.bind(t));
 		
-		/*TextureDescriptor<Texture> ta = ((TextureAttribute)(renderable.material
-				.get(TextureAttribute.Diffuse))).textureDescription;
-		Texture t = ta.texture;
-		//Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + 5);
-		int idx = 13;
-		t.bind(idx);
-		program.setUniformi(u_texture0, idx);
-		Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);*/
+		Environment e = renderable.environment;
+		if( e.shadowMap != null ) {
+			program.setUniformMatrix(u_shadowMapProjViewTrans, e.shadowMap.getProjViewTrans());
+			program.setUniformi(u_shadowTexture, context.textureBinder.bind(e.shadowMap.getDepthMap()));
+			program.setUniformf(u_shadowPCFOffset, 1.f / (float)(2f * e.shadowMap.getDepthMap().texture.getWidth()));
+		}
+		
+		
+		/*set(u_shadowMapProjViewTrans, lights.shadowMap.getProjViewTrans());
+		set(u_shadowTexture, lights.shadowMap.getDepthMap());
+		set(u_shadowPCFOffset, 1.f / (float)(2f * lights.shadowMap.getDepthMap().texture.getWidth()));*/
+		
+		renderable.mesh.render(program,
+		renderable.primitiveType,
+		renderable.meshPartOffset,
+		renderable.meshPartSize);
 	}
 
 	@Override

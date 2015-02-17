@@ -1,6 +1,7 @@
 package com.baboviolent.game.mode;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.Configuration;
 import com.baboviolent.game.Utils;
 import com.baboviolent.game.ai.AiBabo;
 import com.baboviolent.game.ai.pfa.tiled.flat.BaboPathGenerator;
@@ -162,12 +163,14 @@ public class BaseMode {
     public void render(RenderContext renderContext, BaboModelBatch modelBatch, BaboModelBatch shadowBatch, DecalBatch decalBatch) {
     	
     	renderContext.begin();
-    	DirectionalShadowLight shadowLight = effectSystem.getLightSystem().getShadowLight();
-    	shadowLight.begin(camera.position, camera.direction);
-		shadowBatch.begin(shadowLight.getCamera());
-		world.renderShadow(shadowBatch);
-		shadowBatch.end();
-		shadowLight.end();
+    	if( Configuration.Video.enableShadow ) {
+	    	DirectionalShadowLight shadowLight = effectSystem.getLightSystem().getShadowLight();
+	    	shadowLight.begin(camera.position, camera.direction);
+			shadowBatch.begin(shadowLight.getCamera());
+			world.renderShadow(shadowBatch);
+			shadowBatch.end();
+			shadowLight.end();
+    	}
     	
 		
     	modelBatch.begin(camera);
