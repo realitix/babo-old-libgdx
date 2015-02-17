@@ -38,7 +38,6 @@ public class ZoneTreeConstructor {
 						tmp.cpy().add(Zone.ZONE_SIZE*i, 0, Zone.ZONE_SIZE*j),
 						tmp.cpy().add(Zone.ZONE_SIZE*(i+1), 0, Zone.ZONE_SIZE*(j+1))
 						);
-				System.out.println("BB: "+bb);
 				zones.add(new Zone().setBoundingBox(bb));
 			}
 		}

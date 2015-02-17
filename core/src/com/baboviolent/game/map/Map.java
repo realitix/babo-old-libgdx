@@ -159,7 +159,7 @@ public class Map {
         Vector3 up = new Vector3(0, 1, 0);
         for(int i = 0; i < map.getCells().size; i++) {
         	MeshPart meshPart = groundMeshPart;
-        	if( map.getCells().get(i).getType().equals(TYPE_WALL) )
+        	if( map.getCells().get(i).getType().equals(TYPE_WALL) ) {
         		meshPart = wallMeshPart;
         		
         	Material material = materials.get(cells.get(i).getTextureName());
