@@ -7,9 +7,11 @@ import com.baboviolent.game.loader.TextureLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.MeshPart;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.utils.MeshBuilder;
@@ -108,11 +110,17 @@ public class Map {
 		// On cree l'instance
         btRigidBody.btRigidBodyConstructionInfo constructionInfo = 
             new btRigidBody.btRigidBodyConstructionInfo(0, null, shape);
-            
-        BulletMapInstance instance = new BulletMapInstance(model, constructionInfo);
-        /*BulletInstance instance = new BulletInstance(model, constructionInfo);
-        instance.userData = "map";
-        instance.setRadius(BaboViolentGame.SIZE_MAP_CELL);*/
+        
+        BulletInstance instance = null;        
+        if( !BaboViolentGame.t ) {
+        	instance = new BulletInstance(model, constructionInfo);
+        	instance.userData = "map";
+	        instance.setRadius(BaboViolentGame.SIZE_MAP_CELL);
+        }
+        else {
+        	instance = new BulletMapInstance(model, constructionInfo);
+        	instance.userData = "map";
+        }
         return instance;
 	}
 	
@@ -157,20 +165,53 @@ public class Map {
         
         Array<Cell> cells = map.getCells();
         Vector3 up = new Vector3(0, 1, 0);
+        
+        //@TODO on test avec le texture atlas
+        /*Material mGround = new Material(new TextureAttribute(
+        		TextureAttribute.Diffuse,
+        		new Texture("data/texture/ground/atlas/ground.png")));*/
+        
         for(int i = 0; i < map.getCells().size; i++) {
         	MeshPart meshPart = groundMeshPart;
-        	if( map.getCells().get(i).getType().equals(TYPE_WALL) ) {
-        		meshPart = wallMeshPart;
-        		
-        	Material material = materials.get(cells.get(i).getTextureName());
-            Node node = modelBuilder.node();
-            node.id = "cell"+i;
-            node.translation.set(cells.get(i).getPosition());
-            node.rotation.set(new Quaternion().set(up, cells.get(i).getAngle()));
-            modelBuilder.part(
-            	meshPart, 
-            	material
-            );
+        	if( BaboViolentGame.t ) {
+	        	if( map.getCells().get(i).getType().equals(TYPE_WALL) ) {
+	        		meshPart = wallMeshPart;
+	        		
+		        	Material material = materials.get(cells.get(i).getTextureName());
+		            Node node = modelBuilder.node();
+		            node.id = "cell"+i;
+		            node.translation.set(cells.get(i).getPosition());
+		            node.rotation.set(new Quaternion().set(up, cells.get(i).getAngle()));
+		            modelBuilder.part(
+		            	meshPart, 
+		            	material
+		            );
+	        	}
+	        	else {
+	        		Node node = modelBuilder.node();
+	        		// On utilise cete propriete pour transferer le nom de la texture
+		            node.id = cells.get(i).getTextureName();
+		            node.translation.set(cells.get(i).getPosition());
+		            node.rotation.set(new Quaternion().set(up, cells.get(i).getAngle()));
+		            modelBuilder.part(
+		            	meshPart, 
+		            	new Material()
+		            );
+	        	}
+        	}
+        	else {
+        		if( map.getCells().get(i).getType().equals(TYPE_WALL) )
+	        		meshPart = wallMeshPart;
+	        		
+	        	Material material = materials.get(cells.get(i).getTextureName());
+	            Node node = modelBuilder.node();
+	            node.id = "cell"+i;
+	            node.translation.set(cells.get(i).getPosition());
+	            node.rotation.set(new Quaternion().set(up, cells.get(i).getAngle()));
+	            modelBuilder.part(
+	            	meshPart, 
+	            	material);
+        	}
         }
         
         Model model = modelBuilder.end();

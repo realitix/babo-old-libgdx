@@ -3,9 +3,12 @@ package com.baboviolent.game.bullet.instance.map.shader;
 import com.baboviolent.game.BaboViolentGame;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Node;
@@ -30,6 +33,8 @@ public class GroundMesh extends Mesh {
 	private float s = BaboViolentGame.SIZE_MAP_CELL/2f;
 	private int texture0;
 	
+	private TextureAtlas atlas;
+	
 	
 	public GroundMesh(int maxVertices) {
 		super(false, maxVertices, 0,
@@ -39,13 +44,12 @@ public class GroundMesh extends Mesh {
 		
 		verts = new float[maxVertices * TOTAL_COMPONENTS];
 		id = 0;
+		atlas = new TextureAtlas("data/texture/ground/atlas/ground.atlas");
 	}
 	
 	public void batchNodes(Array<Node> nodes) {
 		id = 0;
-		
-		texture0 = nodes.get(0).parts.get(0).material.get(TextureAttribute.Diffuse).hashCode();
-		System.out.println(texture0);
+
 		for( Node n : nodes ) {
 			batchNode(n);
 		}
@@ -54,38 +58,34 @@ public class GroundMesh extends Mesh {
 	}
 	
 	private void batchNode(Node n) {
-		float range = 1;
-		if( n.parts.get(0).material.get(TextureAttribute.Diffuse).hashCode() == texture0 ) {
-			range = 0;
-		}
-		//
-		
+		float range = 0;
 		/*
 		 *  First triangle
 		 */
+		TextureRegion r = atlas.findRegion(n.id);
 		
 		// Top left
 	    verts[id++] = n.translation.x + s;
 	    verts[id++] = n.translation.y;
 	    verts[id++] = n.translation.z + s;
-	    verts[id++] = 0;
-	    verts[id++] = 1;
+	    verts[id++] = r.getU();
+	    verts[id++] = r.getV2();
 	    verts[id++] = range;
 	    
 	    // Bottom left
 	    verts[id++] = n.translation.x + s;
 	    verts[id++] = n.translation.y;
 	    verts[id++] = n.translation.z - s;
-	    verts[id++] = 0;
-	    verts[id++] = 0;
+	    verts[id++] = r.getU();
+	    verts[id++] = r.getV();
 	    verts[id++] = range;
 	    
 	    // Bottom right
 	    verts[id++] = n.translation.x - s;
 	    verts[id++] = n.translation.y;
 	    verts[id++] = n.translation.z - s;
-	    verts[id++] = 1;
-	    verts[id++] = 0;
+	    verts[id++] = r.getU2();
+	    verts[id++] = r.getV();
 	    verts[id++] = range;
 	    
 	    
@@ -97,24 +97,24 @@ public class GroundMesh extends Mesh {
 	    verts[id++] = n.translation.x - s;
 	    verts[id++] = n.translation.y;
 	    verts[id++] = n.translation.z + s;
-	    verts[id++] = 1;
-	    verts[id++] = 1;
+	    verts[id++] = r.getU2();
+	    verts[id++] = r.getV2();
 	    verts[id++] = range;
 	    
 	    // Top left
 	    verts[id++] = n.translation.x + s;
 	    verts[id++] = n.translation.y;
 	    verts[id++] = n.translation.z + s;
-	    verts[id++] = 0;
-	    verts[id++] = 1;
+	    verts[id++] = r.getU();
+	    verts[id++] = r.getV2();
 	    verts[id++] = range;
 	    
 	    // Bottom right
 	    verts[id++] = n.translation.x - s;
 	    verts[id++] = n.translation.y;
 	    verts[id++] = n.translation.z - s;
-	    verts[id++] = 1;
-	    verts[id++] = 0;
+	    verts[id++] = r.getU2();
+	    verts[id++] = r.getV();
 	    verts[id++] = range;
 	}
 	

@@ -81,6 +81,15 @@ public class BulletInstance extends ModelInstance implements Disposable {
         return expire;
     }
     
+    @Override
+	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
+		super.getRenderables(renderables, pool);
+	}
+    
+	public void getRenderablesForShadow (Array<Renderable> renderables, Pool<Renderable> pool) {
+		super.getRenderables(renderables, pool);
+	}
+    
     /**
      * On surcharge afin de n'afficher que les objets visibles a la camera (optimisation)
      */

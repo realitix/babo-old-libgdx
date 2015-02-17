@@ -2,6 +2,7 @@ package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Utils;
+import com.baboviolent.game.batch.BaboModelBatch;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.mode.BaseMode;
 import com.baboviolent.game.mode.DeathMatchMode;
@@ -14,7 +15,9 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.decals.CameraGroupStrategy;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
+import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
+import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.physics.bullet.Bullet;
 
 public class GameScreen implements Screen {
@@ -22,20 +25,25 @@ public class GameScreen implements Screen {
 	public final static int TYPE_MULTIPLAYER = 2;
 	
 	final private BaboViolentGame game;
-	private ModelBatch modelBatch;
+	private BaboModelBatch modelBatch;
 	private DecalBatch decalBatch;
-	private ModelBatch shadowBatch;
+	private BaboModelBatch shadowBatch;
 	private BaseMode mode;
 	private BulletContactListener bulletContactListener;
 	private FPSLogger fps;
+	private RenderContext renderContext;
 	
 	public GameScreen(final BaboViolentGame g, int type) {
 		Bullet.init();
 		game = g;
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
-		modelBatch = new ModelBatch();
-		shadowBatch = new ModelBatch(new DepthShaderProvider());
+		renderContext = new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.ROUNDROBIN, 1));
+		modelBatch = new BaboModelBatch(renderContext);
+		shadowBatch = new BaboModelBatch(renderContext, new DepthShaderProvider());
+		
+		/*modelBatch = new ModelBatch();
+		shadowBatch = new ModelBatch(new DepthShaderProvider());*/
 		
 		// Gestion des preferences
 		Preferences prefs = Gdx.app.getPreferences("com.baboviolent.game");
@@ -67,7 +75,9 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
-		mode.render(modelBatch, shadowBatch, decalBatch);
+		//renderContext.begin();
+		mode.render(renderContext, modelBatch, shadowBatch, decalBatch);
+		//renderContext.end();
 		
 		// La mise a jour du controleur doit etre apres le rendu
 		// car affichage des touchpad

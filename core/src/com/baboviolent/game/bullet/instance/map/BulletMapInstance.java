@@ -12,12 +12,14 @@ import com.baboviolent.game.bullet.instance.map.zone.ZoneTreeConstructor;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -38,6 +40,7 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 	private Array<Node> visibleNodes;
 	private GroundMesh groundMesh;
 	private MapShader mapShader;
+	private Material groundMaterial;
 	
 	public BulletMapInstance (Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
 		super(model, constructionInfo);
@@ -53,7 +56,9 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 		radius = BaboViolentGame.SIZE_MAP_CELL;
 		rootZone = new ZoneTreeConstructor(nodes).generateRootZone();
 		groundMesh = createGroundMesh();
-		
+		groundMaterial = new Material(new TextureAttribute(
+        		TextureAttribute.Diffuse,
+        		new Texture("data/texture/ground/atlas/ground.png")));
 	}
 	
 	public GroundMesh createGroundMesh() {
@@ -72,7 +77,7 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 	public void getRenderables (Array<Renderable> renderables, Pool<Renderable> pool) {
 		filteredNodes.clear();
 		visibleNodes.clear();
-		getRenderablesWithFilter(renderables, pool);
+		getRenderablesWithFilter(renderables, pool, false);
 		
 		// On a rempli les noeuds visibles, on les charge dans le mesh
 		groundMesh.batchNodes(visibleNodes);
@@ -81,38 +86,29 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 		getGroundRenderable(renderables, pool);
 	}
 	
-	private void getGroundRenderable(Array<Renderable> renderables, Pool<Renderable> pool) {
-		Renderable renderable = pool.obtain();
-        renderable.mesh = groundMesh;
-        renderable.meshPartOffset = 0;
-        renderable.meshPartSize = groundMesh.getVertexCount();
-        renderable.primitiveType = GL20.GL_TRIANGLES;
-        renderable.material = new Material();
-        renderable.environment = null;
-        renderable.worldTransform.idt();
-        renderable.shader = mapShader;
-        
-        renderables.add(renderable);
+	// On renvoie seulement les murs
+	public void getRenderablesForShadow (Array<Renderable> renderables, Pool<Renderable> pool) {
+		getRenderablesWithFilter(renderables, pool, true);
 	}
 	
-	public void getRenderablesWithFilter(Array<Renderable> renderables, Pool<Renderable> pool) {
+	public void getRenderablesWithFilter(Array<Renderable> renderables, Pool<Renderable> pool, boolean onlyWall) {
 		rootZone.getNodesInCamera(camera, filteredNodes);
 		for (Node node : filteredNodes) {
-			getRenderables(node, renderables, pool);
+			getRenderables(node, renderables, pool, onlyWall);
 		}
 	}
 	
-	/**
-	 * @TODO creer un shader dedie a la map
-	 * Ce shader doit rendre la map en une fois plutot que de parcourir les cellules une par une
-	 * De plus, cela permmetra de faire des effets de fondu entre les textures
-	 * Il faudra un seul mesh dedie contenant les extremites de la map visible
-	 * et un shader a qui on envoie les coordonnes des cellules dans un tableau
-	 * Actuellement, sur mon mobile il y a 126 noeuds a afficher donc 126 pass dans le shader
-	 */
-	@Override
+    protected void getRenderables(Node node, Array<Renderable> renderables, Pool<Renderable> pool, boolean onlyWall) {
+    	if( camera == null ) {
+    		super.getRenderables(node, renderables, pool);
+    	}
+    	else {
+    		getRenderablesWithFrustrum(node, renderables, pool, onlyWall);
+    	}
+	}
+	
     protected void getRenderablesWithFrustrum (Node node, 
-    		Array<Renderable> renderables, Pool<Renderable> pool) {
+    		Array<Renderable> renderables, Pool<Renderable> pool, boolean onlyWall) {
 		tmp.set(node.translation);
 		if (camera.frustum.sphereInFrustum(tmp, radius) && 
 			node.parts.size > 0) {
@@ -120,11 +116,26 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
     		NodePart nodePart = node.parts.get(0);
 			if( nodePart.enabled ) { 
 				// Si le sol
-				if( nodePart.meshPart.numVertices == 6 )
+				if( !onlyWall && nodePart.meshPart.numVertices == 6 )
 					visibleNodes.add(node);
 				else
 					renderables.add(getRenderable(pool.obtain(), node, nodePart));
 			}
     	}
+	}
+	
+	private void getGroundRenderable(Array<Renderable> renderables, Pool<Renderable> pool) {
+		Renderable renderable = pool.obtain();
+        renderable.mesh = groundMesh;
+        renderable.meshPartOffset = 0;
+        renderable.meshPartSize = groundMesh.getVertexCount();
+        renderable.primitiveType = GL20.GL_TRIANGLES;
+        renderable.material = groundMaterial;
+        renderable.environment = null;
+        renderable.worldTransform.idt();
+        renderable.shader = mapShader;
+        renderable.userData = this.userData;
+        
+        renderables.add(renderable);
 	}
 }

@@ -1,5 +1,6 @@
 package com.baboviolent.game.bullet;
 
+import com.baboviolent.game.batch.BaboModelBatch;
 import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback;
@@ -155,12 +157,13 @@ public class BulletWorld implements Disposable {
 		instances.removeValue(instance, true);
 	}
 
-	public void render (final ModelBatch modelBatch, final Environment environment) {
+	public void render(final BaboModelBatch modelBatch, final Environment environment) {
 		modelBatch.render(instances, environment);
 	}
 	
-	public void render (final ModelBatch modelBatch) {
-		modelBatch.render(instances);
+	// Utilise pour l'ombre, ne s'applique pas sur le sol
+	public void renderShadow(final BaboModelBatch modelBatch) {
+		modelBatch.renderForShadow(instances);
 	}
 
 	public void update () {

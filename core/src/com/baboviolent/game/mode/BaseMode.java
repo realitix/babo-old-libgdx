@@ -4,6 +4,7 @@ import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Utils;
 import com.baboviolent.game.ai.AiBabo;
 import com.baboviolent.game.ai.pfa.tiled.flat.BaboPathGenerator;
+import com.baboviolent.game.batch.BaboModelBatch;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.bullet.instance.BulletInstance;
@@ -21,6 +22,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
@@ -157,23 +159,29 @@ public class BaseMode {
      * ensuite les decals (sang, marques au sol...)
      * Puis enfin les particules
      */
-    public void render(ModelBatch modelBatch, ModelBatch shadowBatch, DecalBatch decalBatch) {
+    public void render(RenderContext renderContext, BaboModelBatch modelBatch, BaboModelBatch shadowBatch, DecalBatch decalBatch) {
+    	
+    	renderContext.begin();
     	DirectionalShadowLight shadowLight = effectSystem.getLightSystem().getShadowLight();
     	shadowLight.begin(camera.position, camera.direction);
 		shadowBatch.begin(shadowLight.getCamera());
-		world.render(shadowBatch);
+		world.renderShadow(shadowBatch);
 		shadowBatch.end();
 		shadowLight.end();
+    	
 		
     	modelBatch.begin(camera);
     	world.render(modelBatch, environment);
-    	modelBatch.end();    	
+    	modelBatch.end();   
+    	renderContext.end();
     	
     	effectSystem.renderDecals(decalBatch);
     	
+    	renderContext.begin();
     	modelBatch.begin(camera);
     	effectSystem.render(modelBatch, environment);
     	modelBatch.end();
+		renderContext.end();
     	
     	effectSystem.renderCursor(decalBatch);
     	
