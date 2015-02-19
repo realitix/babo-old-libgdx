@@ -6,7 +6,9 @@ import java.util.Collections;
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.baboviolent.game.bullet.instance.map.shader.GroundMesh;
+import com.baboviolent.game.bullet.instance.map.shader.GroundMesh2;
 import com.baboviolent.game.bullet.instance.map.shader.MapShader;
+import com.baboviolent.game.bullet.instance.map.shader.MapShader2;
 import com.baboviolent.game.bullet.instance.map.zone.Zone;
 import com.baboviolent.game.bullet.instance.map.zone.ZoneTreeConstructor;
 import com.badlogic.gdx.graphics.Camera;
@@ -33,29 +35,29 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.Pool;
 
-public class BulletMapInstance extends BulletInstance implements Disposable {
+public class BulletMapInstance2 extends BulletInstance implements Disposable {
 
 	private Zone rootZone;
 	private Array<Node> filteredNodes;
 	private Array<Node> visibleNodes;
-	private GroundMesh groundMesh;
-	private MapShader mapShader;
+	private GroundMesh2 groundMesh;
+	private MapShader2 mapShader;
 	private Material groundMaterial;
 	
-	public BulletMapInstance (Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
+	public BulletMapInstance2 (Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
 		super(model, constructionInfo);
 	}
 	
 	@Override
 	public void init() {
 		super.init();
-		mapShader = new MapShader();
+		mapShader = new MapShader2();
 		mapShader.init();
 		filteredNodes = new Array<Node>(nodes.size);
 		visibleNodes = new Array<Node>(nodes.size);
 		radius = BaboViolentGame.SIZE_MAP_CELL;
 		rootZone = new ZoneTreeConstructor(nodes).generateRootZone();
-		groundMesh = createGroundMesh();
+		groundMesh = new GroundMesh2();
 		groundMaterial = new Material(new TextureAttribute(
         		TextureAttribute.Diffuse,
         		new Texture("data/texture/ground/atlas/ground.png")));
@@ -75,10 +77,7 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 		filteredNodes.clear();
 		visibleNodes.clear();
 		getRenderablesWithFilter(renderables, pool, false);
-		
-		// On a rempli les noeuds visibles, on les charge dans le mesh
-		groundMesh.batchNodes(visibleNodes);
-		
+
 		// On ajoute le ground renderable au modelbatch
 		getGroundRenderable(renderables, pool);
 	}
@@ -125,7 +124,7 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 		Renderable renderable = pool.obtain();
         renderable.mesh = groundMesh;
         renderable.meshPartOffset = 0;
-        renderable.meshPartSize = groundMesh.getVertexCount();
+        renderable.meshPartSize = 6;
         renderable.primitiveType = GL20.GL_TRIANGLES;
         renderable.material = groundMaterial;
         renderable.environment = null;

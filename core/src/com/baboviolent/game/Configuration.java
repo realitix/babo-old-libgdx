@@ -5,6 +5,10 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class Configuration {
 	
+	public static final int MIN = 1;
+	public static final int MED = 2;
+	public static final int MAX = 3;
+	
 	public static class ConfigurationAdapter {
 		long startTime;
 
@@ -27,6 +31,7 @@ public class Configuration {
 	}
 	
 	public static class Video {
+		public static int baboLevelOfDetail = Configuration.MED;
 		public static boolean enableShadow = true;
 	}
 }

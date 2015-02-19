@@ -1,6 +1,7 @@
 package com.baboviolent.game.gameobject;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.Configuration;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.bullet.instance.BulletInstance;
@@ -79,8 +80,23 @@ public class Babo extends GameObject {
 	protected void initInstance() {
         float d = BaboViolentGame.BABO_DIAMETER;
         Material material = TextureLoader.getMaterial(skin, TextureLoader.TYPE_SKIN);
+        int nbDivisions;
+        switch( Configuration.Video.baboLevelOfDetail ) {
+        	case Configuration.MIN:
+        		nbDivisions = 8;
+        		break;
+        	case Configuration.MED:
+        		nbDivisions = 10;
+        		break;
+        	case Configuration.MAX:
+        		nbDivisions = 16;
+        		break;
+        	default:
+        		nbDivisions = 10;
+        }
+        
         Model model =  new ModelBuilder().createSphere(
-        	d, d, d, 16, 16,
+        	d, d, d, nbDivisions, nbDivisions,
         	material,
         	Usage.Position | Usage.Normal | Usage.TextureCoordinates);
         

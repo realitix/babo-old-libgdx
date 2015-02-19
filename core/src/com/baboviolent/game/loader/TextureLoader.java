@@ -9,6 +9,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
@@ -24,6 +25,8 @@ public class TextureLoader {
     public static final String TYPE_GROUND = "ground/";
     public static final String TYPE_WALL = "wall/";
     public static final String TYPE_SKIN = "skin/";
+    
+    private static TextureAtlas atlasMap;
     
     /**
      * Renvoie un tableau contenant le nom de toutes les textures en flnctione du type
@@ -45,6 +48,26 @@ public class TextureLoader {
         
         return textures;
     }
+    
+    static public TextureAtlas getTextureAtlasMap() {
+    	if( atlasMap == null ) {
+    		atlasMap = new TextureAtlas("data/texture/ground/atlas/ground.atlas");
+    	}
+    	return atlasMap;
+    }
+    
+    /*static public ObjectMap<String, Material> getMaterialsMap() {
+        ObjectMap<String, Texture> textures = getTextures(toLoad, type);
+        ObjectMap<String, Material> materials = new ObjectMap<String, Material>();
+        
+        for (ObjectMap.Entry<String, Texture> e : textures.entries()) {
+	        TextureAttribute textureAttribute = new TextureAttribute(TextureAttribute.Diffuse, e.value);
+	        Material material = getMaterialFromTextureAttribute(textureAttribute);
+	        materials.put(e.key, material);
+        }
+        
+	    return materials;
+	}*/
     
     /**
      * Renvoie un tableau contenant le nom des textures dans une map en fonction du type

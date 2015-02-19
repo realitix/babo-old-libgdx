@@ -3,12 +3,14 @@ package com.baboviolent.game.map;
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.baboviolent.game.bullet.instance.map.BulletMapInstance;
+import com.baboviolent.game.bullet.instance.map.BulletMapInstance2;
 import com.baboviolent.game.loader.TextureLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
@@ -91,7 +93,7 @@ public class Map {
 		btCompoundShape shape = new btCompoundShape();
 		
 		// On ajoute le sol
-		// Le deuxieme argument est la hauteur par rapport à l'axe
+		// Le deuxieme argument est la hauteur par rapport a l'axe
 		// Dans notre cas, le sol est a y = 0
 		shape.addChildShape(new Matrix4(), new btStaticPlaneShape(new Vector3(0, 1, 0), 0));
 
@@ -118,7 +120,7 @@ public class Map {
 	        instance.setRadius(BaboViolentGame.SIZE_MAP_CELL);
         }
         else {
-        	instance = new BulletMapInstance(model, constructionInfo);
+        	instance = new BulletMapInstance2(model, constructionInfo);
         	instance.userData = "map";
         }
         return instance;

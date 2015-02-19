@@ -19,6 +19,7 @@ import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.utils.DefaultTextureBinder;
 import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.physics.bullet.Bullet;
 
 public class GameScreen implements Screen {
@@ -33,9 +34,13 @@ public class GameScreen implements Screen {
 	private BulletContactListener bulletContactListener;
 	private FPSLogger fps;
 	private RenderContext renderContext;
-	private ConfigurationAdapter configAdapter;
 	
 	public GameScreen(final BaboViolentGame g, int type) {
+		if( BaboViolentGame.DEBUG ) {
+			//GLProfiler.enable();
+			fps = new FPSLogger();
+		}
+		
 		Bullet.init();
 		game = g;
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -65,9 +70,6 @@ public class GameScreen implements Screen {
 		bulletContactListener = new BulletContactListener();
 		
 		decalBatch = new DecalBatch(new CameraGroupStrategy(mode.getCamera()));
-		
-		fps = new FPSLogger();
-		configAdapter = new ConfigurationAdapter();
 	}
 	
 	@Override
@@ -75,7 +77,6 @@ public class GameScreen implements Screen {
 		Gdx.gl20.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		mode.update();
 		//configAdapter.update();
-		fps.log();
 		
 		Gdx.gl.glClearColor(255, 255, 255, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
@@ -87,6 +88,12 @@ public class GameScreen implements Screen {
 		// La mise a jour du controleur doit etre apres le rendu
 		// car affichage des touchpad
 		mode.getController().update();
+		
+		if( BaboViolentGame.DEBUG ) {
+			fps.log();
+			//System.out.println("GL calls: "+GLProfiler.calls+ ", draw call: "+GLProfiler.drawCalls+", shader switch: "+GLProfiler.shaderSwitches+", texture binding: "+GLProfiler.textureBindings+", vertex: "+GLProfiler.vertexCount.total);
+			//GLProfiler.reset();
+		}
 	}
 
 	@Override

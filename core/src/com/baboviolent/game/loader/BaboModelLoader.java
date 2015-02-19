@@ -62,7 +62,7 @@ public class BaboModelLoader {
     }
     
     /**
-     * Charge les modèles passés en paramètre
+     * Charge les modeles passes en parametre
      */ 
     static public ObjectMap<String, Model> getModels(Array<String> toLoad) {
         ObjectMap<String, Model> models = new ObjectMap<String, Model>();

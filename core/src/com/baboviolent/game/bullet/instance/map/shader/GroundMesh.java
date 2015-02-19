@@ -12,10 +12,13 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Attribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Node;
+import com.badlogic.gdx.graphics.g3d.model.NodePart;
 import com.badlogic.gdx.graphics.glutils.IndexData;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.VertexData;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 
 public class GroundMesh extends Mesh {
 	private float[] verts;
@@ -31,20 +34,75 @@ public class GroundMesh extends Mesh {
 	public final static int PRIMITIVE_SIZE = 3 * TOTAL_COMPONENTS;
 	
 	private float s = BaboViolentGame.SIZE_MAP_CELL/2f;
-	private int texture0;
 	
 	private TextureAtlas atlas;
+	private ObjectMap<Node, NodeLinker> links;
 	
 	
-	public GroundMesh(int maxVertices) {
-		super(false, maxVertices, 0,
+	public GroundMesh(int maxNodes) {
+		//int maxVertices = maxNodes * 2 * 3;
+		super(false, maxNodes * 2 * 3, 0,
 				new VertexAttribute(Usage.Position, POSITION_COMPONENTS, ShaderProgram.POSITION_ATTRIBUTE),
 				new VertexAttribute(Usage.TextureCoordinates, TEXTURE_COMPONENTS, ShaderProgram.TEXCOORD_ATTRIBUTE),
 				new VertexAttribute(Usage.Generic, RANGE_COMPONENTS, MapShader.RANGE_ATTRIBUTE));
 		
+		int maxVertices = maxNodes * 2 * 3;
 		verts = new float[maxVertices * TOTAL_COMPONENTS];
 		id = 0;
 		atlas = new TextureAtlas("data/texture/ground/atlas/ground.atlas");
+		links = new ObjectMap<Node, NodeLinker>( maxNodes );
+	}
+	
+	// On enregistre seulement les noeuds differents
+	public void generateLinks(Array<Node> nodes) {
+		float s = BaboViolentGame.SIZE_MAP_CELL;
+		
+		for( Node n1 : nodes ) {
+			Node left = null, topLeft = null, 
+				 top = null, topRight = null,
+				 right = null, bottomRight = null,
+				 bottom = null, bottomLeft = null;
+			Vector3 t1 = n1.translation;
+			
+			for( Node n2 : nodes ) {
+				// On autorise seulement un sol visible et different
+				NodePart nodePart = n2.parts.get(0);
+				if( !nodePart.enabled || 
+					nodePart.meshPart.numVertices != 6 ||
+					n2.id.equals(n1.id)
+					)
+					continue;
+				
+				Vector3 t2 = n2.translation;
+				
+				if( t2.y == t1.y && t2.x == t1.x + s ) // Left
+					left = n2;
+				if( t2.y == t1.y + s && t2.x == t1.x + s ) // TopLeft
+					topLeft = n2;
+				if( t2.y == t1.y + s && t2.x == t1.x ) // Top
+					top = n2;
+				if( t2.y == t1.y + s && t2.x == t1.x - s ) // TopRight
+					topRight = n2;
+				if( t2.y == t1.y && t2.x == t1.x - s ) // Right
+					right = n2;
+				if( t2.y == t1.y - s && t2.x == t1.x - s ) // BottomRight
+					bottomRight = n2;
+				if( t2.y == t1.y - s && t2.x == t1.x ) // Bottom
+					bottom = n2;
+				if( t2.y == t1.y - s && t2.x == t1.x + s ) // BottomLeft
+					bottomLeft = n2;
+			}
+			
+			links.put(n1, new NodeLinker()
+					.setLeft(left)
+					.setTopLeft(topLeft)
+					.setTop(top)
+					.setTopRight(topRight)
+					.setRight(right)
+					.setBottomRight(bottomRight)
+					.setBottom(bottom)
+					.setBottomLeft(bottomLeft));
+		}
 	}
 	
 	public void batchNodes(Array<Node> nodes) {
