@@ -37,7 +37,7 @@ public class GameScreen implements Screen {
 	
 	public GameScreen(final BaboViolentGame g, int type) {
 		if( BaboViolentGame.DEBUG ) {
-			//GLProfiler.enable();
+			GLProfiler.enable();
 			fps = new FPSLogger();
 		}
 		
@@ -91,8 +91,8 @@ public class GameScreen implements Screen {
 		
 		if( BaboViolentGame.DEBUG ) {
 			fps.log();
-			//System.out.println("GL calls: "+GLProfiler.calls+ ", draw call: "+GLProfiler.drawCalls+", shader switch: "+GLProfiler.shaderSwitches+", texture binding: "+GLProfiler.textureBindings+", vertex: "+GLProfiler.vertexCount.total);
-			//GLProfiler.reset();
+			System.out.println("GL calls: "+GLProfiler.calls+ ", draw call: "+GLProfiler.drawCalls+", shader switch: "+GLProfiler.shaderSwitches+", texture binding: "+GLProfiler.textureBindings+", vertex: "+GLProfiler.vertexCount.total);
+			GLProfiler.reset();
 		}
 	}
 

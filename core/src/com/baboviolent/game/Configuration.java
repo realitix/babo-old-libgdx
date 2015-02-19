@@ -32,6 +32,6 @@ public class Configuration {
 	
 	public static class Video {
 		public static int baboLevelOfDetail = Configuration.MED;
-		public static boolean enableShadow = true;
+		public static boolean enableShadow = false;
 	}
 }
