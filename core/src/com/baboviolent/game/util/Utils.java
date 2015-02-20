@@ -1,4 +1,4 @@
-package com.baboviolent.game;
+package com.baboviolent.game.util;
 
 import java.util.Random;
 

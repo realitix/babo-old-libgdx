@@ -1,9 +1,9 @@
 package com.baboviolent.game.gameobject;
 
-import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletCollector;
 import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.baboviolent.game.loader.BaboModelLoader;
+import com.baboviolent.game.util.Utils;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;

@@ -2,12 +2,13 @@ package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Configuration.ConfigurationAdapter;
-import com.baboviolent.game.Utils;
 import com.baboviolent.game.batch.BaboModelBatch;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.mode.BaseMode;
 import com.baboviolent.game.mode.DeathMatchMode;
 import com.baboviolent.game.mode.DeathMatchMultiplayerMode;
+import com.baboviolent.game.util.BaboTextureBinder;
+import com.baboviolent.game.util.Utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
@@ -45,7 +46,7 @@ public class GameScreen implements Screen {
 		game = g;
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
-		renderContext = new RenderContext(new DefaultTextureBinder(DefaultTextureBinder.ROUNDROBIN, 1));
+		renderContext = new RenderContext(new BaboTextureBinder());
 		modelBatch = new BaboModelBatch(renderContext);
 		shadowBatch = new BaboModelBatch(renderContext, new DepthShaderProvider());
 		

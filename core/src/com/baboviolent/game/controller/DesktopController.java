@@ -1,7 +1,7 @@
 package com.baboviolent.game.controller;
 
-import com.baboviolent.game.Utils;
 import com.baboviolent.game.mode.BaseMode;
+import com.baboviolent.game.util.Utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;

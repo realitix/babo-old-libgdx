@@ -2,7 +2,6 @@ package com.baboviolent.game.mode;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Configuration;
-import com.baboviolent.game.Utils;
 import com.baboviolent.game.ai.AiBabo;
 import com.baboviolent.game.ai.pfa.tiled.flat.BaboPathGenerator;
 import com.baboviolent.game.batch.BaboModelBatch;
@@ -16,6 +15,7 @@ import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.weapon.Shotgun;
 import com.baboviolent.game.hud.Hud;
 import com.baboviolent.game.map.Map;
+import com.baboviolent.game.util.Utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;

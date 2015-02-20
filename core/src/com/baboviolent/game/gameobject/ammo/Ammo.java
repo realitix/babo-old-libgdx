@@ -1,10 +1,10 @@
 package com.baboviolent.game.gameobject.ammo;
 
-import com.baboviolent.game.Utils;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.baboviolent.game.gameobject.GameObject;
 import com.baboviolent.game.gameobject.weapon.Weapon;
+import com.baboviolent.game.util.Utils;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.utils.TimeUtils;
 
