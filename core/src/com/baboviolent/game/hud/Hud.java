@@ -1,5 +1,6 @@
 package com.baboviolent.game.hud;
 
+import com.baboviolent.game.gdx.batch.BaboSpriteBatch;
 import com.baboviolent.game.hud.widget.CartridgeWidget;
 import com.baboviolent.game.hud.widget.GrenadeWidget;
 import com.baboviolent.game.hud.widget.LifeWidget;
@@ -20,10 +21,10 @@ public class Hud {
 	private MolotovWidget molotovWidget;
 	private ReloadWidget reloadWidget;
 	
-	public Hud() {
+	public Hud(BaboSpriteBatch spriteBatch) {
 		int width = 1920;
  		int height = 1080;
- 		stage = new Stage(new FillViewport(width, height));
+ 		stage = new Stage(new FillViewport(width, height), spriteBatch);
  		
  		Skin skin = new Skin(Gdx.files.internal("data/skin/game/skin.json"));
  		

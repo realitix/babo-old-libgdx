@@ -3,6 +3,8 @@ package com.baboviolent.game.effect.decal;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.camera.BaboCamera;
+import com.baboviolent.game.gdx.decal.BaboDecal;
+import com.baboviolent.game.gdx.decal.BaboDecalBatch;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,8 +14,8 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class Cursor {
-	private Decal cursor;
-	private Decal cursorHit;
+	private BaboDecal cursor;
+	private BaboDecal cursorHit;
 	private Vector3 tmpV3 = new Vector3();
 	private final BaboCamera camera;
 	private long lastHit;
@@ -28,10 +30,10 @@ public class Cursor {
 		this.camera = camera;
 		
 		float size = 1f;
-		cursor = Decal.newDecal(size, size, new TextureRegion(
+		cursor = BaboDecal.newDecal(size, size, new TextureRegion(
         		new Texture(Gdx.files.internal(BaboViolentGame.PATH_TEXTURE_OTHERS+"Cross01.png"))),
         		true);
-		cursorHit = Decal.newDecal(size, size, new TextureRegion(
+		cursorHit = BaboDecal.newDecal(size, size, new TextureRegion(
         		new Texture(Gdx.files.internal(BaboViolentGame.PATH_TEXTURE_OTHERS+"CrossHit.png"))),
         		true);
 		
@@ -69,7 +71,7 @@ public class Cursor {
     	}
 	}
 	
-	public void render(DecalBatch decalBatch) {
+	public void render(BaboDecalBatch decalBatch) {
 		decalBatch.add(cursor);
 		
 		if( hit ) {

@@ -2,12 +2,14 @@ package com.baboviolent.game.screen;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Configuration.ConfigurationAdapter;
-import com.baboviolent.game.batch.BaboModelBatch;
 import com.baboviolent.game.bullet.BulletContactListener;
+import com.baboviolent.game.gdx.batch.BaboModelBatch;
+import com.baboviolent.game.gdx.decal.BaboCameraGroupStrategy;
+import com.baboviolent.game.gdx.decal.BaboDecalBatch;
+import com.baboviolent.game.gdx.texture.BaboTextureBinder;
 import com.baboviolent.game.mode.BaseMode;
 import com.baboviolent.game.mode.DeathMatchMode;
 import com.baboviolent.game.mode.DeathMatchMultiplayerMode;
-import com.baboviolent.game.util.BaboTextureBinder;
 import com.baboviolent.game.util.Utils;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -28,13 +30,9 @@ public class GameScreen implements Screen {
 	public final static int TYPE_MULTIPLAYER = 2;
 	
 	final private BaboViolentGame game;
-	private BaboModelBatch modelBatch;
-	private DecalBatch decalBatch;
-	private BaboModelBatch shadowBatch;
 	private BaseMode mode;
 	private BulletContactListener bulletContactListener;
 	private FPSLogger fps;
-	private RenderContext renderContext;
 	
 	public GameScreen(final BaboViolentGame g, int type) {
 		if( BaboViolentGame.DEBUG ) {
@@ -46,18 +44,6 @@ public class GameScreen implements Screen {
 		game = g;
 		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		
-		renderContext = new RenderContext(new BaboTextureBinder());
-		modelBatch = new BaboModelBatch(renderContext);
-		shadowBatch = new BaboModelBatch(renderContext, new DepthShaderProvider());
-		
-		/*modelBatch = new ModelBatch();
-		shadowBatch = new ModelBatch(new DepthShaderProvider());*/
-		
-		// Gestion des preferences
-		Preferences prefs = Gdx.app.getPreferences("com.baboviolent.game");
-        prefs.putString("username", Utils.getRandomUsername());
-        prefs.flush();
-        
 		// Initialisation du mode
         if( type == TYPE_SOLO ) {
         	mode = new DeathMatchMode("test");
@@ -66,11 +52,14 @@ public class GameScreen implements Screen {
         	mode = new DeathMatchMultiplayerMode("test");
         }
         mode.init();
+       
+        // Gestion des preferences
+		Preferences prefs = Gdx.app.getPreferences("com.baboviolent.game");
+        prefs.putString("username", Utils.getRandomUsername());
+        prefs.flush();
 		
 		// On cree le contact listener de bullet
 		bulletContactListener = new BulletContactListener();
-		
-		decalBatch = new DecalBatch(new CameraGroupStrategy(mode.getCamera()));
 	}
 	
 	@Override
@@ -83,7 +72,7 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
 		//renderContext.begin();
-		mode.render(renderContext, modelBatch, shadowBatch, decalBatch);
+		mode.render();
 		//renderContext.end();
 		
 		// La mise a jour du controleur doit etre apres le rendu
@@ -130,7 +119,5 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		bulletContactListener.dispose();
-		modelBatch.dispose();
-		modelBatch = null;
 	}
 }

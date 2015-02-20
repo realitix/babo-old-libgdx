@@ -1,8 +1,11 @@
-package com.baboviolent.game.util;
+package com.baboviolent.game.gdx.texture;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLTexture;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g3d.utils.TextureBinder;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.utils.GdxRuntimeException;
@@ -18,7 +21,7 @@ public class BaboTextureBinder implements  TextureBinder {
 	public final static int MAX_GLES_UNITS = 32;
 	
 	private final static ObjectMap<GLTexture, Integer> caches = new ObjectMap<GLTexture, Integer>(MAX_GLES_UNITS);
-	private final TextureDescriptor<GLTexture> tempDesc = new TextureDescriptor();
+	private final static TextureDescriptor<GLTexture> tempDesc = new TextureDescriptor();
 	private static int count = OFFSET;
 	
 	@Override
@@ -30,25 +33,31 @@ public class BaboTextureBinder implements  TextureBinder {
 	public void end() {
 		// Static donc vide
 	}
-
-	@Override
-	public final int bind(final TextureDescriptor textureDescriptor) {
+	
+	// STATIC
+	
+	public final static int bindStatic(final TextureDescriptor textureDescriptor) {
 		final GLTexture texture = textureDescriptor.texture;
-		
 		if( !caches.containsKey(texture) ) {
 			
 			if( count >= MAX_GLES_UNITS ) {
 				throw new GdxRuntimeException("Can't bind more than "+MAX_GLES_UNITS+" textures");
 			}
 			
-			int textureNumber = GL20.GL_TEXTURE0 + count;
-			Gdx.gl.glActiveTexture(textureNumber);
-			texture.bind(textureNumber);
-			caches.put(texture, textureNumber);
+			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + count);
+			texture.bind(count);
+			texture.unsafeSetWrap(textureDescriptor.uWrap, textureDescriptor.vWrap);
+			texture.unsafeSetFilter(textureDescriptor.minFilter, textureDescriptor.magFilter);
+			caches.put(texture, count);
 			count++;
 		}
-		
 		return caches.get(texture);
+	}
+	
+	// NON STATIC
+	@Override
+	public final int bind(final TextureDescriptor textureDescriptor) {
+		return bindStatic(textureDescriptor);
 	}
 	
 	@Override
@@ -57,6 +66,15 @@ public class BaboTextureBinder implements  TextureBinder {
 		return bind(tempDesc);
 	}
 
+	public final int bind(
+			Texture texture,
+			TextureFilter minFilter,
+			TextureFilter magFilter,
+			TextureWrap uWrap,
+			TextureWrap vWrap) {
+		tempDesc.set(texture, minFilter, magFilter, uWrap, vWrap);
+		return bind(tempDesc);
+	}
 
 	@Override
 	public int getBindCount() {

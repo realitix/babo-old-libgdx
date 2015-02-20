@@ -1,6 +1,8 @@
 package com.baboviolent.game.effect.decal;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.gdx.decal.BaboDecal;
+import com.baboviolent.game.gdx.decal.BaboDecalBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -13,17 +15,17 @@ public class Blood {
 	
 	private TextureAtlas bloodAtlas;
 	private int bloodIndex;
-	private Decal[] bloods;
+	private BaboDecal[] bloods;
 	
 	public Blood() {
-		bloods = new Decal[MAX_BLOOD];
+		bloods = new BaboDecal[MAX_BLOOD];
 		bloodIndex = 0;
 		String p = BaboViolentGame.PATH_PARTICLES;
 		bloodAtlas = new TextureAtlas(p+"blood/atlas/blood.atlas");
 	}
 	
-	public void render(DecalBatch decalBatch) {
-		for( Decal blood : bloods ) {
+	public void render(BaboDecalBatch decalBatch) {
+		for( BaboDecal blood : bloods ) {
 			if( blood != null ) {
 				decalBatch.add(blood);
 			}
@@ -49,7 +51,7 @@ public class Blood {
 			pos.set(position).add(distanceX,0,distanceZ);
 			pos.y = 0.1f;
 			
-			Decal blood = Decal.newDecal(size, size, bloodAtlas.getRegions().random(), true);
+			BaboDecal blood = BaboDecal.newDecal(size, size, bloodAtlas.getRegions().random(), true);
 			blood.setPosition(pos);
 			blood.setRotation(Vector3.Y, Vector3.Y);
 			blood.setColor(MathUtils.random(0.25f, 0.5f), 0, 0, MathUtils.random(0.5f,1));

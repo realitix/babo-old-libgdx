@@ -1,10 +1,10 @@
 package com.baboviolent.game.bullet;
 
-import com.baboviolent.game.batch.BaboModelBatch;
 import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.GameObject;
 import com.baboviolent.game.gameobject.weapon.Weapon;
+import com.baboviolent.game.gdx.batch.BaboModelBatch;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
