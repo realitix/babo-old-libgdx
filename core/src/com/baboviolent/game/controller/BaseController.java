@@ -16,6 +16,9 @@ public class BaseController {
     public void update() {
     }
     
+    public void render() {
+    }
+    
 	public Vector3 getTarget(Camera camera) {
 		return target;
 	}

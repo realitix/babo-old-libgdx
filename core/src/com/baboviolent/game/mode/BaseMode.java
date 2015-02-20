@@ -4,7 +4,6 @@ import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Configuration;
 import com.baboviolent.game.ai.AiBabo;
 import com.baboviolent.game.ai.pfa.tiled.flat.BaboPathGenerator;
-import com.baboviolent.game.batch.BaboModelBatch;
 import com.baboviolent.game.bullet.BulletContactListener;
 import com.baboviolent.game.bullet.BulletWorld;
 import com.baboviolent.game.bullet.instance.BulletInstance;
@@ -13,6 +12,11 @@ import com.baboviolent.game.controller.BaboController;
 import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.gameobject.Babo;
 import com.baboviolent.game.gameobject.weapon.Shotgun;
+import com.baboviolent.game.gdx.batch.BaboModelBatch;
+import com.baboviolent.game.gdx.batch.BaboSpriteBatch;
+import com.baboviolent.game.gdx.decal.BaboCameraGroupStrategy;
+import com.baboviolent.game.gdx.decal.BaboDecalBatch;
+import com.baboviolent.game.gdx.texture.BaboTextureBinder;
 import com.baboviolent.game.hud.Hud;
 import com.baboviolent.game.map.Map;
 import com.baboviolent.game.util.Utils;
@@ -23,6 +27,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
+import com.badlogic.gdx.graphics.g3d.utils.DepthShaderProvider;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -40,6 +45,12 @@ public class BaseMode {
 	protected int nbIa;
 	protected Vector3 tmpV = new Vector3();
 	protected Environment environment;
+	
+	protected BaboModelBatch modelBatch;
+	protected BaboDecalBatch decalBatch;
+	protected BaboModelBatch shadowBatch;
+	protected BaboSpriteBatch spriteBatch;
+	protected RenderContext renderContext;
     
     public BaseMode(final String mapName) {
         map = Map.load(mapName);
@@ -50,12 +61,15 @@ public class BaseMode {
     }
     
     public void init() {
+    	// Initialisation de la camera
+    	camera = new BaboCamera(map);
+    	
+    	// Initialisation des batches
+    	initBatches();
+    	
     	// Initialisation de l'environement
     	environment = new Environment();
     	environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1));
-		
-    	// Initialisation de la camera
-    	camera = new BaboCamera(map);
     			
         // Initialisation du monde
 		world = new BulletWorld();
@@ -71,13 +85,21 @@ public class BaseMode {
 		controller = new BaboController(this, camera);
 		
 		// Initialisation du Hud
-        hud = new Hud();
+        hud = new Hud(spriteBatch);
 		
 		// Initialisation du joueur
 		initPlayer();
         
         // Initialisation de l'intelligence artificielle
         initIa();
+    }
+    
+    private void initBatches() {
+    	renderContext = new RenderContext(new BaboTextureBinder());
+		modelBatch = new BaboModelBatch(renderContext);
+		shadowBatch = new BaboModelBatch(renderContext, new DepthShaderProvider());
+		decalBatch = new BaboDecalBatch(new BaboCameraGroupStrategy(camera), renderContext);
+		spriteBatch = new BaboSpriteBatch(renderContext);
     }
     
     protected void initPlayer() {
@@ -141,6 +163,10 @@ public class BaseMode {
         return camera;
     }
     
+    public BaboSpriteBatch getSpriteBatch() {
+    	return spriteBatch;
+    }
+    
     public void onStartShoot() {
     	player.shoot();
     }
@@ -160,8 +186,7 @@ public class BaseMode {
      * ensuite les decals (sang, marques au sol...)
      * Puis enfin les particules
      */
-    public void render(RenderContext renderContext, BaboModelBatch modelBatch, BaboModelBatch shadowBatch, DecalBatch decalBatch) {
-    	
+    public void render() {
     	renderContext.begin();
     	if( Configuration.Video.enableShadow ) {
 	    	DirectionalShadowLight shadowLight = effectSystem.getLightSystem().getShadowLight();
@@ -172,23 +197,21 @@ public class BaseMode {
 			shadowLight.end();
     	}
     	
-		
     	modelBatch.begin(camera);
     	world.render(modelBatch, environment);
     	modelBatch.end();   
-    	renderContext.end();
     	
     	effectSystem.renderDecals(decalBatch);
     	
-    	renderContext.begin();
     	modelBatch.begin(camera);
     	effectSystem.render(modelBatch, environment);
     	modelBatch.end();
-		renderContext.end();
     	
     	effectSystem.renderCursor(decalBatch);
+    	renderContext.end();
     	
     	hud.render();
+    	controller.render();
     }
     
     public void update() {
@@ -201,6 +224,7 @@ public class BaseMode {
 		effectSystem.update();
 		hud.update();
 		updateBabos();
+		controller.update();
     }
     
     protected Vector3 getTarget() {

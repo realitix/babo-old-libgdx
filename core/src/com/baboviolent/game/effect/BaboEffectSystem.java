@@ -9,6 +9,7 @@ import com.baboviolent.game.effect.group.Shoot1;
 import com.baboviolent.game.effect.light.BaboLightSystem;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
 import com.baboviolent.game.effect.sound.BaboSoundSystem;
+import com.baboviolent.game.gdx.decal.BaboDecalBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -50,11 +51,11 @@ public class BaboEffectSystem {
 		particleSystem.render(modelBatch, environment);
 	}
 	
-	public void renderDecals(DecalBatch decalBatch) {
+	public void renderDecals(BaboDecalBatch decalBatch) {
 		decalSystem.render(decalBatch);
 	}
 	
-	public void renderCursor(DecalBatch decalBatch) {
+	public void renderCursor(BaboDecalBatch decalBatch) {
 		decalSystem.renderCursor(decalBatch);
 	}
 	

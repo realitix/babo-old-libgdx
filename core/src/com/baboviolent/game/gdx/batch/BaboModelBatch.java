@@ -1,4 +1,4 @@
-package com.baboviolent.game.batch;
+package com.baboviolent.game.gdx.batch;
 
 import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.badlogic.gdx.files.FileHandle;

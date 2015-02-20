@@ -1,6 +1,7 @@
 package com.baboviolent.game.effect.decal;
 
 import com.baboviolent.game.camera.BaboCamera;
+import com.baboviolent.game.gdx.decal.BaboDecalBatch;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
 import com.badlogic.gdx.math.Vector3;
 
@@ -23,11 +24,11 @@ public class BaboDecalSystem {
 		cursor.update();
 	}
 	
-	public void render(DecalBatch decalBatch) {
+	public void render(BaboDecalBatch decalBatch) {
 		blood.render(decalBatch);
 	}
 	
-	public void renderCursor(DecalBatch decalBatch) {
+	public void renderCursor(BaboDecalBatch decalBatch) {
 		cursor.render(decalBatch);
 	}
 	

@@ -16,8 +16,11 @@ uniform vec4 u_texture1UV;
 uniform sampler2D u_diffuseTexture;
 uniform sampler2D u_alphaMap;
 uniform vec2 u_tillSize;
+uniform sampler2D u_shadowTexture;
+uniform float u_shadowPCFOffset;
 
 varying vec2 v_diffuseUV;
+varying vec3 v_shadowMapUv;
 
 vec3 baboMix(vec4 texture1, float a1, vec4 texture2, float a2) {
     float depth = 0.2;
@@ -41,6 +44,19 @@ vec2 getBaboTexture1(in vec2 textureUV) {
 	return textureUV;
 }
 
+float getShadowness(vec2 offset) {
+    const vec4 bitShifts = vec4(1.0, 1.0 / 255.0, 1.0 / 65025.0, 1.0 / 160581375.0);
+    return step(v_shadowMapUv.z, dot(texture2D(u_shadowTexture, v_shadowMapUv.xy + offset), bitShifts));
+}
+
+float getShadow() {
+	return (
+			getShadowness(vec2(u_shadowPCFOffset, u_shadowPCFOffset)) +
+			getShadowness(vec2(-u_shadowPCFOffset, u_shadowPCFOffset)) +
+			getShadowness(vec2(u_shadowPCFOffset, -u_shadowPCFOffset)) +
+			getShadowness(vec2(-u_shadowPCFOffset, -u_shadowPCFOffset))) * 0.25;
+}
+
 
 void main( void )
 {
@@ -57,7 +73,7 @@ void main( void )
 	vec4 color0 = texture2D(u_diffuseTexture, texture0UV);
 	vec4 color1 = texture2D(u_diffuseTexture, texture1UV);
 	
-	vec4 result = vec4(baboMix(color0, intensity, color1, 1.0 - intensity), 1.0);
+	vec4 result = getShadow() * vec4(baboMix(color0, intensity, color1, 1.0 - intensity), 1.0);
 	
 	gl_FragColor = result;
 }

@@ -31,6 +31,10 @@ public class BaboController {
 		controller.update();
 	}
 	
+	public void render() {
+		controller.render();
+	}
+	
 	public Vector3 getTarget() {
 		return controller.getTarget(camera);
 	}

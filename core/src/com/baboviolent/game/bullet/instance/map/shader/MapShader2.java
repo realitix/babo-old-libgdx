@@ -102,11 +102,6 @@ public class MapShader2 implements Shader {
 			program.setUniformf(u_shadowPCFOffset, 1.f / (float)(2f * e.shadowMap.getDepthMap().texture.getWidth()));
 		}
 		
-		
-		/*set(u_shadowMapProjViewTrans, lights.shadowMap.getProjViewTrans());
-		set(u_shadowTexture, lights.shadowMap.getDepthMap());
-		set(u_shadowPCFOffset, 1.f / (float)(2f * lights.shadowMap.getDepthMap().texture.getWidth()));*/
-		
 		renderable.mesh.render(program,
 		renderable.primitiveType,
 		renderable.meshPartOffset,

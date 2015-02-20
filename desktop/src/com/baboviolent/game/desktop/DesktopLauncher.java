@@ -17,6 +17,7 @@ public class DesktopLauncher {
 		config.title = "BaboViolent";
 		config.width = 800;
 		config.height = 600;
+		config.useGL30 = false;
 		/*config.width = 1920;
 		config.height = 1080;
 		config.fullscreen = true;*/

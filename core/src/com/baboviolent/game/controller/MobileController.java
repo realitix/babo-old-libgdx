@@ -32,7 +32,7 @@ public class MobileController extends BaseController {
 		currentPosition = new Vector3();
 		v2 = new Vector2();
 		ScreenViewport v = new ScreenViewport();
-		stage = new Stage(v);
+		stage = new Stage(v, mode.getSpriteBatch());
 		int width = v.getScreenWidth();
 		int height = v.getScreenHeight();
 		Skin skin = new Skin(Gdx.files.internal("data/skin/game/joysticks/joysticks.json"));
@@ -50,10 +50,8 @@ public class MobileController extends BaseController {
 	
 	@Override
 	public void update() {
-		stage.act(Gdx.graphics.getDeltaTime());        
-        stage.draw();
-        
-        // LEFT
+		stage.act(Gdx.graphics.getDeltaTime()); 
+		// LEFT
         if( left.isTouched() && (left.getKnobPercentX() != 0 || left.getKnobPercentY() != 0)) {
         	v2.set(left.getKnobPercentX(), left.getKnobPercentY());
         	v2.setAngle(roundAngle(v2.angle()));
@@ -78,6 +76,11 @@ public class MobileController extends BaseController {
         }
         
         lastPosition.set(mode.getPlayer().getPosition());
+	}
+	
+	@Override
+	public void render() {      
+        stage.draw();
 	}
 	
 	/**
