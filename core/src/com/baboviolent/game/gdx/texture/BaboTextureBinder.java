@@ -38,7 +38,6 @@ public class BaboTextureBinder implements  TextureBinder {
 	
 	public final static int bindStatic(final TextureDescriptor textureDescriptor) {
 		final GLTexture texture = textureDescriptor.texture;
-		
 		if( !caches.containsKey(texture) ) {
 			if( count >= MAX_GLES_UNITS ) {
 				throw new GdxRuntimeException("Can't bind more than "+MAX_GLES_UNITS+" textures");
