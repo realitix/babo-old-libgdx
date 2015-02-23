@@ -15,12 +15,13 @@ uniform vec4 u_texture0UV;
 uniform vec4 u_texture1UV;
 uniform sampler2D u_diffuseTexture;
 uniform sampler2D u_alphaMap;
-uniform vec2 u_tillSize;
 uniform sampler2D u_shadowTexture;
+uniform vec2 u_tillSize;
 uniform float u_shadowPCFOffset;
 
 varying vec2 v_diffuseUV;
 varying vec3 v_shadowMapUv;
+varying vec2 v_alphaMapUV;
 
 vec3 baboMix(vec4 texture1, float a1, vec4 texture2, float a2) {
     float depth = 0.2;
@@ -60,20 +61,26 @@ float getShadow() {
 
 void main( void )
 {
+	if( v_alphaMapUV.x > 1.0 || v_alphaMapUV.y > 1.0 || v_alphaMapUV.x < 0.0 || v_alphaMapUV.y < 0.0 ) {
+		gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+		return;
+	}
+	
 	// We till the texture
-	vec2 finalTextureUV = fract(v_diffuseUV.xy / u_tillSize);
+	vec2 finalTextureUV = fract(v_alphaMapUV.xy / u_tillSize);
 	
 	vec2 texture0UV = getBaboTexture0(finalTextureUV);
 	vec2 texture1UV = getBaboTexture1(finalTextureUV);
 	
 	// Intensity
-	vec4 pn = texture2D(u_alphaMap, v_diffuseUV);
+	vec4 pn = texture2D(u_alphaMap, v_alphaMapUV);
 	float intensity = (pn.r + pn.g + pn.b) / 3.0;
 	
 	vec4 color0 = texture2D(u_diffuseTexture, texture0UV);
 	vec4 color1 = texture2D(u_diffuseTexture, texture1UV);
 	
-	vec4 result = getShadow() * vec4(baboMix(color0, intensity, color1, 1.0 - intensity), 1.0);
+	vec4 result = vec4(baboMix(color0, intensity, color1, 1.0 - intensity), 1.0);
 	
-	gl_FragColor = result;
+	gl_FragColor.rgb = getShadow() * result.rgb;
+	//gl_FragColor = result;
 }

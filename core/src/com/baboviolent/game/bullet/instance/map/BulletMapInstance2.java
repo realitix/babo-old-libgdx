@@ -128,7 +128,9 @@ public class BulletMapInstance2 extends BulletInstance implements Disposable {
         renderable.primitiveType = GL20.GL_TRIANGLES;
         renderable.material = groundMaterial;
         renderable.environment = null;
-        renderable.worldTransform.idt();
+        renderable.worldTransform.setToTranslation(
+        		camera.position.x - GroundMesh2.WIDTH / 2, 0,
+        		camera.position.z - GroundMesh2.HEIGHT / 2);
         renderable.shader = mapShader;
         renderable.userData = this.userData;
         

@@ -36,7 +36,7 @@ public class BaboTextureBinder implements  TextureBinder {
 	
 	// STATIC
 	
-	public final static int bindStatic(final TextureDescriptor textureDescriptor) {
+	public final static int bindStatic(final TextureDescriptor textureDescriptor, boolean force) {
 		final GLTexture texture = textureDescriptor.texture;
 		if( !caches.containsKey(texture) ) {
 			if( count >= MAX_GLES_UNITS ) {
@@ -50,13 +50,23 @@ public class BaboTextureBinder implements  TextureBinder {
 			caches.put(texture, count);
 			count++;
 		}
+		else if( force ) {
+			int n = caches.get(texture);
+			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + n);
+			texture.bind(n);
+		}
+		
 		return caches.get(texture);
 	}
 	
 	// NON STATIC
 	@Override
 	public final int bind(final TextureDescriptor textureDescriptor) {
-		return bindStatic(textureDescriptor);
+		return bindStatic(textureDescriptor, false);
+	}
+	
+	public final int bind(final TextureDescriptor textureDescriptor, boolean force) {
+		return bindStatic(textureDescriptor, force);
 	}
 	
 	@Override

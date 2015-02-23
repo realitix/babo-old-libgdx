@@ -1,6 +1,7 @@
 package com.baboviolent.game.bullet.instance.map.shader;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.gdx.texture.BaboTextureBinder;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class MapShader2 implements Shader {
@@ -24,12 +26,15 @@ public class MapShader2 implements Shader {
 	private int u_worldTrans;
 	private int u_diffuseTexture;
 	private int u_alphaMap;
+	private int u_mapSize;
 	private int u_tillSize;
 	private int u_texture0UV;
 	private int u_texture1UV;
 	private int u_shadowMapProjViewTrans;
 	private int u_shadowTexture;
 	private int u_shadowPCFOffset;
+	private int u_center;
+	private int u_screenSize;
 	private TextureAtlas atlas;
 	private TextureDescriptor<Texture> perlinNoise;
 	
@@ -52,11 +57,15 @@ public class MapShader2 implements Shader {
         u_diffuseTexture = program.getUniformLocation("u_diffuseTexture");
         u_alphaMap = program.getUniformLocation("u_alphaMap");
         u_tillSize = program.getUniformLocation("u_tillSize");
+        u_mapSize = program.getUniformLocation("u_mapSize");
         u_texture0UV = program.getUniformLocation("u_texture0UV");
         u_texture1UV = program.getUniformLocation("u_texture1UV");
         u_shadowMapProjViewTrans = program.getUniformLocation("u_shadowMapProjViewTrans");
         u_shadowTexture = program.getUniformLocation("u_shadowTexture");
         u_shadowPCFOffset = program.getUniformLocation("u_shadowPCFOffset");
+        
+        u_center = program.getUniformLocation("u_center");
+        u_screenSize = program.getUniformLocation("u_screenSize");
 	}	
 
 	@Override
@@ -67,6 +76,14 @@ public class MapShader2 implements Shader {
 		program.begin();
 		program.setUniformMatrix(u_projTrans, camera.combined);
 		program.setUniformf(u_tillSize, 0.02f, 0.02f);
+		program.setUniformf(u_mapSize, GroundMesh2.MAP_SIZE.x, GroundMesh2.MAP_SIZE.y);
+		program.setUniformf(u_center, camera.position.x, camera.position.z);
+		
+		Vector3 sToW1 = camera.unproject(new Vector3(0,0,0));
+		Vector3 sToW2 = camera.unproject(new Vector3(Gdx.graphics.getWidth(),0,Gdx.graphics.getHeight()));
+		
+		program.setUniformf(u_screenSize, Math.abs(sToW1.x - sToW2.x)/2f, Math.abs(sToW1.z - sToW2.z)/2f);
+		
 		String s1 = "city_1";
 		String s2 = "city_2";
 		program.setUniformf(u_texture0UV,
@@ -97,8 +114,9 @@ public class MapShader2 implements Shader {
 		
 		Environment e = renderable.environment;
 		if( e.shadowMap != null ) {
+			BaboTextureBinder tb = (BaboTextureBinder) context.textureBinder;
 			program.setUniformMatrix(u_shadowMapProjViewTrans, e.shadowMap.getProjViewTrans());
-			program.setUniformi(u_shadowTexture, context.textureBinder.bind(e.shadowMap.getDepthMap()));
+			program.setUniformi(u_shadowTexture, tb.bind(e.shadowMap.getDepthMap(), true));
 			program.setUniformf(u_shadowPCFOffset, 1.f / (float)(2f * e.shadowMap.getDepthMap().texture.getWidth()));
 		}
 		
