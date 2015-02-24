@@ -24,10 +24,8 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class GroundMesh2 extends Mesh {
 	public final static int POSITION_COMPONENTS = 3; // x y z
 	public final static int TEXTURE_COMPONENTS = 2; // u v
-	public final static int SIDE_COMPONENTS = 1; // u_side
 	public final static int TOTAL_COMPONENTS = POSITION_COMPONENTS + 
-											   TEXTURE_COMPONENTS +
-											   SIDE_COMPONENTS;
+											   TEXTURE_COMPONENTS;
 	public final static int PRIMITIVE_SIZE = 3 * TOTAL_COMPONENTS;
 	
 	public static int HEIGHT = 20;
@@ -37,16 +35,15 @@ public class GroundMesh2 extends Mesh {
 	public GroundMesh2() {
 		super(false, 6, 0,
 				new VertexAttribute(Usage.Position, POSITION_COMPONENTS, ShaderProgram.POSITION_ATTRIBUTE),
-				new VertexAttribute(Usage.TextureCoordinates, TEXTURE_COMPONENTS, ShaderProgram.TEXCOORD_ATTRIBUTE),
-				new VertexAttribute(Usage.Generic, SIDE_COMPONENTS, "u_side"));
+				new VertexAttribute(Usage.TextureCoordinates, TEXTURE_COMPONENTS, ShaderProgram.TEXCOORD_ATTRIBUTE));
 		
 		this.setVertices(new float[] {
-				0, 0, 0, 1, 0, 4, // Bas droite
-				WIDTH, 0, HEIGHT, 0, 1, 2, // Haut gauche
-				WIDTH, 0, 0, 0, 0, 1, // Bas gauche
-                0, 0, 0, 1, 0, 4, // Bas droite
-                0, 0, HEIGHT, 1, 1, 3, // Haut droite
-                WIDTH, 0, HEIGHT, 0, 1, 2 // Haut gauche
+				0, 0, 0, 1, 0, // Bas droite
+				WIDTH, 0, HEIGHT, 0, 1, // Haut gauche
+				WIDTH, 0, 0, 0, 0, // Bas gauche
+                0, 0, 0, 1, 0, // Bas droite
+                0, 0, HEIGHT, 1, 1, // Haut droite
+                WIDTH, 0, HEIGHT, 0, 1 // Haut gauche
                 });
 	}
 }
