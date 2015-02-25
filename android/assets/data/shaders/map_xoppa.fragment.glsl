@@ -2,6 +2,17 @@
 precision highp float;
 #endif
 
+struct PointLight {
+	vec3 color;
+	vec3 position;
+	float intensity;
+};
+
+struct DirectionalLight {
+	vec3 color;
+	vec3 direction;
+};
+
 /**
  * Textures UV contains UV for each colum of the matrix
  * Lines are in order U1, U2, V1, V2
@@ -13,6 +24,9 @@ precision highp float;
  * Illumination inspiration https://github.com/mattdesl/lwjgl-basics/wiki/ShaderLesson6
 */
 
+const int numPointLights = 10;
+const int numDirectionalLights = 1;
+
 uniform mat4 u_textureUvs;
 uniform sampler2D u_diffuseAtlas;
 uniform sampler2D u_normalAtlas;
@@ -21,13 +35,20 @@ uniform sampler2D u_alphaMap;
 uniform sampler2D u_shadowTexture;
 uniform vec2 u_tillSize;
 uniform float u_shadowPCFOffset;
-//uniform vec3 u_lightDirection;
+uniform PointLight u_pointLights[numPointLights];
+uniform DirectionalLight u_dirLights[numDirectionalLights];
 
 varying vec2 v_diffuseUV;
 varying vec3 v_shadowMapUv;
 varying vec2 v_alphaMapUV;
-varying vec3 v_lightVec; 
-varying vec3 v_halfVec;
+varying vec3 v_normal;
+varying vec3 v_binormal;
+varying vec3 v_tangent;
+varying vec3 v_lightDiffuse;
+varying vec3 v_viewVec;
+varying vec3 v_pos;
+
+const float u_shininess = 20.0;
 
 
 vec3 baboMix(vec4 texture1, float a1, vec4 texture2, float a2) {
@@ -90,72 +111,49 @@ void main( void )
 	
 	// Init final parameters
 	vec3 normal;
-	vec4 diffuseMaterial;
-	vec4 specularMaterial;
-	vec4 ambientMaterial = vec4(0);
+	vec4 diffuse;
+	vec4 specular;
+	vec3 lightSpecular = vec3(0.0);
+	vec3 lightDiffuse = v_lightDiffuse;
 	
 	// We get alpha map
 	vec4 alphaColor = texture2D(u_alphaMap, v_alphaMapUV);
 	float alphaIntensity = (alphaColor.r + alphaColor.g + alphaColor.b) / 3.0;
 	
 	// Full texture
+	alphaIntensity = 0.0;
 	if( alphaIntensity == 0.0 ) {
 		normal = vec3(normalColor0);
-		diffuseMaterial = vec4(diffuseColor0);
-		specularMaterial = vec4(specularColor0);
-	}
-	else if( alphaIntensity == 1.0 ) {
-		normal = vec3(normalColor1);
-		diffuseMaterial = vec4(diffuseColor1);
-		specularMaterial = vec4(specularColor1);
-	}
-	// Fade texture
-	else {
-		// Good texture splatting algorythme
-		// normalColor0.a containe height map
-		float a1 = alphaIntensity;
-		float a2 = 1 - a1;
-		float depth = 0.2;
-	    float ma = max(normalColor0.a + a1, normalColor1.a + a2) - depth;
-	
-	    float b1 = max(normalColor0.a + a1 - ma, 0.0);
-	    float b2 = max(normalColor1.a + a2 - ma, 0.0);
-	    
-	    if( b1 > b2 ) {
-	    	normal = vec3(normalColor0);
-	    	specularMaterial = vec4(specularColor0);
-	    }
-	    else {
-	    	normal = vec3(normalColor1);
-	    	specularMaterial = vec4(specularColor1);
-	    }
-		diffuseMaterial = vec4((diffuseColor0.rgb * b1 + diffuseColor1.rgb * b2) / (b1 + b2), 1.0);
+		normal = normalize((v_tangent * normal.x) + (v_binormal * normal.y) + (v_normal * normal.z));
+		
+		diffuse = vec4(diffuseColor0);
+		specular = vec4(specularColor0);
 	}
 	
-	// Parameters
-	float distanceLight = dot(v_lightVec, v_lightVec);
-	float radius = 0.01;
-	float diffuseIntensity = 1.5;
-	float specularIntensity = 1.5;
-	float attenuation = clamp(1.0 - radius * sqrt(distanceLight), 0.0, 1.0);
-	vec3 lightDirection = v_lightVec * (inversesqrt(distanceLight) * diffuseIntensity);
-
-	// Ambient
-	vec4 ambientLight = vec4(0.5, 0.5, 0.5, 0.5);
-	vec4 ambient = ambientMaterial * ambientLight;
+	// Directional Lights
+	for (int i = 0; i < numDirectionalLights; i++) {
+		vec3 lightDir = -u_dirLights[i].direction;
+		// Diffuse
+		float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
+		lightDiffuse.rgb += u_dirLights[i].color * NdotL;
+		// Specular
+		float halfDotView = dot(normal, normalize(lightDir + v_viewVec));
+		lightSpecular += u_dirLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess), 0.0, 1.0);
+	}
 	
-	// Diffuse
-	vec4 diffuseLight = vec4(1.0, 1.0, 1.0, 1.0);
-	float lamberFactor = max(dot(normal, lightDirection), 0.0);
-	vec4 diffuse = diffuseMaterial * diffuseLight * lamberFactor;
+	// Point Lights
+	for (int i = 0; i < numPointLights; i++) {
+		vec3 lightDir = u_pointLights[i].position - v_pos;
+		float dist2 = dot(lightDir, lightDir);
+		lightDir *= inversesqrt(dist2);
+		float NdotL = clamp(dot(normal, lightDir), 0.0, 2.0);
+		float falloff = clamp(u_pointLights[i].intensity / (1.0 + dist2), 0.0, 2.0); // FIXME mul intensity on cpu
+		lightDiffuse += u_pointLights[i].color * (NdotL * falloff);
+		float halfDotView = clamp(dot(normal, normalize(lightDir + v_viewVec)), 0.0, 2.0);
+		lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);
+	}
 	
-	// Specular
-	vec4 specularLight = vec4(1.0, 0.0, 0.0, 1.0);
-	float shininess = pow(max(dot(v_halfVec, normal), 0.0), 2.0);
-	vec4 specular = specularMaterial * specularLight * shininess * specularIntensity;
-	
-	// Final color
-	vec4 finalColor = ambient + (diffuse + specular) * getShadow(); // * shadow
-	
-	gl_FragColor = finalColor;
+	diffuse.rgb *= lightDiffuse;
+	specular.rgb *= lightSpecular;
+	gl_FragColor = vec4((diffuse.rgb + specular.rgb)*getShadow(), 1.0);
 }

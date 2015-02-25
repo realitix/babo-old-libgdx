@@ -2,8 +2,8 @@ package com.baboviolent.game.map;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.instance.BulletInstance;
+import com.baboviolent.game.bullet.instance.map.BulletMapInstanceBackup;
 import com.baboviolent.game.bullet.instance.map.BulletMapInstance;
-import com.baboviolent.game.bullet.instance.map.BulletMapInstance2;
 import com.baboviolent.game.loader.TextureLoader;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -120,7 +120,7 @@ public class Map {
 	        instance.setRadius(BaboViolentGame.SIZE_MAP_CELL);
         }
         else {
-        	instance = new BulletMapInstance2(model, constructionInfo);
+        	instance = new BulletMapInstance(model, constructionInfo);
         	instance.userData = "map";
         }
         return instance;

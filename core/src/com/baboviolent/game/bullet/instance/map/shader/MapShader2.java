@@ -28,6 +28,7 @@ public class MapShader2 implements Shader {
 	private int u_diffuseAtlas;
 	private int u_normalAtlas;
 	private int u_specularityAtlas;
+	private int u_ambientAtlas;
 	private int u_alphaMap;
 	private int u_mapSize;
 	private int u_tillSize;
@@ -36,6 +37,7 @@ public class MapShader2 implements Shader {
 	private int u_shadowTexture;
 	private int u_shadowPCFOffset;
 	private int u_lightDirection;
+	private int u_cameraPosition;
 	
 	private TextureAtlas diffuseAtlas;
 	// On a pas besoin de l'tals pour les autres car ce sont les meme uv que diffuse
@@ -56,8 +58,8 @@ public class MapShader2 implements Shader {
 	}
 	
 	public void updateUvs() {
-		String s1 = "grass";
-		String s2 = "pavement";
+		String s1 = "pavement";
+		String s2 = "grass";
 				
 		// Texture 1
 		textureUvs.val[Matrix4.M00] = diffuseAtlas.findRegion(s1).getU2();
@@ -75,8 +77,8 @@ public class MapShader2 implements Shader {
 	@Override
 	public void init() {
 		String p = BaboViolentGame.PATH_SHADERS;
-        String vert = Gdx.files.internal(p+"/map2.vertex.glsl").readString();
-        String frag = Gdx.files.internal(p+"/map2.fragment.glsl").readString();
+        String vert = Gdx.files.internal(p+"/map_xoppa.vertex.glsl").readString();
+        String frag = Gdx.files.internal(p+"/map_xoppa.fragment.glsl").readString();
         program = new ShaderProgram(vert, frag);
         if (!program.isCompiled())
             throw new GdxRuntimeException(program.getLog());
@@ -86,6 +88,7 @@ public class MapShader2 implements Shader {
         u_diffuseAtlas = program.getUniformLocation("u_diffuseAtlas");
         u_normalAtlas = program.getUniformLocation("u_normalAtlas");
         u_specularityAtlas = program.getUniformLocation("u_specularityAtlas");
+        u_ambientAtlas = program.getUniformLocation("u_ambientAtlas");
         u_alphaMap = program.getUniformLocation("u_alphaMap");
         u_tillSize = program.getUniformLocation("u_tillSize");
         u_lightDirection = program.getUniformLocation("u_lightDirection");
@@ -94,6 +97,7 @@ public class MapShader2 implements Shader {
         u_shadowMapProjViewTrans = program.getUniformLocation("u_shadowMapProjViewTrans");
         u_shadowTexture = program.getUniformLocation("u_shadowTexture");
         u_shadowPCFOffset = program.getUniformLocation("u_shadowPCFOffset");
+        u_cameraPosition = program.getUniformLocation("u_cameraPosition");
 	}	
 
 	@Override
@@ -104,8 +108,9 @@ public class MapShader2 implements Shader {
 		program.begin();
 		program.setUniformMatrix(u_projTrans, camera.combined);
 		program.setUniformf(u_tillSize, 0.025f, 0.025f);
-		program.setUniformf(u_mapSize, GroundMesh2.MAP_SIZE.x, GroundMesh2.MAP_SIZE.y);
+		program.setUniformf(u_mapSize, GroundMesh.MAP_SIZE.x, GroundMesh.MAP_SIZE.y);
 		program.setUniformMatrix(u_textureUvs, textureUvs);
+		program.setUniformf(u_cameraPosition, camera.position);
 	}
 
 	@Override
@@ -121,6 +126,7 @@ public class MapShader2 implements Shader {
 		program.setUniformi(u_diffuseAtlas, context.textureBinder.bind(t));
 		program.setUniformi(u_normalAtlas, context.textureBinder.bind(normalAtlas));
 		program.setUniformi(u_specularityAtlas, context.textureBinder.bind(specularityAtlas));
+		program.setUniformi(u_ambientAtlas, context.textureBinder.bind(ambientAtlas));
 		program.setUniformi(u_alphaMap, context.textureBinder.bind(perlinNoise));
 		
 		Environment e = renderable.environment;
