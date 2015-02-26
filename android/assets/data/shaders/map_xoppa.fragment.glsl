@@ -25,7 +25,7 @@ struct DirectionalLight {
 */
 
 const int numPointLights = 10;
-const int numDirectionalLights = 1;
+const int numDirectionalLights = 2;
 
 uniform mat4 u_textureUvs;
 uniform sampler2D u_diffuseAtlas;
@@ -35,8 +35,10 @@ uniform sampler2D u_alphaMap;
 uniform sampler2D u_shadowTexture;
 uniform vec2 u_tillSize;
 uniform float u_shadowPCFOffset;
-uniform PointLight u_pointLights[numPointLights];
 uniform DirectionalLight u_dirLights[numDirectionalLights];
+uniform PointLight u_pointLights[numPointLights];
+uniform int u_numCurrDirectionalLights;
+uniform int u_numCurrPointLights;
 
 varying vec2 v_diffuseUV;
 varying vec3 v_shadowMapUv;
@@ -131,7 +133,7 @@ void main( void )
 	}
 	
 	// Directional Lights
-	for (int i = 0; i < numDirectionalLights; i++) {
+	for (int i = 0; i < u_numCurrDirectionalLights; i++) {
 		vec3 lightDir = -u_dirLights[i].direction;
 		// Diffuse
 		float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
@@ -142,7 +144,7 @@ void main( void )
 	}
 	
 	// Point Lights
-	for (int i = 0; i < numPointLights; i++) {
+	for (int i = 0; i < u_numCurrPointLights; i++) {
 		vec3 lightDir = u_pointLights[i].position - v_pos;
 		float dist2 = dot(lightDir, lightDir);
 		lightDir *= inversesqrt(dist2);

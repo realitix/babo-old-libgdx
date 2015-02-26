@@ -12,14 +12,20 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.environment.PointLight;
 import com.badlogic.gdx.graphics.g3d.utils.RenderContext;
 import com.badlogic.gdx.graphics.g3d.utils.TextureDescriptor;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class MapShader2 implements Shader {
+	public static final int MAX_DIRLIGHTS = 2;
+	public static final int MAX_POINTLIGHTS = 10;
+	
 	private ShaderProgram program;
 	private Camera camera;
 	private RenderContext context;
@@ -38,6 +44,28 @@ public class MapShader2 implements Shader {
 	private int u_shadowPCFOffset;
 	private int u_lightDirection;
 	private int u_cameraPosition;
+	
+	// Lights
+	private int u_dirLights0color;
+	private int u_dirLights0direction;
+	private int u_dirLights1color;
+	private int u_pointLights0color;
+	private int u_pointLights0position;
+	private int u_pointLights0intensity;
+	private int u_pointLights1color;
+	private int u_numCurrPointLights;
+	private int u_numCurrDirectionalLights;
+	
+	private int dirLightsLoc;
+	private int dirLightsColorOffset;
+	private int dirLightsDirectionOffset;
+	private int dirLightsSize;
+	private int pointLightsLoc;
+	private int pointLightsColorOffset;
+	private int pointLightsPositionOffset;
+	private int pointLightsIntensityOffset;
+	private int pointLightsSize;
+	
 	
 	private TextureAtlas diffuseAtlas;
 	// On a pas besoin de l'tals pour les autres car ce sont les meme uv que diffuse
@@ -98,6 +126,30 @@ public class MapShader2 implements Shader {
         u_shadowTexture = program.getUniformLocation("u_shadowTexture");
         u_shadowPCFOffset = program.getUniformLocation("u_shadowPCFOffset");
         u_cameraPosition = program.getUniformLocation("u_cameraPosition");
+        
+        // Lights
+        u_dirLights0color = program.getUniformLocation("u_dirLights[0].color");
+    	u_dirLights0direction = program.getUniformLocation("u_dirLights[0].direction");
+    	u_dirLights1color = program.getUniformLocation("u_dirLights[1].color");
+    	u_pointLights0color = program.getUniformLocation("u_pointLights[0].color");
+    	u_pointLights0position = program.getUniformLocation("u_pointLights[0].position");
+    	u_pointLights0intensity = program.getUniformLocation("u_pointLights[0].intensity");
+    	u_pointLights1color = program.getUniformLocation("u_pointLights[1].color");
+    	u_numCurrDirectionalLights = program.getUniformLocation("u_numCurrDirectionalLights");
+    	u_numCurrPointLights = program.getUniformLocation("u_numCurrPointLights");
+    	
+    	dirLightsLoc = u_dirLights0color;
+		dirLightsColorOffset = u_dirLights0color - dirLightsLoc;
+		dirLightsDirectionOffset = u_dirLights0direction - dirLightsLoc;
+		dirLightsSize = u_dirLights1color - dirLightsLoc;
+		if (dirLightsSize < 0) dirLightsSize = 0;
+
+		pointLightsLoc = u_pointLights0color;
+		pointLightsColorOffset = u_pointLights0color - pointLightsLoc;
+		pointLightsPositionOffset = u_pointLights0position - pointLightsLoc;
+		pointLightsIntensityOffset = u_pointLights0intensity - pointLightsLoc;
+		pointLightsSize = u_pointLights1color - pointLightsLoc;
+		if (pointLightsSize < 0) pointLightsSize = 0;
 	}	
 
 	@Override
@@ -129,20 +181,15 @@ public class MapShader2 implements Shader {
 		program.setUniformi(u_ambientAtlas, context.textureBinder.bind(ambientAtlas));
 		program.setUniformi(u_alphaMap, context.textureBinder.bind(perlinNoise));
 		
-		Environment e = renderable.environment;
-		program.setUniformf(u_lightDirection, e.directionalLights.get(0).direction);
-		if( e.shadowMap != null ) {
-			BaboTextureBinder tb = (BaboTextureBinder) context.textureBinder;
-			program.setUniformMatrix(u_shadowMapProjViewTrans, e.shadowMap.getProjViewTrans());
-			program.setUniformi(u_shadowTexture, tb.bind(e.shadowMap.getDepthMap(), true));
-			program.setUniformf(u_shadowPCFOffset, 1.f / (float)(2f * e.shadowMap.getDepthMap().texture.getWidth()));
-		}
+		bindLights(renderable);
 		
 		renderable.mesh.render(program,
 		renderable.primitiveType,
 		renderable.meshPartOffset,
 		renderable.meshPartSize);
 	}
+	
+	
 
 	@Override
 	public void end() {
@@ -165,5 +212,49 @@ public class MapShader2 implements Shader {
 	@Override
 	public void dispose() {
 		program.dispose();
+	}
+	
+	protected void bindLights (final Renderable renderable) {
+		final Environment e = renderable.environment;
+		final Array<DirectionalLight> dirs = e.directionalLights;
+		final Array<PointLight> points = e.pointLights;
+		int nbDirectionalLights = 0;
+		int nbPointLights = 0;
+		
+		// Directional lights
+		for( int i = 0; i < dirs.size; i++ ) {
+			if( i >= MAX_DIRLIGHTS )
+				continue;
+			
+			DirectionalLight l = dirs.get(i);
+			int idx = dirLightsLoc + i * dirLightsSize;
+			program.setUniformf(idx + dirLightsColorOffset, l.color.r, l.color.g, l.color.b);
+			program.setUniformf(idx + dirLightsDirectionOffset, l.direction);
+			nbDirectionalLights++;
+		}
+		
+		// Point lights
+		for( int i = 0; i < points.size; i++ ) {
+			if( i >= MAX_POINTLIGHTS )
+				continue;
+			
+			PointLight l = points.get(i);
+			int idx = pointLightsLoc + i * pointLightsSize;
+			program.setUniformf(idx + pointLightsColorOffset, l.color.r, l.color.g, l.color.b);
+			program.setUniformf(idx + pointLightsPositionOffset, l.position);
+			program.setUniformf(idx + pointLightsIntensityOffset, l.intensity);
+			nbPointLights++;
+		}
+		
+		program.setUniformi(u_numCurrDirectionalLights, nbDirectionalLights);
+		program.setUniformi(u_numCurrPointLights, nbPointLights);
+		
+		// Shadow
+		if( e.shadowMap != null ) {
+			BaboTextureBinder tb = (BaboTextureBinder) context.textureBinder;
+			program.setUniformMatrix(u_shadowMapProjViewTrans, e.shadowMap.getProjViewTrans());
+			program.setUniformi(u_shadowTexture, tb.bind(e.shadowMap.getDepthMap(), true));
+			program.setUniformf(u_shadowPCFOffset, 1.f / (float)(2f * e.shadowMap.getDepthMap().texture.getWidth()));
+		}
 	}
 }

@@ -202,11 +202,15 @@ public class BaseMode {
     	modelBatch.end();   
     	
     	effectSystem.renderDecals(decalBatch);
+    	renderContext.end();
     	
+    	renderContext.begin();
     	modelBatch.begin(camera);
     	effectSystem.render(modelBatch, environment);
     	modelBatch.end();
+    	renderContext.end();
     	
+    	renderContext.begin();
     	effectSystem.renderCursor(decalBatch);
     	renderContext.end();
     	

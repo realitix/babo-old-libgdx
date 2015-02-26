@@ -25,8 +25,8 @@ public class BaboViolentGame extends Game {
     static public final float SIZE_MAP_CELL = 2;
     static public final float BABO_DIAMETER = 1;
     
-    static public final boolean DEBUG = true;
-    static public final boolean DEBUG_OPENGL = true;
+    static public final boolean DEBUG = false;
+    static public final boolean DEBUG_OPENGL = false;
     
     
     //@TODO a supprimer
