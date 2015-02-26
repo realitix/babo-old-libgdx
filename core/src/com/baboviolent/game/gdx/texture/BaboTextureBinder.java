@@ -17,8 +17,8 @@ import com.badlogic.gdx.utils.ObjectMap;
  */
 public class BaboTextureBinder implements  TextureBinder {
 
-	public final static int OFFSET = 1;
-	public final static int MAX_GLES_UNITS = 32;
+	public final static int OFFSET = 0;
+	public final static int MAX_GLES_UNITS = 16;
 	
 	private final static ObjectMap<GLTexture, Integer> caches = new ObjectMap<GLTexture, Integer>(MAX_GLES_UNITS);
 	private final static TextureDescriptor<GLTexture> tempDesc = new TextureDescriptor();
@@ -43,7 +43,7 @@ public class BaboTextureBinder implements  TextureBinder {
 				throw new GdxRuntimeException("Can't bind more than "+MAX_GLES_UNITS+" textures");
 			}
 			
-			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + count);
+			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + OFFSET + count);
 			texture.bind(count);
 			texture.unsafeSetWrap(textureDescriptor.uWrap, textureDescriptor.vWrap);
 			texture.unsafeSetFilter(textureDescriptor.minFilter, textureDescriptor.magFilter);
@@ -52,7 +52,7 @@ public class BaboTextureBinder implements  TextureBinder {
 		}
 		else if( force ) {
 			int n = caches.get(texture);
-			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + n);
+			Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0 + OFFSET + n);
 			texture.bind(n);
 		}
 		

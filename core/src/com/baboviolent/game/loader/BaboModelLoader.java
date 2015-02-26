@@ -20,8 +20,8 @@ public class BaboModelLoader {
     static public Array<String> listModelFolder() {
     	Array<String> models = new Array<String>();	
     	
-    	for( int i = 0; i < Constant.models.length; i++) {
-    		models.add(Constant.models[i]);
+    	for( int i = 0; i < AssetConstant.models.length; i++) {
+    		models.add(AssetConstant.models[i]);
     	}
     	
     	models.sort();

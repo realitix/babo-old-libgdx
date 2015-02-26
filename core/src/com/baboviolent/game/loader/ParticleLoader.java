@@ -32,9 +32,9 @@ public class ParticleLoader {
     static public Array<String> listParticleFolder() {
     	Array<String> particles = new Array<String>();
     	
-    	for( int i = 0; i < Constant.particles.length; i++) {
-    		particles.add(Constant.particles[i]);
-    	}
+    	/*for( int i = 0; i < AssetConstant.particles.length; i++) {
+    		particles.add(AssetConstant.particles[i]);
+    	}*/
     	particles.sort();
         
         return particles;

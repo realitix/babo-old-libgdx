@@ -97,6 +97,13 @@ public class Blood1Effect extends BaboParticleEffect {
 		for( int i = 0; i < regions.size; i++ ) {
 			regionInfluencer.add(regions.get(i));
 		}
+		// Le blood est indexe
+		/*Array<TextureAtlas.AtlasRegion> regions = atlas.findRegions("blood");
+		RegionInfluencer.Random regionInfluencer = new RegionInfluencer.Random();
+		regionInfluencer.regions = new Array<AspectTextureRegion>( false, regions.size, AspectTextureRegion.class);
+		for( int i = 0; i < regions.size; i++ ) {
+			regionInfluencer.add(regions.get(i));
+		}*/
 		
 		//Dynamics
 		// Il faut faire brownian plus polar

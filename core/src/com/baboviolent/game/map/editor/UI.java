@@ -1,7 +1,7 @@
 package com.baboviolent.game.map.editor;
 
 import com.baboviolent.game.BaboViolentGame;
-import com.baboviolent.game.loader.Constant;
+import com.baboviolent.game.loader.AssetConstant;
 import com.baboviolent.game.loader.TextureLoader;
 import com.baboviolent.game.map.Map;
 import com.baboviolent.game.map.optimizer.MapOptimizer;
@@ -334,7 +334,7 @@ public final class UI {
 	
 	private String[] loadMapName() {
 		Array<String> maps = new Array<String>();
-		maps.addAll(Constant.maps);
+		maps.addAll(AssetConstant.maps);
 	    FileHandle[] files = Gdx.files.external(BaboViolentGame.PATH_MAPS_EXTERNAL).list();
         for(FileHandle file: files) {
         	if( file.extension().equals(BaboViolentGame.EXTENSION_MAP) ) {

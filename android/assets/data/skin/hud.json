@@ -1,0 +1,30 @@
+{
+"com.badlogic.gdx.graphics.g2d.BitmapFont": { "default-font": { "file": "data/fonts/defused_32.fnt" } },
+"com.badlogic.gdx.graphics.Color": {
+	"green": { "a": 1, "b": 0, "g": 1, "r": 0 },
+	"white": { "a": 1, "b": 1, "g": 1, "r": 1 },
+	"red": { "a": 1, "b": 0, "g": 0, "r": 1 },
+	"black": { "a": 1, "b": 0, "g": 0, "r": 0 }
+},
+
+"com.baboviolent.game.hud.widget.LifeWidget$LifeWidgetStyle": {
+	"default": { "pixel": "pixel_white" }
+},
+
+"com.baboviolent.game.hud.widget.ReloadWidget$ReloadWidgetStyle": {
+	"default": { "pixel": "pixel_white" }
+},
+
+"com.baboviolent.game.hud.widget.CartridgeWidget$CartridgeWidgetStyle": {
+	"default": { "font": "default-font", "fontColor": "white", "background": "cartridge" }
+},
+
+"com.baboviolent.game.hud.widget.GrenadeWidget$GrenadeWidgetStyle": {
+	"default": { "font": "default-font", "fontColor": "white", "background": "grenade" }
+},
+
+"com.baboviolent.game.hud.widget.MolotovWidget$MolotovWidgetStyle": {
+	"default": { "font": "default-font", "fontColor": "white", "background": "molotov" }
+}
+
+}

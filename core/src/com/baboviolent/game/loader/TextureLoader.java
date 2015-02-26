@@ -34,13 +34,13 @@ public class TextureLoader {
     static public Array<String> listTextureFolder(String type) {
     	Array<String> textures = new Array<String>();
     	
-    	for( int i = 0; i < Constant.themes.length; i++) {
+    	for( int i = 0; i < AssetConstant.themes.length; i++) {
     		if(type.equals(TYPE_WALL)) {
-        		textures.add(Constant.themes[i]);
+        		textures.add(AssetConstant.themes[i]);
         	}
     		if(type.equals(TYPE_GROUND)) {
-    			textures.add(Constant.themes[i]+"_1");
-    			textures.add(Constant.themes[i]+"_2");
+    			textures.add(AssetConstant.themes[i]+"_1");
+    			textures.add(AssetConstant.themes[i]+"_2");
     		}
     	}
 

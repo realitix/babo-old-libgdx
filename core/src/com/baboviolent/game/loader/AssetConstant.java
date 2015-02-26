@@ -1,6 +1,6 @@
 package com.baboviolent.game.loader;
 
-public class Constant {
+public class AssetConstant {
 	public static String[] themes = {
 		"animal",
 		"grain",
@@ -27,16 +27,19 @@ public class Constant {
 		"street"
 	};
 	
-	public static String[] models = {
+	public static final String[] models = {
 		"Shotgun"
 	};
 	
-	public static String[] particles = {
-		"blood",
-		"blood2",
-		"smoke1",
-		"test_point",
-		"test"
+	public static final String[] atlas = {
+		"mapDiffuse",
+		"mapNormal",
+		"mapSpecularity",
+		"game"
+	};
+	
+	public static String[] skins = {
+		"hud"
 	};
 	
 	public static String[] maps = {

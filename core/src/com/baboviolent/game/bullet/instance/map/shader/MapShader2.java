@@ -178,7 +178,7 @@ public class MapShader2 implements Shader {
 		program.setUniformi(u_diffuseAtlas, context.textureBinder.bind(t));
 		program.setUniformi(u_normalAtlas, context.textureBinder.bind(normalAtlas));
 		program.setUniformi(u_specularityAtlas, context.textureBinder.bind(specularityAtlas));
-		program.setUniformi(u_ambientAtlas, context.textureBinder.bind(ambientAtlas));
+		//program.setUniformi(u_ambientAtlas, context.textureBinder.bind(ambientAtlas));
 		program.setUniformi(u_alphaMap, context.textureBinder.bind(perlinNoise));
 		
 		bindLights(renderable);
@@ -188,8 +188,6 @@ public class MapShader2 implements Shader {
 		renderable.meshPartOffset,
 		renderable.meshPartSize);
 	}
-	
-	
 
 	@Override
 	public void end() {
