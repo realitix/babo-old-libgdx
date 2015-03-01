@@ -1,6 +1,7 @@
 package com.baboviolent.game.effect.particle.effects;
 
 import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleEffect;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -10,16 +11,19 @@ import com.badlogic.gdx.math.collision.BoundingBox;
 public class BaboParticleEffect extends ParticleEffect {
 	protected BaboParticleBatch batch;
 	protected String name;
+	protected final TextureAtlas atlas;
 	
-	public BaboParticleEffect(BaboParticleBatch batch) {
+	public BaboParticleEffect(BaboParticleBatch batch, TextureAtlas atlas) {
 		super();
 		this.batch = batch;
+		this.atlas = atlas;
 	}
 	
 	public BaboParticleEffect(BaboParticleEffect effect) {
 		super(effect);
 		batch = effect.getBatch();
 		name = effect.getName();
+		atlas = effect.getAtlas();
 	}
 
 	public String getName() {
@@ -28,6 +32,10 @@ public class BaboParticleEffect extends ParticleEffect {
 	
 	public BaboParticleBatch getBatch() {
 		return batch;
+	}
+	
+	public TextureAtlas getAtlas() {
+		return atlas;
 	}
 	
 	@Override

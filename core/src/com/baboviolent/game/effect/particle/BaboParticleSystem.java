@@ -12,6 +12,7 @@ import com.baboviolent.game.effect.particle.effects.Collision1Effect;
 import com.baboviolent.game.effect.particle.effects.MuzzleFlash1Effect;
 import com.baboviolent.game.effect.particle.effects.Smoke1Effect;
 import com.baboviolent.game.effect.particle.effects.Smoke2Effect;
+import com.baboviolent.game.loader.BaboAssetManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Texture;
@@ -40,50 +41,31 @@ public class BaboParticleSystem {
 	private void initSystem(Camera camera) {
 		String p = BaboViolentGame.PATH_PARTICLES;
 		
-		// Precharge pour le sang car textureatlas
-		TextureAtlas bloodAtlas = new TextureAtlas(p+"blood/atlas/blood.atlas");
+		// Precharge les textures
+		TextureAtlas atlas = BaboAssetManager.getAtlas("game");
+		Texture t = atlas.getTextures().first();
+		
 		
 		/*
 		 * Initialisation des batches
 		 */
 		batches = new Array<BaboParticleBatch>();
 		
-		BaboParticleBatch batch1 = new BatchSpecific1(
-				camera, 
-				new Texture(Gdx.files.internal(p+"smoke2.png")));
+		BaboParticleBatch batch1 = new BatchSpecific1(camera, t);
+		BaboParticleBatch batch2 = new BatchSpecific2(camera, t);
 		
-		BaboParticleBatch batch2 = new BatchSpecific1(
-				camera, 
-				new Texture(Gdx.files.internal(p+"smoke1.png")));
-		
-		BaboParticleBatch batch3 = new BatchSpecific2(
-				camera, 
-				new Texture(Gdx.files.internal(p+"nuzzleFlash.png")));
-		
-		BaboParticleBatch batch4 = new BatchSpecific2(
-				camera, 
-				new Texture(Gdx.files.internal(p+"shotGlow.png")));
-		
-		BaboParticleBatch batch5 = new BatchSpecific2(
-				camera,
-				new Texture(Gdx.files.internal(p+"glowTrail.png")));
-		
-		BaboParticleBatch batch6 = new BatchSpecific1(
-				camera,
-				bloodAtlas.getTextures().first());
-		
-		batches.addAll(batch1, batch2, batch3, batch4, batch5, batch6);
+		batches.addAll(batch1, batch2);
 		
 		/*
 		 * Initialisation des pools
 		 */
-		pools = new ObjectMap<String, PoolParticle>();
-		pools.put(Smoke1Effect.NAME, new PoolParticle(new Smoke1Effect(batch1), this));
-		pools.put(Smoke2Effect.NAME, new PoolParticle(new Smoke2Effect(batch2), this));
-		pools.put(MuzzleFlash1Effect.NAME, new PoolParticle(new MuzzleFlash1Effect(batch3), this));
-		pools.put(Collision1Effect.NAME, new PoolParticle(new Collision1Effect(batch4), this));
-		pools.put(Bullet1Effect.NAME, new PoolParticle(new Bullet1Effect(batch5), this));
-		pools.put(Blood1Effect.NAME, new PoolParticle(new Blood1Effect(batch6, bloodAtlas), this));
+		pools = new ObjectMap<String, PoolParticle>();		
+		pools.put(Smoke1Effect.NAME, new PoolParticle(new Smoke1Effect(batch1, atlas), this));
+		pools.put(Smoke2Effect.NAME, new PoolParticle(new Smoke2Effect(batch1, atlas), this));
+		pools.put(MuzzleFlash1Effect.NAME, new PoolParticle(new MuzzleFlash1Effect(batch2, atlas), this));
+		pools.put(Collision1Effect.NAME, new PoolParticle(new Collision1Effect(batch2, atlas), this));
+		pools.put(Bullet1Effect.NAME, new PoolParticle(new Bullet1Effect(batch2, atlas), this));
+		pools.put(Blood1Effect.NAME, new PoolParticle(new Blood1Effect(batch1, atlas), this));
 	}
 	
 	public void start(String name, Matrix4 transform) {

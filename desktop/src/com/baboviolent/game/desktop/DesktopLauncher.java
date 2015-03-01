@@ -10,7 +10,7 @@ public class DesktopLauncher {
 		
 		
 		//TexturePacker.process("D:\\Users\\T0143947\\repo\\babo\\design\\textures\\game\\to_pack", "D:\\Users\\T0143947\\repo\\babo\\design\\textures\\game\\to_pack\\atlas", "game");
-		//TexturePacker.process("/home/realitix/git/baboviolent/design/images/joysticks/a_packer", "/home/realitix/git/baboviolent/design/images/joysticks/a_packer/atlas", "joysticks");
+		//TexturePacker.process("/home/realitix/git/baboviolent/design/textures/game/to_pack", "/home/realitix/git/baboviolent/design/textures/game/to_pack/atlas", "game");
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		

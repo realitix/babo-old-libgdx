@@ -95,6 +95,13 @@ cursorHit
   orig: 32, 32
   offset: 0, 0
   index: -1
+glowTrail
+  rotate: false
+  xy: 782, 394
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 grenade
   rotate: false
   xy: 332, 104
@@ -139,7 +146,7 @@ molotov
   index: -1
 muzzleFlash
   rotate: false
-  xy: 782, 394
+  xy: 464, 202
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
@@ -153,7 +160,7 @@ pixel_white
   index: -1
 shotGlow
   rotate: false
-  xy: 464, 202
+  xy: 980, 460
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

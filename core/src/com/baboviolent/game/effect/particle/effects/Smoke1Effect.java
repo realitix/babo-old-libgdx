@@ -5,6 +5,7 @@ import com.baboviolent.game.effect.particle.influencers.PositionInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleHeightInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleWidthInfluencer;
 import com.baboviolent.game.effect.particle.influencers.TextureFaceDirectionInfluencer;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
@@ -25,8 +26,8 @@ public class Smoke1Effect extends BaboParticleEffect {
 	private Matrix4 tmpM = new Matrix4();
 	private Quaternion tmpQ = new Quaternion();
 	
-	public Smoke1Effect(BaboParticleBatch batch) {
-		super(batch);
+	public Smoke1Effect(BaboParticleBatch batch, TextureAtlas atlas) {
+		super(batch, atlas);
 		name = NAME;
 		configure();
 	}
@@ -123,7 +124,7 @@ public class Smoke1Effect extends BaboParticleEffect {
 		colorInfluencer.colorValue.setTimeline(new float[] {0, 1});
 
 		getControllers().add(new ParticleController(name, emitter, new BillboardRenderer(batch),
-			new RegionInfluencer.Single(batch.getTexture()),
+			new RegionInfluencer.Single(atlas.findRegion("smokeTrail")),
 			spawnSource,
 			scaleInfluencer,
 			scaleWidthInfluencer,

@@ -5,6 +5,7 @@ import com.baboviolent.game.effect.particle.influencers.PositionInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleHeightInfluencer;
 import com.baboviolent.game.effect.particle.influencers.ScaleWidthInfluencer;
 import com.baboviolent.game.effect.particle.influencers.TextureFaceDirectionInfluencer;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
@@ -25,8 +26,8 @@ public class Bullet1Effect extends BaboParticleEffect {
 	private float life = 400;
 	private float initWidth = 10;
 	
-	public Bullet1Effect(BaboParticleBatch batch) {
-		super(batch);
+	public Bullet1Effect(BaboParticleBatch batch, TextureAtlas atlas) {
+		super(batch, atlas);
 		name = NAME;
 		configure();
 	}
@@ -124,7 +125,7 @@ public class Bullet1Effect extends BaboParticleEffect {
 		positionInfluencer.thetaValue = 0;
 		
 		getControllers().add(new ParticleController(name, emitter, new BillboardRenderer(batch),
-			new RegionInfluencer.Single(batch.getTexture()),
+			new RegionInfluencer.Single(atlas.findRegion("glowTrail")),
 			spawnSource,
 			scaleInfluencer,
 			scaleWidthInfluencer,

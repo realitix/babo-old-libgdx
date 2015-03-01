@@ -20,19 +20,16 @@ import com.badlogic.gdx.utils.Array;
 public class Blood1Effect extends BaboParticleEffect {
 	public static final String NAME = "blood1";
 	
-	private TextureAtlas atlas;
 	private float damage;
 	
 	public Blood1Effect(BaboParticleBatch batch, TextureAtlas atlas) {
-		super(batch);
+		super(batch, atlas);
 		name = NAME;
-		this.atlas = atlas;
 		configure();
 	}
 	
 	public Blood1Effect(Blood1Effect effect) {
 		super(effect);
-		this.atlas = effect.getAtlas();
 		this.damage = effect.getDamage();
 	}
 	
@@ -91,19 +88,19 @@ public class Blood1Effect extends BaboParticleEffect {
 		colorInfluencer.alphaValue.setScaling(new float[] {1, 0});
 		
 		// Region
-		Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();
-		RegionInfluencer.Random regionInfluencer = new RegionInfluencer.Random();
-		regionInfluencer.regions = new Array<AspectTextureRegion>( false, regions.size, AspectTextureRegion.class);
-		for( int i = 0; i < regions.size; i++ ) {
-			regionInfluencer.add(regions.get(i));
-		}
-		// Le blood est indexe
-		/*Array<TextureAtlas.AtlasRegion> regions = atlas.findRegions("blood");
+		/*Array<TextureAtlas.AtlasRegion> regions = atlas.getRegions();
 		RegionInfluencer.Random regionInfluencer = new RegionInfluencer.Random();
 		regionInfluencer.regions = new Array<AspectTextureRegion>( false, regions.size, AspectTextureRegion.class);
 		for( int i = 0; i < regions.size; i++ ) {
 			regionInfluencer.add(regions.get(i));
 		}*/
+		// Le blood est indexe
+		Array<TextureAtlas.AtlasRegion> regions = atlas.findRegions("blood");
+		RegionInfluencer.Random regionInfluencer = new RegionInfluencer.Random();
+		regionInfluencer.regions = new Array<AspectTextureRegion>( false, regions.size, AspectTextureRegion.class);
+		for( int i = 0; i < regions.size; i++ ) {
+			regionInfluencer.add(regions.get(i));
+		}
 		
 		//Dynamics
 		// Il faut faire brownian plus polar

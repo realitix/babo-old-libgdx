@@ -1,6 +1,7 @@
 package com.baboviolent.game.effect.particle.effects;
 
 import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
@@ -16,8 +17,8 @@ import com.badlogic.gdx.graphics.g3d.particles.values.PointSpawnShapeValue;
 public class Collision1Effect extends BaboParticleEffect {
 	public static final String NAME = "collision1";
 	
-	public Collision1Effect(BaboParticleBatch batch) {
-		super(batch);
+	public Collision1Effect(BaboParticleBatch batch, TextureAtlas atlas) {
+		super(batch, atlas);
 		name = NAME;
 		configure();
 	}
@@ -74,7 +75,7 @@ public class Collision1Effect extends BaboParticleEffect {
 		colorInfluencer.colorValue.setTimeline(new float[] {0});
 		
 		getControllers().add(new ParticleController(name, emitter, new BillboardRenderer(batch),
-			new RegionInfluencer.Single(batch.getTexture()),
+			new RegionInfluencer.Single(atlas.findRegion("shotGlow")),
 			spawnSource,
 			scaleInfluencer,
 			colorInfluencer

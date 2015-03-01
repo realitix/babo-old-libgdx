@@ -46,7 +46,7 @@ public class BaboLightSystem {
 		 */
 		shadowLight = new DirectionalShadowLight(
 				512, 512, 42, 42, 1f, 40f);
-		shadowLight.set(0.8f, 0.8f, 0.8f, new Vector3(-0.5f, -1, -0.5f).nor());
+		shadowLight.set(0.7f, 0.7f, 0.7f, new Vector3(-0.5f, -1, -0.5f).nor());
 		environment.add(shadowLight);
 		environment.shadowMap = shadowLight;
 	}

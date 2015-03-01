@@ -1,6 +1,7 @@
 package com.baboviolent.game.effect.particle.effects;
 
 import com.baboviolent.game.effect.particle.batches.BaboParticleBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.particles.ParticleController;
 import com.badlogic.gdx.graphics.g3d.particles.emitters.RegularEmitter;
 import com.badlogic.gdx.graphics.g3d.particles.influencers.ColorInfluencer;
@@ -27,8 +28,8 @@ public class Smoke2Effect extends BaboParticleEffect {
 	private Matrix4 tmpM = new Matrix4();
 	private Vector3 normalRay;
 	
-	public Smoke2Effect(BaboParticleBatch batch) {
-		super(batch);
+	public Smoke2Effect(BaboParticleBatch batch, TextureAtlas atlas) {
+		super(batch, atlas);
 		name = NAME;
 		configure();
 	}
@@ -158,7 +159,7 @@ public class Smoke2Effect extends BaboParticleEffect {
 		dynamicsInfluencer.velocities.add(modifier3);
 		
 		return new ParticleController("smokeNormal", emitter, new BillboardRenderer(batch),
-				new RegionInfluencer.Single(batch.getTexture()),
+				new RegionInfluencer.Single(atlas.findRegion("smokeRound")),
 				spawnSource,
 				scaleInfluencer,
 				colorInfluencer,
@@ -230,7 +231,7 @@ public class Smoke2Effect extends BaboParticleEffect {
 		dynamicsInfluencer.velocities.add(modifier2);
 		
 		getControllers().add(new ParticleController(name, emitter, new BillboardRenderer(batch),
-			new RegionInfluencer.Single(batch.getTexture()),
+			new RegionInfluencer.Single(atlas.findRegion("smokeRound")),
 			spawnSource,
 			scaleInfluencer,
 			colorInfluencer,
