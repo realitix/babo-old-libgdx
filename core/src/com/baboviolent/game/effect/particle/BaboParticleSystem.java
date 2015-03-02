@@ -45,11 +45,10 @@ public class BaboParticleSystem {
 		TextureAtlas atlas = BaboAssetManager.getAtlas("game");
 		Texture t = atlas.getTextures().first();
 		
-		
 		/*
 		 * Initialisation des batches
 		 */
-		batches = new Array<BaboParticleBatch>();
+		batches = new Array<BaboParticleBatch>(2);
 		
 		BaboParticleBatch batch1 = new BatchSpecific1(camera, t);
 		BaboParticleBatch batch2 = new BatchSpecific2(camera, t);

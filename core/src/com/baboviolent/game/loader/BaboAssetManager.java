@@ -24,8 +24,32 @@ public class BaboAssetManager {
 		return assetManager;
 	}
 	
+	static public void loadAssets() {
+		// Modeles
+		String[] models = {"Shotgun"};
+		for( int i = 0; i < models.length; i++ ) {
+			loadModel(models[i]);
+		}
+		
+		// Atlas
+		String[] atlas = {"game", "mapDiffuse", "mapNormal", "mapSpecularity"};
+		for( int i = 0; i < atlas.length; i++ ) {
+			loadAtlas(atlas[i]);
+		}
+		
+		// Skin
+		String[] skins = {"hud", "joysticks"};
+		for( int i = 0; i < skins.length; i++ ) {
+			loadSkin(skins[i], "game");
+		}
+	}
+	
 	static public boolean update() {
 		return getInstance().update();
+	}
+	
+	static public int getProgress() {
+		return (int) (getInstance().getProgress()*100f);
 	}
 	
 	static public void loadModel(String modelName) {

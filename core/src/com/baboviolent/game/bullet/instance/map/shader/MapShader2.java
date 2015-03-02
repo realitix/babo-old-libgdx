@@ -68,7 +68,7 @@ public class MapShader2 implements Shader {
 	
 	
 	private TextureAtlas diffuseAtlas;
-	// On a pas besoin de l'tals pour les autres car ce sont les meme uv que diffuse
+	// On a pas besoin de l'atlas pour les autres car ce sont les meme uv que diffuse
 	private TextureDescriptor<Texture> normalAtlas;
 	private TextureDescriptor<Texture> ambientAtlas;
 	private TextureDescriptor<Texture> specularityAtlas;
@@ -105,8 +105,8 @@ public class MapShader2 implements Shader {
 	@Override
 	public void init() {
 		String p = BaboViolentGame.PATH_SHADERS;
-        String vert = Gdx.files.internal(p+"/map_xoppa.vertex.glsl").readString();
-        String frag = Gdx.files.internal(p+"/map_xoppa.fragment.glsl").readString();
+        String vert = Gdx.files.internal(p+"/map.vertex.glsl").readString();
+        String frag = Gdx.files.internal(p+"/map.fragment.glsl").readString();
         program = new ShaderProgram(vert, frag);
         if (!program.isCompiled())
             throw new GdxRuntimeException(program.getLog());

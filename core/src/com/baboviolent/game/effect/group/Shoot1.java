@@ -2,6 +2,7 @@ package com.baboviolent.game.effect.group;
 
 import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.effect.light.effects.Light1Effect;
+import com.baboviolent.game.effect.light.effects.Light2Effect;
 import com.baboviolent.game.effect.particle.BaboParticleSystem;
 import com.baboviolent.game.effect.particle.effects.Bullet1Effect;
 import com.baboviolent.game.effect.particle.effects.Collision1Effect;
@@ -24,6 +25,7 @@ public class Shoot1 extends GroupEffect {
 		BaboParticleSystem p = effectSystem.getParticleSystem();
 		p.startWithWidth(Bullet1Effect.NAME, transform, from.dst(to));
 		p.startWithWidth(Smoke1Effect.NAME, transform, from.dst(to));
+		effectSystem.getLightSystem().start(Light2Effect.NAME, transform, from.dst(to));
 		
 		Vector3 dir = to.cpy().sub(from).nor().scl(0.2f);
 		Matrix4 impact = transform.cpy().trn(to.cpy().sub(from).sub(dir));
@@ -33,7 +35,7 @@ public class Shoot1 extends GroupEffect {
 	
 	@Override
 	public void startUnique(Matrix4 transform) {
-		effectSystem.getLightSystem().start(Light1Effect.NAME, transform);
+		//effectSystem.getLightSystem().start(Light1Effect.NAME, transform);
 		effectSystem.getParticleSystem().start(MuzzleFlash1Effect.NAME, transform);
 		effectSystem.getSoundSystem().start(BaboSoundSystem.SHOTGUN);
 	}

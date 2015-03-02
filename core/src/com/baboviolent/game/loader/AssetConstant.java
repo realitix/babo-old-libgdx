@@ -39,7 +39,8 @@ public class AssetConstant {
 	};
 	
 	public static String[] skins = {
-		"hud"
+		"hud",
+		"joysticks"
 	};
 	
 	public static String[] maps = {

@@ -2,6 +2,7 @@ uniform mat4 u_projViewTrans;
 uniform mat4 u_worldTrans;
 uniform mat4 u_shadowMapProjViewTrans;
 uniform vec2 u_mapSize;
+uniform vec3 u_cameraPosition;
 
 attribute vec3 a_position; 
 attribute vec2 a_texCoord;
@@ -9,8 +10,13 @@ attribute vec2 a_texCoord;
 varying vec2 v_diffuseUV;
 varying vec2 v_alphaMapUV;
 varying vec3 v_shadowMapUv;
-varying vec3 v_lightVec; 
-varying vec3 v_halfVec;
+varying vec3 v_viewVec;
+varying vec3 v_pos;
+varying vec3 v_normal;
+varying vec3 v_binormal;
+varying vec3 v_tangent;
+varying vec3 v_lightDiffuse;
+varying vec3 v_lightSpecular;
 
 
 /**
@@ -28,20 +34,10 @@ void main() {
 	v_alphaMapUV.y = pos.z / u_mapSize.y;
 	gl_Position = u_projViewTrans * pos;
 	
-	vec3 n = vec3(0.0, 1.0, 0.0); // Normal
-	vec3 t = vec3(0.0, 0.0, 1.0); // Tangent
-	vec3 b = vec3(1.0, 0.0, 0.0); // Binormal
-	
-	vec3 vertexPosition = vec3(pos);
-	vec3 lightPosition = vec3(48.0, 48.0, 48.0);
-	vec3 lightDir = normalize(lightPosition - vertexPosition);
-
-	v_lightVec.x = dot(lightDir, t);
-	v_lightVec.y = dot(lightDir, b);
-	v_lightVec.z = dot(lightDir, n);
-
-	vec3 halfVector = normalize(vertexPosition + lightDir);
-	v_halfVec.x = dot (halfVector, t);
-	v_halfVec.y = dot (halfVector, b);
-	v_halfVec.z = dot (halfVector, n);
+	v_pos = pos.xyz;
+	v_normal = vec3(0.0, 1.0, 0.0);
+	v_binormal = vec3(1.0, 0.0, 0.0);
+	v_tangent = vec3(0.0, 0.0, 1.0);
+	v_lightDiffuse = vec3(0.0);
+	v_viewVec = normalize(u_cameraPosition - pos.xyz);
 }

@@ -1,6 +1,7 @@
 package com.baboviolent.game.controller;
 
 import com.baboviolent.game.controller.scene2d.BaboTouchpad;
+import com.baboviolent.game.loader.BaboAssetManager;
 import com.baboviolent.game.mode.BaseMode;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -35,7 +36,7 @@ public class MobileController extends BaseController {
 		stage = new Stage(v, mode.getSpriteBatch());
 		int width = v.getScreenWidth();
 		int height = v.getScreenHeight();
-		Skin skin = new Skin(Gdx.files.internal("data/skin/game/joysticks/joysticks.json"));
+		Skin skin = BaboAssetManager.getSkin("joysticks");
 		
 		int size = width/5;
 		left = new BaboTouchpad(0, skin, "move");

@@ -16,6 +16,7 @@ public class BaboLightEffect {
 	protected Color color;
 	protected float intensity;
 	protected String name;
+	protected Matrix4 transform;
 	
 	public BaboLightEffect() {
 		position = new Vector3();
@@ -60,6 +61,7 @@ public class BaboLightEffect {
 	
 	public void setTransform(Matrix4 transform) {
 		transform.getTranslation(position);
+		this.transform = transform.cpy();
 	}
 	
 	public Vector3 getPosition() {
@@ -86,5 +88,8 @@ public class BaboLightEffect {
 
 	public String getName() {
 		return name;
+	}
+	
+	public void setWidth(float w) {
 	}
 }

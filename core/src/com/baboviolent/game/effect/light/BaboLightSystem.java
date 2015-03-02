@@ -3,6 +3,7 @@ package com.baboviolent.game.effect.light;
 
 import com.baboviolent.game.effect.light.effects.BaboLightEffect;
 import com.baboviolent.game.effect.light.effects.Light1Effect;
+import com.baboviolent.game.effect.light.effects.Light2Effect;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g3d.Environment;
@@ -55,11 +56,17 @@ public class BaboLightSystem {
 		effects = new Array<BaboLightEffect>();
 		pools = new ObjectMap<String, PoolLight>();
 		pools.put(Light1Effect.NAME, new PoolLight(new Light1Effect(), this));
+		pools.put(Light2Effect.NAME, new PoolLight(new Light2Effect(), this));
 	}
 	
 	public void start(String name, Matrix4 transform) {
+		start(name, transform, 0);
+	}
+	
+	public void start(String name, Matrix4 transform, float width) {
 		BaboLightEffect effect = pools.get(name).obtain();
 		effect.setTransform(transform);
+		effect.setWidth(width);
 		
 		// L'effet doit etre initialise avant d'etre valide
 		effect.init();

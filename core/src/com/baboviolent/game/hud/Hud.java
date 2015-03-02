@@ -6,6 +6,7 @@ import com.baboviolent.game.hud.widget.GrenadeWidget;
 import com.baboviolent.game.hud.widget.LifeWidget;
 import com.baboviolent.game.hud.widget.MolotovWidget;
 import com.baboviolent.game.hud.widget.ReloadWidget;
+import com.baboviolent.game.loader.BaboAssetManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
@@ -26,7 +27,7 @@ public class Hud {
  		int height = 1080;
  		stage = new Stage(new FillViewport(width, height), spriteBatch);
  		
- 		Skin skin = new Skin(Gdx.files.internal("data/skin/game/skin.json"));
+ 		Skin skin = BaboAssetManager.getSkin("hud");
  		
  		// Barre de vie
  		lifeWidget = new LifeWidget(skin);

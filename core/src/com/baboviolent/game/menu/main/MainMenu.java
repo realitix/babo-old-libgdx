@@ -8,9 +8,9 @@ import com.baboviolent.game.hud.widget.MolotovWidget;
 import com.baboviolent.game.hud.widget.ReloadWidget;
 import com.baboviolent.game.menu.extra.AnimatedText;
 import com.baboviolent.game.menu.extra.BurningSpriteBatch;
+import com.baboviolent.game.menu.loading.Loading;
 import com.baboviolent.game.menu.main.input.MenuGestureListener;
 import com.baboviolent.game.menu.main.input.MenuInputListener;
-import com.baboviolent.game.menu.main.submenu.Loading;
 import com.baboviolent.game.menu.main.submenu.SubMenu;
 import com.baboviolent.game.menu.main.submenu.solo.Editor;
 import com.baboviolent.game.menu.main.submenu.solo.FastGame;
@@ -48,8 +48,6 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class MainMenu implements Disposable {
 	private Stage stage;
-	private Stage stageLoading;
-	private Loading loading;
 	private ContainerGroup container;
 	private Skin skin;
 	private MenuLabelRoot root;
@@ -68,7 +66,6 @@ public class MainMenu implements Disposable {
 		
  		//stage = new Stage(new FillViewport(width, height), new BurningSpriteBatch());
  		stage = new MenuStage(new FillViewport(width, height), this);
- 		stageLoading = new Stage(new FillViewport(width, height));
  		Gdx.input.setInputProcessor(new InputMultiplexer(
  				stage,
  				new MenuInputListener(this),
@@ -140,12 +137,10 @@ public class MainMenu implements Disposable {
 	
 	public void update() {
 		stage.act(Gdx.graphics.getDeltaTime());
-		stageLoading.act(Gdx.graphics.getDeltaTime());
 	}
 	
 	public void render() {
 		stage.draw();
-		stageLoading.draw();
 	}
 	
 	public void left() {
@@ -168,7 +163,7 @@ public class MainMenu implements Disposable {
 	public void loadingForAction(final SubMenu submenu, final int action) {
 		Action completeAction = new Action(){
 		    public boolean act( float delta ) {
-		    	loadingAndStart(submenu, action);
+		    	submenu.startAction(action);
 		    	return true;
 		    }
 		};
@@ -179,24 +174,6 @@ public class MainMenu implements Disposable {
 						);
 	}
 	
-	private void loadingAndStart(final SubMenu submenu, final int action) {
-		Action completeAction = new Action(){
-		    public boolean act( float delta ) {
-		    	submenu.startAction(action);
-		    	return true;
-		    }
-		};
-		// On affiche le chargement
-		loading = new Loading();
-		loading.getColor().a = 0;
-		stageLoading.addActor(loading);
-		loading.addAction(Actions.sequence(
-				Actions.fadeIn(
-						MainMenu.animationTime/2, Interpolation.pow2),
-						completeAction)
-				);
-	}
-	
 	public MainMenuScreen getMenuScreen() {
 		return menuScreen;
 	}
@@ -204,9 +181,7 @@ public class MainMenu implements Disposable {
 	@Override
 	public void dispose() {
 		stage.dispose();
-		stageLoading.dispose();
 		skin.dispose();
 		root.dispose();
-		loading.dispose();
 	}
 }

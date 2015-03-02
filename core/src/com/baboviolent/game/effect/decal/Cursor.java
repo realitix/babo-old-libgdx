@@ -5,8 +5,10 @@ import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.camera.BaboCamera;
 import com.baboviolent.game.gdx.decal.BaboDecal;
 import com.baboviolent.game.gdx.decal.BaboDecalBatch;
+import com.baboviolent.game.loader.BaboAssetManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.decals.Decal;
 import com.badlogic.gdx.graphics.g3d.decals.DecalBatch;
@@ -30,12 +32,9 @@ public class Cursor {
 		this.camera = camera;
 		
 		float size = 1f;
-		cursor = BaboDecal.newDecal(size, size, new TextureRegion(
-        		new Texture(Gdx.files.internal(BaboViolentGame.PATH_TEXTURE_OTHERS+"Cross01.png"))),
-        		true);
-		cursorHit = BaboDecal.newDecal(size, size, new TextureRegion(
-        		new Texture(Gdx.files.internal(BaboViolentGame.PATH_TEXTURE_OTHERS+"CrossHit.png"))),
-        		true);
+		TextureAtlas atlas = BaboAssetManager.getAtlas("game");
+		cursor = BaboDecal.newDecal(size, size, atlas.findRegion("cursor"), true);
+		cursorHit = BaboDecal.newDecal(size, size, atlas.findRegion("cursorHit"), true);
 		
         cursor.setRotation(Vector3.Y, Vector3.Y);
         cursorHit.setRotation(Vector3.Y, Vector3.Y);
