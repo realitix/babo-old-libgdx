@@ -1,6 +1,8 @@
 package com.baboviolent.game.bullet.instance.map.shader;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
@@ -18,6 +20,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.VertexData;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 
@@ -28,8 +31,8 @@ public class GroundMesh extends Mesh {
 											   TEXTURE_COMPONENTS;
 	public final static int PRIMITIVE_SIZE = 3 * TOTAL_COMPONENTS;
 	
-	public static int HEIGHT = 20;
-	public static int WIDTH = 20;
+	public static int HEIGHT;
+	public static int WIDTH;
 	public static Vector2 MAP_SIZE = new Vector2(96, 96);
 	
 	public GroundMesh() {
@@ -45,5 +48,28 @@ public class GroundMesh extends Mesh {
                 0, 0, HEIGHT, 1, 1, // Haut droite
                 WIDTH, 0, HEIGHT, 0, 1 // Haut gauche
                 });
+	}
+	
+	public void updateVertices(Camera camera) {
+		Vector2 bl = getXZWorld(camera, 0, 0);
+		Vector2 tr = getXZWorld(camera, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		WIDTH = (int) Math.ceil(Math.abs(bl.x - tr.x));
+		HEIGHT = (int) Math.ceil(Math.abs(bl.y - tr.y));
+		this.setVertices(new float[] {
+				0, 0, 0, 1, 0, // Bas droite
+				WIDTH, 0, HEIGHT, 0, 1, // Haut gauche
+				WIDTH, 0, 0, 0, 0, // Bas gauche
+                0, 0, 0, 1, 0, // Bas droite
+                0, 0, HEIGHT, 1, 1, // Haut droite
+                WIDTH, 0, HEIGHT, 0, 1 // Haut gauche
+                });
+	}
+	
+	private Vector2 getXZWorld(Camera camera, int screenX, int screenY) {
+		Vector3 position = new Vector3();
+		Ray ray = camera.getPickRay(screenX, screenY);
+        final float distance = -ray.origin.y / ray.direction.y;
+        position.set(ray.direction).scl(distance).add(ray.origin);
+        return new Vector2(position.x, position.z);
 	}
 }

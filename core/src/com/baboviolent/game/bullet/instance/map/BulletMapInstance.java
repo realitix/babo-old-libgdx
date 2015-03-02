@@ -44,6 +44,8 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 	private MapShader2 mapShader;
 	private Material groundMaterial;
 	
+	private float yCamera;
+	
 	public BulletMapInstance (Model model, btRigidBody.btRigidBodyConstructionInfo constructionInfo) {
 		super(model, constructionInfo);
 	}
@@ -121,6 +123,11 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 	}
 	
 	private void getGroundRenderable(Array<Renderable> renderables, Pool<Renderable> pool) {
+		if( yCamera != camera.position.y ) {
+			yCamera = camera.position.y;
+			groundMesh.updateVertices(camera);
+		}
+		
 		Renderable renderable = pool.obtain();
         renderable.mesh = groundMesh;
         renderable.meshPartOffset = 0;
