@@ -4,11 +4,10 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import com.baboviolent.game.BaboViolentGame;
+import com.baboviolent.game.Configuration;
 import com.baboviolent.game.bullet.instance.BulletInstance;
-import com.baboviolent.game.bullet.instance.map.shader.GroundMeshBackup;
 import com.baboviolent.game.bullet.instance.map.shader.GroundMesh;
 import com.baboviolent.game.bullet.instance.map.shader.MapShader;
-import com.baboviolent.game.bullet.instance.map.shader.MapShader2;
 import com.baboviolent.game.bullet.instance.map.zone.Zone;
 import com.baboviolent.game.bullet.instance.map.zone.ZoneTreeConstructor;
 import com.badlogic.gdx.graphics.Camera;
@@ -21,6 +20,7 @@ import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
+import com.badlogic.gdx.graphics.g3d.Shader;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.model.Node;
 import com.badlogic.gdx.graphics.g3d.model.NodePart;
@@ -41,7 +41,9 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 	private Array<Node> filteredNodes;
 	private Array<Node> visibleNodes;
 	private GroundMesh groundMesh;
-	private MapShader2 mapShader;
+	private MapShader mapShaderMax;
+	private MapShader mapShaderMed;
+	private MapShader mapShaderMin;
 	private Material groundMaterial;
 	
 	private float yCamera;
@@ -53,20 +55,20 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 	@Override
 	public void init() {
 		super.init();
-		mapShader = new MapShader2();
-		mapShader.init();
+		
+		mapShaderMin = new MapShader(Configuration.MIN);
+		mapShaderMin.init();
+		mapShaderMed = new MapShader(Configuration.MED);
+		mapShaderMed.init();
+		mapShaderMax = new MapShader(Configuration.MAX);
+		mapShaderMax.init();
+		
 		filteredNodes = new Array<Node>(nodes.size);
 		visibleNodes = new Array<Node>(nodes.size);
 		radius = BaboViolentGame.SIZE_MAP_CELL;
 		rootZone = new ZoneTreeConstructor(nodes).generateRootZone();
 		groundMesh = new GroundMesh();
-		groundMaterial = new Material(new TextureAttribute(
-        		TextureAttribute.Diffuse,
-        		new Texture("data/texture/ground/atlas/ground.png")));
-	}
-	
-	public GroundMeshBackup createGroundMesh() {
-	   return new GroundMeshBackup(nodes.size);
+		groundMaterial = new Material();
 	}
 	
 	
@@ -136,11 +138,19 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
         renderable.material = groundMaterial;
         renderable.environment = null;
         renderable.worldTransform.setToTranslation(
-        		camera.position.x - GroundMesh.WIDTH / 2, 0,
-        		camera.position.z - GroundMesh.HEIGHT / 2);
-        renderable.shader = mapShader;
+        		camera.position.x - (float)GroundMesh.WIDTH / 2f, 0,
+        		camera.position.z - (float)GroundMesh.HEIGHT / 2f);
+        renderable.shader = getShaderFromConfiguration();
         renderable.userData = this.userData;
         
         renderables.add(renderable);
+	}
+	
+	private Shader getShaderFromConfiguration() {
+		if( Configuration.Video.mapShaderQuality == Configuration.MAX )
+			return mapShaderMax;
+		if( Configuration.Video.mapShaderQuality == Configuration.MED )
+			return mapShaderMed;
+		return mapShaderMin;
 	}
 }

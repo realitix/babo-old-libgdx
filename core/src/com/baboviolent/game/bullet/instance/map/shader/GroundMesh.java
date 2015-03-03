@@ -39,15 +39,6 @@ public class GroundMesh extends Mesh {
 		super(false, 6, 0,
 				new VertexAttribute(Usage.Position, POSITION_COMPONENTS, ShaderProgram.POSITION_ATTRIBUTE),
 				new VertexAttribute(Usage.TextureCoordinates, TEXTURE_COMPONENTS, ShaderProgram.TEXCOORD_ATTRIBUTE));
-		
-		this.setVertices(new float[] {
-				0, 0, 0, 1, 0, // Bas droite
-				WIDTH, 0, HEIGHT, 0, 1, // Haut gauche
-				WIDTH, 0, 0, 0, 0, // Bas gauche
-                0, 0, 0, 1, 0, // Bas droite
-                0, 0, HEIGHT, 1, 1, // Haut droite
-                WIDTH, 0, HEIGHT, 0, 1 // Haut gauche
-                });
 	}
 	
 	public void updateVertices(Camera camera) {

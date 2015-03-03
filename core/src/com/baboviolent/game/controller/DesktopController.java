@@ -1,5 +1,6 @@
 package com.baboviolent.game.controller;
 
+import com.baboviolent.game.Configuration;
 import com.baboviolent.game.mode.BaseMode;
 import com.baboviolent.game.util.Utils;
 import com.badlogic.gdx.Gdx;
@@ -37,6 +38,13 @@ public class DesktopController extends BaseController implements InputProcessor 
         	direction.x = -1;
         if( keycode == Keys.RIGHT )
         	direction.x = 1;
+        
+        // @TODO a supprimer
+        if( keycode == Keys.Q ) {
+        	Configuration.Video.mapShaderQuality++;
+        	if(Configuration.Video.mapShaderQuality > Configuration.MAX)
+        		Configuration.Video.mapShaderQuality = Configuration.MIN;
+        }
         
         mode.onSetPlayerDirection(direction.nor());
 		return true;

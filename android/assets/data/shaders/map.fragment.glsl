@@ -41,27 +41,22 @@ uniform int u_numCurrDirectionalLights;
 uniform int u_numCurrPointLights;
 
 varying vec2 v_diffuseUV;
-varying vec3 v_shadowMapUv;
 varying vec2 v_alphaMapUV;
-varying vec3 v_normal;
-varying vec3 v_binormal;
-varying vec3 v_tangent;
-varying vec3 v_lightDiffuse;
-varying vec3 v_viewVec;
 varying vec3 v_pos;
+
+#if (QUALITY != MIN)
+	varying vec3 v_normal;
+	varying vec3 v_binormal;
+	varying vec3 v_tangent;
+	varying vec3 v_viewVec;
+#endif
+
+#if (QUALITY == MAX)
+	varying vec3 v_shadowMapUv;
+#endif
 
 const float u_shininess = 20.0;
 
-
-vec3 baboMix(vec4 texture1, float a1, vec4 texture2, float a2) {
-    float depth = 0.2;
-    float ma = max(texture1.a + a1, texture2.a + a2) - depth;
-
-    float b1 = max(texture1.a + a1 - ma, 0.0);
-    float b2 = max(texture2.a + a2 - ma, 0.0);
-
-    return (texture1.rgb * b1 + texture2.rgb * b2) / (b1 + b2);
-}
 
 vec2 getBaboTexture(int n, in vec2 textureUV) {
 	textureUV.x = u_textureUvs[n].x + (u_textureUvs[n].y - u_textureUvs[n].x) * textureUV.x;
@@ -69,6 +64,7 @@ vec2 getBaboTexture(int n, in vec2 textureUV) {
 	return textureUV;
 }
 
+#if (QUALITY == MAX)
 float getShadowness(vec2 offset) {
     const vec4 bitShifts = vec4(1.0, 1.0 / 255.0, 1.0 / 65025.0, 1.0 / 160581375.0);
     return step(v_shadowMapUv.z, dot(texture2D(u_shadowTexture, v_shadowMapUv.xy + offset), bitShifts));
@@ -81,6 +77,7 @@ float getShadow() {
 			getShadowness(vec2(u_shadowPCFOffset, -u_shadowPCFOffset)) +
 			getShadowness(vec2(-u_shadowPCFOffset, -u_shadowPCFOffset))) * 0.25;
 }
+#endif
 
 /**
  * On commence par recuperer l'alphamap
@@ -116,7 +113,7 @@ void main( void )
 	vec4 diffuse;
 	vec4 specular;
 	vec3 lightSpecular = vec3(0.0);
-	vec3 lightDiffuse = v_lightDiffuse;
+	vec3 lightDiffuse = vec3(0.0);
 	
 	// We get alpha map
 	vec4 alphaColor = texture2D(u_alphaMap, v_alphaMapUV);
@@ -156,14 +153,21 @@ void main( void )
 		diffuse = vec4((diffuseColor0.rgb * b1 + diffuseColor1.rgb * b2) / (b1 + b2), 1.0);
 	}
 	
+	#if (QUALITY == MIN)
+		gl_FragColor = vec4((diffuse.rgb), 1.0);
+		return;
+	#else
+		
 	normal = normalize((v_tangent * normal.x) + (v_binormal * normal.y) + (v_normal * normal.z));
 	
 	// Directional Lights
 	for (int i = 0; i < u_numCurrDirectionalLights; i++) {
 		vec3 lightDir = -u_dirLights[i].direction;
+		
 		// Diffuse
 		float NdotL = clamp(dot(normal, lightDir), 0.0, 1.0);
 		lightDiffuse.rgb += u_dirLights[i].color * NdotL;
+		
 		// Specular
 		float halfDotView = dot(normal, normalize(lightDir + v_viewVec));
 		lightSpecular += u_dirLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess), 0.0, 1.0);
@@ -176,12 +180,22 @@ void main( void )
 		lightDir *= inversesqrt(dist2);
 		float NdotL = clamp(dot(normal, lightDir), 0.0, 2.0);
 		float falloff = clamp(u_pointLights[i].intensity / (1.0 + dist2), 0.0, 2.0); // FIXME mul intensity on cpu
+		
+		// Diffuse
 		lightDiffuse += u_pointLights[i].color * (NdotL * falloff);
+		
+		// Specular
 		float halfDotView = clamp(dot(normal, normalize(lightDir + v_viewVec)), 0.0, 2.0);
 		lightSpecular += u_pointLights[i].color * clamp(NdotL * pow(halfDotView, u_shininess) * falloff, 0.0, 2.0);
 	}
 	
 	diffuse.rgb *= lightDiffuse;
 	specular.rgb *= lightSpecular;
-	gl_FragColor = vec4((diffuse.rgb + specular.rgb)*getShadow(), 1.0);
+	#if (QUALITY == MAX):
+		gl_FragColor = vec4((diffuse.rgb + specular.rgb)*getShadow(), 1.0);
+	#else
+		gl_FragColor = vec4((diffuse.rgb + specular.rgb), 1.0);
+	#endif
+	
+	#endif // End quality not min
 }

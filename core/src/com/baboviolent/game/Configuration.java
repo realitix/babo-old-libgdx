@@ -9,6 +9,21 @@ public class Configuration {
 	public static final int MED = 2;
 	public static final int MAX = 3;
 	
+	public static String getQuality(int q) {
+		switch(q) {
+			case MIN: return "MIN";
+			case MED: return "MED";
+			case MAX: return "MAX";
+		}
+		return "MIN";
+	}
+	
+	public static class Video {
+		public static int baboLevelOfDetail = MED;
+		public static boolean enableShadow = true;
+		public static int mapShaderQuality = MIN;
+	}
+	
 	public static class ConfigurationAdapter {
 		long startTime;
 
@@ -28,10 +43,5 @@ public class Configuration {
 				startTime = TimeUtils.millis();
 			}
 		}
-	}
-	
-	public static class Video {
-		public static int baboLevelOfDetail = Configuration.MED;
-		public static boolean enableShadow = true;
 	}
 }

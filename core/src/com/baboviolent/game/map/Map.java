@@ -2,7 +2,6 @@ package com.baboviolent.game.map;
 
 import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.bullet.instance.BulletInstance;
-import com.baboviolent.game.bullet.instance.map.BulletMapInstanceBackup;
 import com.baboviolent.game.bullet.instance.map.BulletMapInstance;
 import com.baboviolent.game.loader.TextureLoader;
 import com.badlogic.gdx.Gdx;
