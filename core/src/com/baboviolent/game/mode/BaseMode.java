@@ -16,6 +16,7 @@ import com.baboviolent.game.gdx.batch.BaboModelBatch;
 import com.baboviolent.game.gdx.batch.BaboSpriteBatch;
 import com.baboviolent.game.gdx.decal.BaboCameraGroupStrategy;
 import com.baboviolent.game.gdx.decal.BaboDecalBatch;
+import com.baboviolent.game.gdx.shader.BaboShaderProvider;
 import com.baboviolent.game.gdx.texture.BaboTextureBinder;
 import com.baboviolent.game.hud.Hud;
 import com.baboviolent.game.map.Map;
@@ -96,7 +97,7 @@ public class BaseMode {
     
     private void initBatches() {
     	renderContext = new RenderContext(new BaboTextureBinder());
-		modelBatch = new BaboModelBatch(renderContext);
+		modelBatch = new BaboModelBatch(renderContext, new BaboShaderProvider());
 		shadowBatch = new BaboModelBatch(renderContext, new DepthShaderProvider());
 		decalBatch = new BaboDecalBatch(new BaboCameraGroupStrategy(camera), renderContext);
 		spriteBatch = new BaboSpriteBatch(renderContext);
@@ -111,7 +112,7 @@ public class BaseMode {
     }
     
     protected Babo initBabo(String username, boolean player) {
-        Babo babo = new Babo(username, "skin22", effectSystem, world);
+        Babo babo = new Babo(username, "DyedStonework", effectSystem, world);
         if(player) {
         	babo.setPlayer(true).setHud(hud);
         }
@@ -132,7 +133,7 @@ public class BaseMode {
     	}
     	
     	for( int i = 0; i < nbIa; i++) {
-    		AiBabo ai = new AiBabo("ai1", "skin22", effectSystem, world, babos, pathGenerator);
+    		AiBabo ai = new AiBabo("ai1", "DyedStonework", effectSystem, world, babos, pathGenerator);
     		world.add(ai);
     		babos.add(ai);
     		Shotgun shotgun = new Shotgun(ai);

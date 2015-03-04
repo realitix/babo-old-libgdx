@@ -19,9 +19,9 @@ public class Configuration {
 	}
 	
 	public static class Video {
-		public static int baboLevelOfDetail = MED;
+		public static int baboLevelOfDetail = MAX;
 		public static boolean enableShadow = true;
-		public static int mapShaderQuality = MIN;
+		public static int mapShaderQuality = MAX;
 	}
 	
 	public static class ConfigurationAdapter {

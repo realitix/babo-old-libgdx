@@ -9,7 +9,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		
 		
-		//TexturePacker.process("D:\\Users\\T0143947\\repo\\babo\\design\\textures\\game\\to_pack", "D:\\Users\\T0143947\\repo\\babo\\design\\textures\\game\\to_pack\\atlas", "game");
+		//TexturePacker.process("D:\\Users\\T0143947\\repo\\babo\\design\\textures\\skin\\to_pack\\specular", "D:\\Users\\T0143947\\repo\\babo\\design\\textures\\skin\\to_pack\\specular\\atlas", "skinSpecular");
 		//TexturePacker.process("/home/realitix/git/baboviolent/design/textures/game/to_pack", "/home/realitix/git/baboviolent/design/textures/game/to_pack/atlas", "game");
 		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();

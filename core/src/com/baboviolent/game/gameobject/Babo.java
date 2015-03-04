@@ -8,11 +8,16 @@ import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.baboviolent.game.effect.BaboEffectSystem;
 import com.baboviolent.game.effect.group.Blood1;
 import com.baboviolent.game.gameobject.weapon.Weapon;
+import com.baboviolent.game.gdx.attribute.ShaderAttribute;
 import com.baboviolent.game.hud.Hud;
+import com.baboviolent.game.loader.BaboAssetManager;
 import com.baboviolent.game.loader.TextureLoader;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.Collision;
@@ -79,7 +84,22 @@ public class Babo extends GameObject {
 	@Override
 	protected void initInstance() {
         float d = BaboViolentGame.BABO_DIAMETER;
-        Material material = TextureLoader.getMaterial(skin, TextureLoader.TYPE_SKIN);
+        ShaderAttribute shaderAttribute = new ShaderAttribute(ShaderAttribute.BABO);
+        TextureAttribute diffuseAttribute = new TextureAttribute(
+        		TextureAttribute.Diffuse,
+        		BaboAssetManager.getAtlas("skinDiffuse").findRegion(skin));
+        TextureAttribute normalAttribute = new TextureAttribute(
+        		TextureAttribute.Normal,
+        		BaboAssetManager.getAtlas("skinNormal").findRegion(skin));
+        TextureAttribute specularAttribute = new TextureAttribute(
+        		TextureAttribute.Specular,
+        		BaboAssetManager.getAtlas("skinSpecular").findRegion(skin));
+        
+        Material material = new Material(shaderAttribute,
+        								 diffuseAttribute,
+        								 normalAttribute,
+        								 specularAttribute);
+        
         int nbDivisions;
         switch( Configuration.Video.baboLevelOfDetail ) {
         	case Configuration.MIN:
