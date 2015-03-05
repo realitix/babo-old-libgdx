@@ -16,6 +16,7 @@ import com.baboviolent.game.gdx.batch.BaboModelBatch;
 import com.baboviolent.game.gdx.batch.BaboSpriteBatch;
 import com.baboviolent.game.gdx.decal.BaboCameraGroupStrategy;
 import com.baboviolent.game.gdx.decal.BaboDecalBatch;
+import com.baboviolent.game.gdx.environment.BaboEnvironment;
 import com.baboviolent.game.gdx.shader.BaboShaderProvider;
 import com.baboviolent.game.gdx.texture.BaboTextureBinder;
 import com.baboviolent.game.hud.Hud;
@@ -45,7 +46,7 @@ public class BaseMode {
 	protected Hud hud;
 	protected int nbIa;
 	protected Vector3 tmpV = new Vector3();
-	protected Environment environment;
+	protected BaboEnvironment environment;
 	
 	protected BaboModelBatch modelBatch;
 	protected BaboDecalBatch decalBatch;
@@ -69,7 +70,7 @@ public class BaseMode {
     	initBatches();
     	
     	// Initialisation de l'environement
-    	environment = new Environment();
+    	environment = new BaboEnvironment();
     	environment.set(new ColorAttribute(ColorAttribute.AmbientLight, 0.4f, 0.4f, 0.4f, 1));
     			
         // Initialisation du monde

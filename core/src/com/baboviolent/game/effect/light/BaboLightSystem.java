@@ -4,8 +4,10 @@ package com.baboviolent.game.effect.light;
 import com.baboviolent.game.effect.light.effects.BaboLightEffect;
 import com.baboviolent.game.effect.light.effects.Light1Effect;
 import com.baboviolent.game.effect.light.effects.Light2Effect;
+import com.baboviolent.game.gdx.environment.SpotLight;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalShadowLight;
@@ -50,6 +52,14 @@ public class BaboLightSystem {
 		shadowLight.set(0.8f, 0.8f, 0.8f, new Vector3(-0.5f, -1, -0.5f).nor());
 		environment.add(shadowLight);
 		environment.shadowMap = shadowLight;
+		
+		// Test spotlight
+		environment.add(new SpotLight().set(
+				new Color(0,1,0, 1), 
+				new Vector3(86, 1.5f, 86),
+				new Vector3(0, -1, 0),
+				2, (float)Math.cos(Math.toRadians(45)),
+				10));
 	}
 	
 	private void initSystem() {

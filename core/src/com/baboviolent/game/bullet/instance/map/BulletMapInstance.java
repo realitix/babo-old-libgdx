@@ -7,15 +7,17 @@ import com.baboviolent.game.BaboViolentGame;
 import com.baboviolent.game.Configuration;
 import com.baboviolent.game.bullet.instance.BulletInstance;
 import com.baboviolent.game.bullet.instance.map.shader.GroundMesh;
-import com.baboviolent.game.bullet.instance.map.shader.MapShader;
 import com.baboviolent.game.bullet.instance.map.zone.Zone;
 import com.baboviolent.game.bullet.instance.map.zone.ZoneTreeConstructor;
+import com.baboviolent.game.gdx.shader.MapShader;
+import com.baboviolent.game.loader.BaboAssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
@@ -56,19 +58,42 @@ public class BulletMapInstance extends BulletInstance implements Disposable {
 	public void init() {
 		super.init();
 		
-		mapShaderMin = new MapShader(Configuration.MIN);
-		mapShaderMin.init();
-		mapShaderMed = new MapShader(Configuration.MED);
-		mapShaderMed.init();
-		mapShaderMax = new MapShader(Configuration.MAX);
-		mapShaderMax.init();
-		
 		filteredNodes = new Array<Node>(nodes.size);
 		visibleNodes = new Array<Node>(nodes.size);
 		radius = BaboViolentGame.SIZE_MAP_CELL;
 		rootZone = new ZoneTreeConstructor(nodes).generateRootZone();
 		groundMesh = new GroundMesh();
-		groundMaterial = new Material();
+		
+		TextureAtlas d = BaboAssetManager.getAtlas("mapDiffuse");
+		TextureAtlas n = BaboAssetManager.getAtlas("mapNormal");
+		TextureAtlas s = BaboAssetManager.getAtlas("mapSpecular");
+		
+		// Region useless
+		TextureAttribute diffuseAttribute = new TextureAttribute(
+        		TextureAttribute.Diffuse,
+        		d.getRegions().first());
+        TextureAttribute normalAttribute = new TextureAttribute(
+        		TextureAttribute.Normal,
+        		n.getRegions().first());
+        TextureAttribute specularAttribute = new TextureAttribute(
+        		TextureAttribute.Specular,
+        		s.getRegions().first());
+        
+        groundMaterial = new Material(diffuseAttribute,
+        								 normalAttribute,
+        								 specularAttribute);
+        
+		mapShaderMin = new MapShader(Configuration.MIN);
+		mapShaderMin.init();
+		mapShaderMin.updateUvs(d);
+		
+		mapShaderMed = new MapShader(Configuration.MED);
+		mapShaderMed.init();
+		mapShaderMed.updateUvs(d);
+		
+		mapShaderMax = new MapShader(Configuration.MAX);
+		mapShaderMax.init();
+		mapShaderMax.updateUvs(d);
 	}
 	
 	

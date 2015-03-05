@@ -34,7 +34,7 @@ public class BaboAssetManager {
 		
 		// Atlas
 		String[] atlas = {"game",
-						  "mapDiffuse", "mapNormal", "mapSpecularity",
+						  "mapDiffuse", "mapNormal", "mapSpecular",
 						  "skinDiffuse", "skinNormal", "skinSpecular"};
 		for( int i = 0; i < atlas.length; i++ ) {
 			loadAtlas(atlas[i]);
