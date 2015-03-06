@@ -146,7 +146,7 @@ void main( void )
 		// Good texture splatting algorythme
 		// normalColor0.a containe height map
 		float a1 = alphaIntensity;
-		float a2 = 1 - a1;
+		float a2 = 1.0 - a1;
 		float depth = 0.2;
 	    float ma = max(normalColor0.a + a1, normalColor1.a + a2) - depth;
 	
@@ -224,7 +224,7 @@ void main( void )
 	
 	diffuse.rgb *= lightDiffuse;
 	specular.rgb *= lightSpecular;
-	#if (QUALITY == MAX):
+	#if (QUALITY == MAX)
 		gl_FragColor = vec4((diffuse.rgb + specular.rgb)*getShadow(), 1.0);
 	#else
 		gl_FragColor = vec4((diffuse.rgb + specular.rgb), 1.0);

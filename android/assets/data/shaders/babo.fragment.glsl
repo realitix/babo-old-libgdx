@@ -139,7 +139,7 @@ void main( void )
 	diffuse.rgb *= lightDiffuse;
 	specular.rgb *= lightSpecular;
 	
-	#if (QUALITY == MAX):
+	#if (QUALITY == MAX)
 		gl_FragColor = vec4((diffuse.rgb + specular.rgb)*getShadow(), 1.0);
 	#else
 		gl_FragColor = vec4((diffuse.rgb + specular.rgb), 1.0);

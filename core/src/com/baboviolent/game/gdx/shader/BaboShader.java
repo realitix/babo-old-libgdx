@@ -120,8 +120,9 @@ public class BaboShader implements Shader {
         String vert = Gdx.files.internal(p+"/"+shaderName+".vertex.glsl").readString();
         String frag = Gdx.files.internal(p+"/"+shaderName+".fragment.glsl").readString();
         program = new ShaderProgram(prefix+vert, prefix+frag);
-        if (!program.isCompiled())
+        if (!program.isCompiled()) {
             throw new GdxRuntimeException(program.getLog());
+        }
         
         u_projTrans = program.getUniformLocation("u_projViewTrans");
         u_worldTrans = program.getUniformLocation("u_worldTrans");
